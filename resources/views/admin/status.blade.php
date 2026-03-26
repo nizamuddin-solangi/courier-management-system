@@ -7,15 +7,15 @@
     
     <!-- Distribution Overview -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-        <div class="glass-panel p-10 rounded-[40px] border border-white/5 premium-shadow relative overflow-hidden">
+        <div class="glass-panel p-12 rounded-[40px] border border-white/5 premium-shadow relative overflow-hidden">
             <div class="absolute -left-20 -top-20 w-64 h-64 bg-[#66FCF1]/5 rounded-full blur-[80px] pointer-events-none"></div>
             
             <div class="flex flex-col gap-1 mb-8">
-                <h3 class="text-2xl font-bold text-white tracking-tight">Real-time Node Distribution</h3>
-                <p class="text-xs text-[#45A29E] font-bold uppercase tracking-widest opacity-70">Fleet-Wide Operational Analysis</p>
+                <h3 class="text-3xl font-bold text-white tracking-tight">Real-time Node Distribution</h3>
+                <p class="text-sm text-[#45A29E] font-bold uppercase tracking-widest opacity-70">Fleet-Wide Operational Analysis</p>
             </div>
 
-            <div class="h-[400px] relative">
+            <div class="h-[500px] relative">
                 <canvas id="statusDonutChart"></canvas>
             </div>
         </div>
@@ -29,23 +29,23 @@
                     ['label' => 'On-Hold (Halt)', 'val' => '28', 'color' => '#FF4B5C', 'perc' => '2%'],
                     ['label' => 'Pending (Wait)', 'val' => '12', 'color' => '#FF9F43', 'perc' => '< 1%']
                 ] as $stat)
-                <div class="glass-panel p-6 rounded-3xl border border-white/5 premium-shadow hover:bg-white/5 transition-all">
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="w-3 h-3 rounded-full" style="background-color: {{ $stat['color'] }}"></div>
-                        <span class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest">{{ $stat['label'] }}</span>
+                <div class="glass-panel p-8 rounded-3xl border border-white/5 premium-shadow hover:bg-white/5 transition-all">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-4 h-4 rounded-full" style="background-color: {{ $stat['color'] }}"></div>
+                        <span class="text-xs font-bold text-[#45A29E] uppercase tracking-widest">{{ $stat['label'] }}</span>
                     </div>
                     <div class="flex items-baseline gap-2">
-                        <span class="text-2xl font-bold text-white tracking-tight">{{ $stat['val'] }}</span>
-                        <span class="text-[10px] font-bold text-[#66FCF1]">{{ $stat['perc'] }}</span>
+                        <span class="text-4xl font-bold text-white tracking-tight">{{ $stat['val'] }}</span>
+                        <span class="text-xs font-bold text-[#66FCF1]">{{ $stat['perc'] }}</span>
                     </div>
                 </div>
                 @endforeach
             </div>
             
-            <div class="glass-panel p-6 rounded-3xl border border-white/5 bg-gradient-to-r from-white/[0.03] to-transparent">
+            <div class="glass-panel p-8 rounded-3xl border border-white/5 bg-gradient-to-r from-white/[0.03] to-transparent">
                 <div class="flex items-center justify-between mb-4">
-                    <span class="text-xs font-bold text-white">System Efficiency Rating</span>
-                    <span class="text-xs font-bold text-[#66FCF1]">98.2% Optimal</span>
+                    <span class="text-sm font-bold text-white">System Efficiency Rating</span>
+                    <span class="text-sm font-bold text-[#66FCF1]">98.2% Optimal</span>
                 </div>
                 <div class="h-1.5 w-full bg-black/40 rounded-full overflow-hidden">
                     <div class="h-full bg-gradient-to-r from-[#45A29E] to-[#66FCF1] w-[98.2%] rounded-full shadow-[0_0_15px_rgba(102,252,241,0.5)]"></div>
@@ -55,10 +55,10 @@
     </div>
 
     <!-- Live Node Heatmap Placeholder -->
-    <div class="glass-panel p-10 rounded-[40px] border border-white/5 premium-shadow">
-        <div class="flex flex-col gap-1 mb-10 text-center">
-            <h3 class="text-xl font-bold text-white tracking-tight">Geographic Node Pulse</h3>
-            <p class="text-[10px] text-[#45A29E] font-bold uppercase tracking-widest opacity-60">Regional Density Matrix</p>
+    <div class="glass-panel p-12 rounded-[40px] border border-white/5 premium-shadow">
+        <div class="flex flex-col gap-2 mb-10 text-center">
+            <h3 class="text-2xl font-bold text-white tracking-tight">Geographic Node Pulse</h3>
+            <p class="text-xs text-[#45A29E] font-bold uppercase tracking-widest opacity-60">Regional Density Matrix</p>
         </div>
         
         <div class="h-64 flex items-center justify-center opacity-30 relative group">

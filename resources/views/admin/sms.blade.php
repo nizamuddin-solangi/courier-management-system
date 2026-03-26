@@ -7,15 +7,23 @@
     
     <!-- Left: Compose Broadcast -->
     <div class="lg:col-span-2 space-y-8">
-        <div class="glass-panel p-8 rounded-[40px] border border-white/5 premium-shadow relative overflow-hidden">
+        <div class="glass-panel p-12 rounded-[40px] border border-white/5 premium-shadow relative overflow-hidden">
             <div class="absolute -right-20 -top-20 w-64 h-64 bg-[#66FCF1]/5 rounded-full blur-[80px] pointer-events-none"></div>
             
-            <div class="flex flex-col gap-1 mb-8 relative z-10">
-                <h3 class="text-2xl font-bold text-white tracking-tight">Rapid Communications</h3>
-                <p class="text-xs text-[#45A29E] font-bold uppercase tracking-widest opacity-70">Multi-Channel Client Notification System</p>
+            <div class="flex flex-col gap-2 mb-10 relative z-10">
+                <h3 class="text-3xl font-bold text-white tracking-tight">Rapid Communications</h3>
+                <p class="text-sm text-[#45A29E] font-bold uppercase tracking-widest opacity-70">Multi-Channel Client Notification System</p>
             </div>
 
-            <form class="space-y-6 relative z-10">
+            <!-- Tabs -->
+            <div class="flex gap-4 mb-8 bg-black/20 p-1.5 rounded-2xl relative z-10 border border-white/5">
+                <button onclick="switchSmsTab('general')" id="tab-general" class="flex-1 py-3 px-4 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all bg-[#66FCF1] text-[#0B0C10]">General</button>
+                <button onclick="switchSmsTab('route')" id="tab-route" class="flex-1 py-3 px-4 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all text-[#C5C6C7] hover:bg-white/5">Route (From-To)</button>
+                <button onclick="switchSmsTab('delivery')" id="tab-delivery" class="flex-1 py-3 px-4 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all text-[#C5C6C7] hover:bg-white/5">Delivery</button>
+            </div>
+
+            <!-- General Form -->
+            <form id="form-general" class="sms-form space-y-6 relative z-10">
                 <div class="space-y-2">
                     <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Target Intelligence (Recipients)</label>
                     <div class="relative group">
@@ -49,11 +57,55 @@
                     </button>
                 </div>
             </form>
+
+            <!-- Route (From-To) Form -->
+            <form id="form-route" class="sms-form hidden space-y-6 relative z-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Origin Node</label>
+                        <input type="text" class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#66FCF1]/40" placeholder="e.g. Hub Alpha">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Target Node</label>
+                        <input type="text" class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#66FCF1]/40" placeholder="e.g. Sector 7">
+                    </div>
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Route Status Update</label>
+                    <textarea class="w-full bg-black/40 border border-white/10 rounded-3xl py-4 px-6 text-sm text-white h-32 focus:outline-none focus:ring-2 focus:ring-[#66FCF1]/40" placeholder="Shipment has departed from [Origin] and is en route to [Target]...">Shipment has departed from [Origin] and is en route to [Target]. Expected arrival: 4 hours.</textarea>
+                </div>
+
+                <div class="flex items-center justify-end pt-4">
+                    <button type="submit" class="bg-gradient-to-r from-[#45A29E] to-[#66FCF1] text-[#0B0C10] font-bold px-10 py-4 rounded-2xl shadow-lg hover:-translate-y-1 transition-all duration-300 flex items-center gap-3">
+                        Transmit Route Update <i class="bi bi-geo-alt-fill text-sm"></i>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Delivery Form -->
+            <form id="form-delivery" class="sms-form hidden space-y-6 relative z-10">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Tracking Serial</label>
+                    <input type="text" class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#66FCF1]/40" placeholder="CP-X-0000">
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Delivery Notification Message</label>
+                    <textarea class="w-full bg-black/40 border border-white/10 rounded-3xl py-4 px-6 text-sm text-white h-32 focus:outline-none focus:ring-2 focus:ring-[#66FCF1]/40">Your shipment [Serial] has been successfully delivered. Thank you for choosing CourierPro Premium.</textarea>
+                </div>
+
+                <div class="flex items-center justify-end pt-4">
+                    <button type="submit" class="bg-gradient-to-r from-green-500 to-emerald-400 text-[#0B0C10] font-bold px-10 py-4 rounded-2xl shadow-lg hover:-translate-y-1 transition-all duration-300 flex items-center gap-3">
+                        Send Delivery Confirmation <i class="bi bi-check-circle-fill text-sm"></i>
+                    </button>
+                </div>
+            </form>
         </div>
 
         <!-- History Section -->
-        <div class="glass-panel p-8 rounded-[40px] border border-white/5 premium-shadow">
-            <h4 class="text-sm font-bold tracking-widest text-[#45A29E] uppercase opacity-60 mb-6">Transmission History</h4>
+        <div class="glass-panel p-12 rounded-[40px] border border-white/5 premium-shadow">
+            <h4 class="text-base font-bold tracking-widest text-[#45A29E] uppercase opacity-70 mb-8">Transmission History</h4>
             <div class="space-y-4">
                 @foreach([
                     ['title' => 'System Maintenance Alert', 'time' => '1 hour ago', 'status' => 'Delivered'],
@@ -77,8 +129,8 @@
 
     <!-- Right: Stats & Quota -->
     <div class="space-y-8">
-        <div class="glass-panel p-8 rounded-[40px] border border-white/5 premium-shadow bg-gradient-to-br from-white/[0.03] to-transparent">
-            <h4 class="text-xs font-bold tracking-widest text-[#45A29E] uppercase opacity-60 mb-8">Node Quota Status</h4>
+        <div class="glass-panel p-12 rounded-[40px] border border-white/5 premium-shadow bg-gradient-to-br from-white/[0.03] to-transparent">
+            <h4 class="text-sm font-bold tracking-widest text-[#45A29E] uppercase opacity-70 mb-10">Node Quota Status</h4>
             
             <div class="space-y-8">
                 <div class="flex flex-col items-center gap-4">
@@ -107,9 +159,9 @@
             </div>
         </div>
 
-        <div class="glass-panel p-8 rounded-[40px] border border-white/5 premium-shadow">
-            <h4 class="text-xs font-bold tracking-widest text-[#45A29E] uppercase opacity-60 mb-6">Security Directives</h4>
-            <ul class="space-y-4 text-xs text-[#C5C6C7] opacity-70">
+        <div class="glass-panel p-12 rounded-[40px] border border-white/5 premium-shadow">
+            <h4 class="text-sm font-bold tracking-widest text-[#45A29E] uppercase opacity-70 mb-8">Security Directives</h4>
+            <ul class="space-y-5 text-sm text-[#C5C6C7] opacity-80">
                 <li class="flex items-start gap-3"><i class="bi bi-shield-check text-[#66FCF1]"></i> All messages are end-to-end encrypted.</li>
                 <li class="flex items-start gap-3"><i class="bi bi-shield-check text-[#66FCF1]"></i> High-volume broadcasts require Level 4 auth.</li>
                 <li class="flex items-start gap-3"><i class="bi bi-shield-check text-[#66FCF1]"></i> Automated spam filtering is active.</li>
@@ -117,4 +169,30 @@
         </div>
     </div>
 </div>
+@push('scripts')
+<script>
+    function switchSmsTab(tabId) {
+        // Toggle Forms
+        document.querySelectorAll('.sms-form').forEach(f => f.classList.add('hidden'));
+        document.getElementById('form-' + tabId).classList.remove('hidden');
+
+        // Toggle Buttons
+        const buttons = {
+            'general': document.getElementById('tab-general'),
+            'route': document.getElementById('tab-route'),
+            'delivery': document.getElementById('tab-delivery')
+        };
+
+        Object.keys(buttons).forEach(id => {
+            if (id === tabId) {
+                buttons[id].classList.add('bg-[#66FCF1]', 'text-[#0B0C10]');
+                buttons[id].classList.remove('text-[#C5C6C7]', 'hover:bg-white/5');
+            } else {
+                buttons[id].classList.remove('bg-[#66FCF1]', 'text-[#0B0C10]');
+                buttons[id].classList.add('text-[#C5C6C7]', 'hover:bg-white/5');
+            }
+        });
+    }
+</script>
+@endpush
 @endsection

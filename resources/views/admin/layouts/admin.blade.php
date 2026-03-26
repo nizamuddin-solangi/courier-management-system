@@ -65,6 +65,14 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--accent-primary);
         }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 <body class="antialiased">

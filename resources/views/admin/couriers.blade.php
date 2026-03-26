@@ -6,10 +6,10 @@
 <div class="space-y-8 animate-fade-in max-w-[1600px] mx-auto">
     
     <!-- Table Toolbar -->
-    <div class="flex flex-col md:flex-row gap-6 items-center justify-between glass-panel p-6 rounded-3xl border border-white/5 premium-shadow">
-        <div class="flex flex-col gap-1 w-full md:w-auto">
-            <h3 class="text-xl font-bold text-white tracking-tight">Global Shipment Ledger</h3>
-            <p class="text-[10px] text-[#45A29E] font-bold uppercase tracking-widest opacity-70">Real-time Logistics Oversight</p>
+    <div class="flex flex-col md:flex-row gap-8 items-center justify-between glass-panel p-8 rounded-3xl border border-white/5 premium-shadow">
+        <div class="flex flex-col gap-2 w-full md:w-auto">
+            <h3 class="text-2xl font-bold text-white tracking-tight">Global Shipment Ledger</h3>
+            <p class="text-xs text-[#45A29E] font-bold uppercase tracking-widest opacity-70">Real-time Logistics Oversight</p>
         </div>
         
         <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto items-center">
@@ -32,12 +32,12 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left border-separate border-spacing-0">
                 <thead>
-                    <tr class="text-[10px] uppercase tracking-widest text-[#45A29E] font-bold opacity-60 bg-white/[0.02]">
-                        <th class="px-8 py-6 border-b border-white/5">Tracking Index</th>
-                        <th class="px-8 py-6 border-b border-white/5">Consignee Intelligence</th>
-                        <th class="px-8 py-6 border-b border-white/5">Route Manifest</th>
-                        <th class="px-8 py-6 border-b border-white/5">Current State</th>
-                        <th class="px-8 py-6 border-b border-white/5 text-center">Protocol Actions</th>
+                    <tr class="text-xs uppercase tracking-widest text-[#45A29E] font-bold opacity-60 bg-white/[0.02]">
+                        <th class="px-8 py-5 border-b border-white/5">Tracking Index</th>
+                        <th class="px-8 py-5 border-b border-white/5">Consignee Intelligence</th>
+                        <th class="px-8 py-5 border-b border-white/5">Route Manifest</th>
+                        <th class="px-8 py-5 border-b border-white/5">Current State</th>
+                        <th class="px-8 py-5 border-b border-white/5 text-center">Protocol Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
@@ -52,39 +52,40 @@
 
                     @foreach($couriers as $ship)
                     <tr class="group hover:bg-white/[0.02] transition-colors">
-                        <td class="px-8 py-6">
-                            <div class="flex flex-col">
-                                <span class="text-sm font-bold text-white tracking-widest group-hover:text-[#66FCF1] transition-colors">{{ $ship['id'] }}</span>
-                                <span class="text-[9px] text-[#45A29E] font-bold uppercase tracking-tighter opacity-70">Express Priority</span>
+                        <td class="px-8 py-5">
+                            <div class="flex flex-col gap-1">
+                                <span class="text-base font-bold text-white tracking-widest group-hover:text-[#66FCF1] transition-colors">{{ $ship['id'] }}</span>
+                                <span class="text-xs text-[#45A29E] font-bold uppercase tracking-tighter opacity-70">Express Priority</span>
                             </div>
                         </td>
-                        <td class="px-8 py-6">
-                            <div class="flex flex-col">
+                        <td class="px-8 py-5">
+                            <div class="flex flex-col gap-1">
                                 <span class="text-sm font-bold text-[#C5C6C7]">{{ $ship['name'] }}</span>
-                                <span class="text-[10px] text-[#45A29E] opacity-60">{{ $ship['contact'] }} • {{ $ship['phone'] }}</span>
+                                <span class="text-xs text-[#45A29E] opacity-70">{{ $ship['contact'] }} • {{ $ship['phone'] }}</span>
                             </div>
                         </td>
-                        <td class="px-8 py-6">
-                            <div class="flex items-center gap-3">
-                                <span class="text-[10px] font-bold text-[#C5C6C7] opacity-50">{{ $ship['origin'] }}</span>
-                                <div class="flex-1 h-[1px] w-12 bg-white/10 relative">
+                        <td class="px-8 py-5">
+                            <div class="flex items-center gap-4">
+                                <span class="text-xs font-bold text-[#C5C6C7] opacity-60">{{ $ship['origin'] }}</span>
+                                <div class="flex-1 h-[1px] w-16 bg-white/10 relative">
                                     <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#66FCF1]/30 to-transparent animate-pulse"></div>
-                                    <i class="bi bi-chevron-right absolute -right-1.5 -top-1.5 text-[8px] text-[#66FCF1]"></i>
+                                    <i class="bi bi-chevron-right absolute -right-2 -top-2 text-[10px] text-[#66FCF1]"></i>
                                 </div>
-                                <span class="text-[10px] font-bold text-[#66FCF1]">{{ $ship['dest'] }}</span>
+                                <span class="text-xs font-bold text-[#66FCF1]">{{ $ship['dest'] }}</span>
                             </div>
                         </td>
-                        <td class="px-8 py-6">
-                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-extrabold border" style="background-color: {{ $ship['color'] }}10; color: {{ $ship['color'] }}; border-color: {{ $ship['color'] }}30">
-                                <span class="w-1.5 h-1.5 rounded-full" style="background-color: {{ $ship['color'] }}"></span>
+                        <td class="px-8 py-5">
+                            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-extrabold border" style="background-color: {{ $ship['color'] }}10; color: {{ $ship['color'] }}; border-color: {{ $ship['color'] }}30">
+                                <span class="w-2 h-2 rounded-full" style="background-color: {{ $ship['color'] }}"></span>
                                 {{ $ship['status'] }}
                             </span>
                         </td>
-                        <td class="px-8 py-6">
+                        <td class="px-8 py-5">
                             <div class="flex items-center justify-center gap-2">
-                                <button class="w-8 h-8 rounded-lg flex items-center justify-center text-[#C5C6C7] hover:bg-[#66FCF1]/10 hover:text-[#66FCF1] transition-all border border-transparent hover:border-[#66FCF1]/20" title="Scan Data"><i class="bi bi-qr-code"></i></button>
-                                <button class="w-8 h-8 rounded-lg flex items-center justify-center text-[#C5C6C7] hover:bg-blue-500/10 hover:text-blue-400 transition-all border border-transparent hover:border-blue-500/20" title="Update Route"><i class="bi bi-pencil-square"></i></button>
-                                <button class="w-8 h-8 rounded-lg flex items-center justify-center text-[#C5C6C7] hover:bg-white/10 hover:text-white transition-all" title="More Options"><i class="bi bi-three-dots"></i></button>
+                                <button class="w-10 h-10 rounded-xl flex items-center justify-center text-[#C5C6C7] hover:bg-[#66FCF1]/10 hover:text-[#66FCF1] transition-all border border-transparent hover:border-[#66FCF1]/20 text-lg" title="Scan Data"><i class="bi bi-qr-code"></i></button>
+                                <button onclick="openModal('editShipmentModal')" class="w-10 h-10 rounded-xl flex items-center justify-center text-[#C5C6C7] hover:bg-blue-500/10 hover:text-blue-400 transition-all border border-transparent hover:border-blue-500/20 text-lg" title="Update Route"><i class="bi bi-pencil-square"></i></button>
+                                <button onclick="openModal('deleteShipmentModal')" class="w-10 h-10 rounded-xl flex items-center justify-center text-[#C5C6C7] hover:bg-red-500/10 hover:text-red-400 transition-all border border-transparent hover:border-red-500/20 text-lg" title="Decommission"><i class="bi bi-trash3"></i></button>
+                                <button class="w-10 h-10 rounded-xl flex items-center justify-center text-[#C5C6C7] hover:bg-white/10 hover:text-white transition-all text-lg" title="More Options"><i class="bi bi-three-dots"></i></button>
                             </div>
                         </td>
                     </tr>
@@ -134,5 +135,70 @@
             <button type="submit" class="flex-1 bg-gradient-to-r from-[#45A29E] to-[#66FCF1] text-[#0B0C10] font-bold py-3 rounded-2xl shadow-lg hover:shadow-[0_0_20px_rgba(102,252,241,0.3)] transition-all">Execute Dispatch</button>
         </div>
     </form>
+</x-modal>
+
+<!-- Edit Shipment Modal -->
+<x-modal id="editShipmentModal" title="Update Route Manifest">
+    <form class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest">Consignee Intelligence</label>
+                <input type="text" class="w-full bg-black/40 border border-white/10 rounded-2xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#66FCF1]/40" value="Global Logistics Inc." required>
+            </div>
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest">Tracking Index</label>
+                <input type="text" class="w-full bg-black/40 border border-white/10 rounded-2xl py-3 px-4 text-sm text-white/50 focus:outline-none" value="CP-X-9921" disabled>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest">Current Node</label>
+                <select class="w-full bg-black/40 border border-white/10 rounded-2xl py-3 px-4 text-sm text-white focus:outline-none">
+                    <option selected>Hub A (Origin)</option>
+                    <option>Regional Hub Beta</option>
+                    <option>Distribution Node Zeta</option>
+                </select>
+            </div>
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest">Operational Status</label>
+                <select class="w-full bg-black/40 border border-white/10 rounded-2xl py-3 px-4 text-sm text-[#66FCF1] focus:outline-none font-bold">
+                    <option selected>In-Transit</option>
+                    <option>Delivered</option>
+                    <option>Pending</option>
+                    <option>On-Hold</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="space-y-2">
+            <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest">Logistics Directives</label>
+            <textarea class="w-full bg-black/40 border border-white/10 rounded-2xl py-3 px-4 text-sm text-white h-24 focus:outline-none" placeholder="Enter updated directives...">Priority express handling requested for Downtown DC node.</textarea>
+        </div>
+
+        <div class="flex gap-4 pt-4">
+            <button type="button" onclick="closeModal('editShipmentModal')" class="flex-1 bg-white/5 text-[#C5C6C7] font-bold py-3 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">Abort Update</button>
+            <button type="submit" class="flex-1 bg-gradient-to-r from-blue-500 to-blue-400 text-[#0B0C10] font-bold py-3 rounded-2xl shadow-lg hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all">Execute Update</button>
+        </div>
+    </form>
+</x-modal>
+
+<!-- Delete Shipment Modal -->
+<x-modal id="deleteShipmentModal" title="Confirm Decommission">
+    <div class="space-y-8 text-center">
+        <div class="w-20 h-20 rounded-full bg-red-500/10 flex items-center justify-center mx-auto border border-red-500/20 text-red-500 text-3xl">
+            <i class="bi bi-exclamation-triangle"></i>
+        </div>
+        
+        <div class="space-y-2">
+            <h4 class="text-xl font-bold text-white">Decommission Shipment?</h4>
+            <p class="text-sm text-[#C5C6C7] opacity-70 px-4">This action will permanently purge the manifest record for <span class="text-white font-bold tracking-widest">CP-X-9921</span> from the global ledger.</p>
+        </div>
+
+        <div class="flex gap-4">
+            <button type="button" onclick="closeModal('deleteShipmentModal')" class="flex-1 bg-white/5 text-[#C5C6C7] font-bold py-4 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">Abort Action</button>
+            <button type="button" onclick="closeModal('deleteShipmentModal')" class="flex-1 bg-red-500/80 hover:bg-red-500 text-white font-bold py-4 rounded-2xl shadow-[0_10px_20px_-5px_rgba(239,68,68,0.3)] transition-all">Confirm Purge</button>
+        </div>
+    </div>
 </x-modal>
 @endsection

@@ -3,10 +3,10 @@
 @section('title', 'System Intelligence')
 
 @section('content')
-<div class="space-y-8 max-w-[1600px] mx-auto animate-fade-in">
-
-    <!-- Hero Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="space-y-6 max-w-[1600px] mx-auto animate-fade-in">
+ 
+     <!-- Hero Stats Grid -->
+     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <x-stats-card 
             label="Active Fleet Shipments" 
             value="1,284" 
@@ -38,30 +38,30 @@
     </div>
 
     <!-- Main Analytics & Activity -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         <!-- Live Volume Chart -->
         <div class="lg:col-span-2 glass-panel p-8 rounded-3xl border border-white/5 premium-shadow">
             <div class="flex items-center justify-between mb-8">
                 <div class="flex flex-col gap-1">
-                    <h3 class="text-xl font-bold text-white tracking-tight">Fleet Volume Insights</h3>
-                    <p class="text-xs text-[#45A29E] font-medium opacity-70">Real-time throughput analysis</p>
+                    <h3 class="text-2xl font-bold text-white tracking-tight">Fleet Volume Insights</h3>
+                    <p class="text-sm text-[#45A29E] font-medium opacity-70">Real-time throughput analysis</p>
                 </div>
-                <div class="flex gap-2 p-1 bg-white/5 rounded-xl border border-white/5 h-10">
-                    <button class="px-4 text-xs font-bold text-[#66FCF1] bg-[#66FCF1]/10 rounded-lg shadow-sm">7 Days</button>
-                    <button class="px-4 text-xs font-bold text-[#C5C6C7] hover:bg-white/5 rounded-lg transition-all">30 Days</button>
+                <div class="flex gap-2 p-1.5 bg-white/5 rounded-xl border border-white/5 h-12">
+                    <button class="px-5 text-sm font-bold text-[#66FCF1] bg-[#66FCF1]/10 rounded-lg shadow-sm">7 Days</button>
+                    <button class="px-5 text-sm font-bold text-[#C5C6C7] hover:bg-white/5 rounded-lg transition-all">30 Days</button>
                 </div>
             </div>
             
-            <div class="h-[340px] relative">
+            <div class="h-[400px] relative">
                 <canvas id="shipmentVolumeChart"></canvas>
             </div>
         </div>
 
         <!-- System Pulse / Activity -->
         <div class="glass-panel p-8 rounded-3xl border border-white/5 premium-shadow">
-            <h3 class="text-xl font-bold text-white tracking-tight mb-8 flex items-center gap-3">
-                <span class="w-3 h-3 rounded-full bg-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,1)]"></span>
+            <h3 class="text-2xl font-bold text-white tracking-tight mb-8 flex items-center gap-3">
+                <span class="w-3.5 h-3.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_12px_rgba(239,68,68,1)]"></span>
                 System Pulse
             </h3>
             
@@ -105,16 +105,16 @@
     <div class="glass-panel overflow-hidden rounded-3xl border border-white/5 premium-shadow">
         <div class="p-8 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
             <div class="flex flex-col gap-1">
-                <h3 class="text-xl font-bold text-white tracking-tight">Active Deployments</h3>
-                <p class="text-xs text-[#45A29E] font-medium opacity-70">Real-time tracking of current transit nodes</p>
+                <h3 class="text-2xl font-bold text-white tracking-tight">Active Deployments</h3>
+                <p class="text-sm text-[#45A29E] font-medium opacity-70">Real-time tracking of current transit nodes</p>
             </div>
-            <a href="/admin/couriers" class="text-xs font-bold text-[#66FCF1] hover:underline decoration-2 underline-offset-4 decoration-[#66FCF1]/30">View Detailed Registry <i class="bi bi-arrow-right ml-1"></i></a>
+            <a href="/admin/couriers" class="text-sm font-bold text-[#66FCF1] hover:underline decoration-2 underline-offset-4 decoration-[#66FCF1]/30">View Detailed Registry <i class="bi bi-arrow-right ml-1"></i></a>
         </div>
         
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="text-[10px] uppercase tracking-widest text-[#45A29E] font-bold opacity-60 border-b border-white/5">
+                    <tr class="text-xs uppercase tracking-widest text-[#45A29E] font-bold opacity-60 border-b border-white/5">
                         <th class="px-8 py-5">Transit ID</th>
                         <th class="px-8 py-5">Consignee Entity</th>
                         <th class="px-8 py-5">Target Node</th>
@@ -133,16 +133,16 @@
 
                     @foreach($shipments as $ship)
                     <tr class="group hover:bg-white/[0.03] transition-colors">
-                        <td class="px-8 py-6 text-sm font-bold text-white tracking-tight group-hover:text-[#66FCF1] transition-colors">{{ $ship['id'] }}</td>
-                        <td class="px-8 py-6 text-sm text-[#C5C6C7] font-medium opacity-80">{{ $ship['entity'] }}</td>
-                        <td class="px-8 py-6 text-sm text-[#C5C6C7] font-medium opacity-80">{{ $ship['node'] }}</td>
-                        <td class="px-8 py-6">
-                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold border" style="background-color: {{ $ship['color'] }}15; color: {{ $ship['color'] }}; border-color: {{ $ship['color'] }}30">
-                                <span class="w-1.5 h-1.5 rounded-full" style="background-color: {{ $ship['color'] }}"></span>
+                        <td class="px-8 py-5 text-base font-bold text-white tracking-tight group-hover:text-[#66FCF1] transition-colors">{{ $ship['id'] }}</td>
+                        <td class="px-8 py-5 text-base text-[#C5C6C7] font-medium opacity-80">{{ $ship['entity'] }}</td>
+                        <td class="px-8 py-5 text-base text-[#C5C6C7] font-medium opacity-80">{{ $ship['node'] }}</td>
+                        <td class="px-8 py-5">
+                            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold border" style="background-color: {{ $ship['color'] }}15; color: {{ $ship['color'] }}; border-color: {{ $ship['color'] }}30">
+                                <span class="w-2 h-2 rounded-full" style="background-color: {{ $ship['color'] }}"></span>
                                 {{ $ship['status'] }}
                             </span>
                         </td>
-                        <td class="px-8 py-6 text-xs text-[#45A29E] font-medium opacity-60 italic">{{ $ship['time'] }}</td>
+                        <td class="px-8 py-5 text-sm text-[#45A29E] font-medium opacity-60 italic">{{ $ship['time'] }}</td>
                     </tr>
                     @endforeach
                 </tbody>

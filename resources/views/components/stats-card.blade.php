@@ -10,7 +10,7 @@
             <div class="flex items-baseline gap-2 mt-1">
                 <span class="text-3xl font-bold text-white tracking-tight">{{ $value }}</span>
                 <span @class([
-                    'text-[10px] font-bold px-1.5 py-0.5 rounded-md flex items-center gap-1',
+                    'text-[10px] font-bold px-2 py-1 rounded-md flex items-center gap-0.5',
                     'bg-green-500/10 text-green-400' => $change >= 0,
                     'bg-red-500/10 text-red-400' => $change < 0,
                 ])>
@@ -20,13 +20,13 @@
             </div>
         </div>
         
-        <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-inner transition-all duration-300 group-hover:scale-110" style="background-color: {{ $color }}20; color: {{ $color }}">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl shadow-inner transition-all duration-300 group-hover:scale-110" style="background-color: {{ $color }}20; color: {{ $color }}">
             <i class="bi {{ $icon }}"></i>
         </div>
     </div>
 
-    <!-- Mini Chart Placeholder Area -->
-    <div class="mt-6 flex items-end gap-1 h-8 opacity-20 group-hover:opacity-40 transition-opacity">
+    <!-- Mini Chart Area -->
+    <div class="mt-6 flex items-end gap-1 h-10 opacity-20 group-hover:opacity-40 transition-opacity">
         @for($i = 0; $i < 12; $i++)
             <div class="flex-1 rounded-t-sm" style="background-color: {{ $color }}; height: {{ rand(20, 100) }}%"></div>
         @endfor
