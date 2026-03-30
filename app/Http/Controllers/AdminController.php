@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Courier;
 
 class AdminController extends Controller
 {
@@ -39,6 +40,30 @@ class AdminController extends Controller
     }
 
     public function profile(){
-        return view('admin.profile');
+        $result = Courier::first() ?? new Courier(['name' => 'System Admin', 'email' => 'admin@courierpro.com', 'id' => 1]);
+        return view('admin.profile', compact('result'));
+    }
+
+    public function edit_admin($id){
+        $result = Courier::find($id);
+        return view('admin.profile', compact('result'));
+    }
+
+    public function update_admin(Request $request,$id){
+        $myobject = Courier::find($id);
+        
+        if($request->has('name')) $myobject->name = $request->name;
+        if($request->has('email')) $myobject->email = $request->email;
+        if($request->filled('password')) $myobject->password = $request->password;
+        
+        if($request->hasFile('image')){
+            $file = $request->file('image');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads'), $filename);
+            $myobject->image = $filename;
+        }
+        
+        $myobject->save();
+        return redirect()->route('admin.profile');
     }
 }
