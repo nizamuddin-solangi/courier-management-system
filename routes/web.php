@@ -11,3 +11,4 @@ Route::get('/admin/reports', [AdminController::class, 'reports']);
 Route::get('/admin/agents', [AdminController::class, 'agents']);
 Route::get('/admin/sms', [AdminController::class, 'sms']);
 Route::get('/admin/status', [AdminController::class, 'status']);
+Route::get('/admin/profile', [AdminController::class, 'profile']);
