@@ -14,3 +14,5 @@ Route::get('/admin/status', [AdminController::class, 'status']);
 Route::get('/admin/profile', [AdminController::class, 'profile'])->name('admin.profile');
 Route::post('/admin/edit/{id}',[AdminController::class,'edit_admin']);
 Route::post('/admin/update/{id}',[AdminController::class,'update_admin']);
+Route::get('/admin/add_new_courier', [AdminController::class, 'add_new_courier'])->name('admin.add_new_courier');
+Route::post('/admin/store_courier', [AdminController::class, 'store_courier'])->name('admin.store_courier');

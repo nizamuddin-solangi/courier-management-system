@@ -11,7 +11,26 @@
         <div class="text-[10px] uppercase tracking-widest text-[#45A29E] font-bold px-4 mb-2 opacity-60">Main Operations</div>
         
         <x-nav-link href="/admin/dashboard" icon="bi-grid-1x2" label="Dashboard" :active="request()->is('admin/dashboard')" />
-        <x-nav-link href="/admin/couriers" icon="bi-truck" label="Shipments" :active="request()->is('admin/couriers')" />
+        @php
+            $isCourierActive = request()->is('admin/couriers') || request()->is('admin/couriers/add');
+        @endphp
+        <div>
+            <button onclick="document.getElementById('couriers-dropdown').classList.toggle('hidden'); document.getElementById('couriers-chevron').classList.toggle('rotate-180');" type="button" class="w-full flex items-center gap-4 px-4 py-2.5 text-sm font-medium rounded-xl transition-all group duration-200 {{ $isCourierActive ? 'bg-[#66FCF1]/10 text-[#66FCF1] border border-[#66FCF1]/20 shadow-[0_0_15px_-3px_rgba(102,252,241,0.2)]' : 'text-[#C5C6C7] hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10' }}">
+                <i class="bi bi-truck text-lg transition-transform duration-200 {{ $isCourierActive ? 'scale-110' : 'group-hover:scale-110 opacity-70 group-hover:opacity-100' }}"></i>
+                <span class="flex-1 text-left">Couriers</span>
+                <i id="couriers-chevron" class="bi bi-chevron-down ms-auto transition-transform duration-200 {{ $isCourierActive ? 'rotate-180' : '' }}"></i>
+            </button>
+            <div id="couriers-dropdown" class="mt-2 space-y-1.5 pl-4 ml-6 border-l border-white/10 {{ $isCourierActive ? '' : 'hidden' }}">
+                <a href="/admin/add_new_courier" class="flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-xl transition-all {{ request()->is('admin/add_new_courier') ? 'text-[#66FCF1] bg-[#66FCF1]/10 shadow-[0_0_10px_-3px_rgba(102,252,241,0.1)]' : 'text-[#C5C6C7] hover:text-white hover:bg-white/5' }}">
+                    <i class="bi bi-plus-circle text-[16px] opacity-80"></i> 
+                    <span class="flex-1 text-left">Add New Courier</span>
+                </a>
+                <a href="/admin/couriers" class="flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-xl transition-all {{ request()->is('admin/couriers') ? 'text-[#66FCF1] bg-[#66FCF1]/10 shadow-[0_0_10px_-3px_rgba(102,252,241,0.1)]' : 'text-[#C5C6C7] hover:text-white hover:bg-white/5' }}">
+                    <i class="bi bi-list-ul text-[16px] opacity-80"></i> 
+                    <span class="flex-1 text-left">Show All Courier</span>
+                </a>
+            </div>
+        </div>
         
         <div class="pt-5 text-[10px] uppercase tracking-widest text-[#45A29E] font-bold px-4 mb-2 opacity-60">Management</div>
         

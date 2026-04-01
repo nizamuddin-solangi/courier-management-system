@@ -33,59 +33,75 @@
             <table class="w-full text-left border-separate border-spacing-0">
                 <thead>
                     <tr class="text-xs uppercase tracking-widest text-[#45A29E] font-bold opacity-60 bg-white/[0.02]">
-                        <th class="px-8 py-5 border-b border-white/5">Tracking Index</th>
-                        <th class="px-8 py-5 border-b border-white/5">Consignee Intelligence</th>
-                        <th class="px-8 py-5 border-b border-white/5">Route Manifest</th>
-                        <th class="px-8 py-5 border-b border-white/5">Current State</th>
-                        <th class="px-8 py-5 border-b border-white/5 text-center">Protocol Actions</th>
+                        <th class="px-8 py-5 border-b border-white/5">Tracking & Date</th>
+                        <th class="px-8 py-5 border-b border-white/5">Sender</th>
+                        <th class="px-8 py-5 border-b border-white/5">Receiver</th>
+                        <th class="px-8 py-5 border-b border-white/5">Route</th>
+                        <th class="px-8 py-5 border-b border-white/5">Logistics</th>
+                        <th class="px-8 py-5 border-b border-white/5">Price</th>
+                        <th class="px-8 py-5 border-b border-white/5">Status</th>
+                        <th class="px-8 py-5 border-b border-white/5 text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
-                    @php
-                        $couriers = [
-                            ['id' => 'CP-X-9921', 'name' => 'Global Logistics Inc.', 'contact' => 'Mark Stevenson', 'phone' => '+1 (555) 012-4432', 'origin' => 'Hub A', 'dest' => 'Downtown DC', 'status' => 'In-Transit', 'color' => '#66FCF1'],
-                            ['id' => 'CP-X-9922', 'name' => 'Sarah J. Miller', 'contact' => 'Individual', 'phone' => '+1 (555) 012-7721', 'origin' => 'Hub B', 'dest' => 'Sector 7 Res', 'status' => 'Delivered', 'color' => '#45A29E'],
-                            ['id' => 'CP-X-9923', 'name' => 'Techno-Systems GMBH', 'contact' => 'Warehouse Lead', 'phone' => '+1 (555) 012-9844', 'origin' => 'Factory 1', 'dest' => 'Central Hub', 'status' => 'Pending', 'color' => '#FF9F43'],
-                            ['id' => 'CP-X-9924', 'name' => 'Apex Corp Industries', 'contact' => 'Ops Manager', 'phone' => '+1 (555) 012-1100', 'origin' => 'Hub A', 'dest' => 'Tech Park', 'status' => 'On-Hold', 'color' => '#FF4B5C'],
-                        ];
-                    @endphp
-
                     @foreach($couriers as $ship)
+                    @php
+                        $statusColor = match($ship->status) {
+                            'pending' => '#FF9F43',
+                            'in_transit' => '#66FCF1',
+                            'delivered' => '#45A29E',
+                            'cancelled' => '#FF4B5C',
+                            default => '#C5C6C7'
+                        };
+                    @endphp
                     <tr class="group hover:bg-white/[0.02] transition-colors">
                         <td class="px-8 py-5">
                             <div class="flex flex-col gap-1">
-                                <span class="text-base font-bold text-white tracking-widest group-hover:text-[#66FCF1] transition-colors">{{ $ship['id'] }}</span>
-                                <span class="text-xs text-[#45A29E] font-bold uppercase tracking-tighter opacity-70">Express Priority</span>
+                                <span class="text-sm font-bold text-white tracking-widest group-hover:text-[#66FCF1] transition-colors">{{ $ship->tracking_number }}</span>
+                                <span class="text-[10px] text-[#45A29E] font-bold uppercase tracking-tighter opacity-70">{{ $ship->created_at ? $ship->created_at->format('d M Y') : 'N/A' }}</span>
                             </div>
                         </td>
                         <td class="px-8 py-5">
                             <div class="flex flex-col gap-1">
-                                <span class="text-sm font-bold text-[#C5C6C7]">{{ $ship['name'] }}</span>
-                                <span class="text-xs text-[#45A29E] opacity-70">{{ $ship['contact'] }} • {{ $ship['phone'] }}</span>
+                                <span class="text-sm font-bold text-[#C5C6C7]">{{ $ship->sender_name }}</span>
+                                <span class="text-xs text-[#45A29E] opacity-70">{{ $ship->sender_phone }}</span>
                             </div>
                         </td>
                         <td class="px-8 py-5">
-                            <div class="flex items-center gap-4">
-                                <span class="text-xs font-bold text-[#C5C6C7] opacity-60">{{ $ship['origin'] }}</span>
-                                <div class="flex-1 h-[1px] w-16 bg-white/10 relative">
-                                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#66FCF1]/30 to-transparent animate-pulse"></div>
-                                    <i class="bi bi-chevron-right absolute -right-2 -top-2 text-[10px] text-[#66FCF1]"></i>
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm font-bold text-[#C5C6C7]">{{ $ship->receiver_name }}</span>
+                                <span class="text-xs text-[#45A29E] opacity-70">{{ $ship->receiver_phone }}</span>
+                            </div>
+                        </td>
+                        <td class="px-8 py-5">
+                            <div class="flex flex-col items-start gap-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold text-[#C5C6C7] opacity-60">{{ $ship->from_city }}</span>
+                                    <i class="bi bi-arrow-right text-[10px] text-[#66FCF1]"></i>
+                                    <span class="text-xs font-bold text-[#66FCF1]">{{ $ship->to_city }}</span>
                                 </div>
-                                <span class="text-xs font-bold text-[#66FCF1]">{{ $ship['dest'] }}</span>
                             </div>
                         </td>
                         <td class="px-8 py-5">
-                            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-extrabold border" style="background-color: {{ $ship['color'] }}10; color: {{ $ship['color'] }}; border-color: {{ $ship['color'] }}30">
-                                <span class="w-2 h-2 rounded-full" style="background-color: {{ $ship['color'] }}"></span>
-                                {{ $ship['status'] }}
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs font-bold text-[#C5C6C7] uppercase">{{ $ship->parcel_type }}</span>
+                                <span class="text-xs text-[#45A29E] font-bold opacity-70">{{ $ship->weight }} KG</span>
+                            </div>
+                        </td>
+                        <td class="px-8 py-5">
+                            <span class="text-sm font-bold text-[#66FCF1]">Rs. {{ number_format($ship->price, 2) }}</span>
+                        </td>
+                        <td class="px-8 py-5">
+                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-extrabold border" style="background-color: {{ $statusColor }}10; color: {{ $statusColor }}; border-color: {{ $statusColor }}30">
+                                <span class="w-1.5 h-1.5 rounded-full" style="background-color: {{ $statusColor }}"></span>
+                                {{ strtoupper(str_replace('_', ' ', $ship->status)) }}
                             </span>
                         </td>
                         <td class="px-8 py-5">
-                            <div class="flex items-center justify-center gap-2">
-                                <button class="w-10 h-10 rounded-xl flex items-center justify-center text-[#C5C6C7] hover:bg-[#66FCF1]/10 hover:text-[#66FCF1] transition-all border border-transparent hover:border-[#66FCF1]/20 text-lg" title="Scan Data"><i class="bi bi-qr-code"></i></button>
-                                <button onclick="openModal('editShipmentModal')" class="w-10 h-10 rounded-xl flex items-center justify-center text-[#C5C6C7] hover:bg-blue-500/10 hover:text-blue-400 transition-all border border-transparent hover:border-blue-500/20 text-lg" title="Update Route"><i class="bi bi-pencil-square"></i></button>
-                                <button onclick="openModal('deleteShipmentModal')" class="w-10 h-10 rounded-xl flex items-center justify-center text-[#C5C6C7] hover:bg-red-500/10 hover:text-red-400 transition-all border border-transparent hover:border-red-500/20 text-lg" title="Decommission"><i class="bi bi-trash3"></i></button>
-                                <button class="w-10 h-10 rounded-xl flex items-center justify-center text-[#C5C6C7] hover:bg-white/10 hover:text-white transition-all text-lg" title="More Options"><i class="bi bi-three-dots"></i></button>
+                            <div class="flex items-center justify-center gap-1">
+                                <button class="w-8 h-8 rounded-lg flex items-center justify-center text-[#C5C6C7] hover:bg-[#66FCF1]/10 hover:text-[#66FCF1] transition-all border border-transparent hover:border-[#66FCF1]/20 text-sm" title="Scan Data"><i class="bi bi-qr-code"></i></button>
+                                <button class="w-8 h-8 rounded-lg flex items-center justify-center text-[#C5C6C7] hover:bg-blue-500/10 hover:text-blue-400 transition-all border border-transparent hover:border-blue-500/20 text-sm" title="Edit"><i class="bi bi-pencil-square"></i></button>
+                                <button class="w-8 h-8 rounded-lg flex items-center justify-center text-[#C5C6C7] hover:bg-red-500/10 hover:text-red-400 transition-all border border-transparent hover:border-red-500/20 text-sm" title="Delete"><i class="bi bi-trash3"></i></button>
                             </div>
                         </td>
                     </tr>
