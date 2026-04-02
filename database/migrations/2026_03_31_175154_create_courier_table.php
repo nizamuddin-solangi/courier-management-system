@@ -14,15 +14,17 @@ return new class extends Migration
         Schema::create('courier', function (Blueprint $table) {
             $table->id();
             $table->string('tracking_number')->unique();
-            $table->string('sender_name',50);
-            $table->string('sender_phone',11);
-            $table->text('sender_address',255);
-            $table->string('receiver_name',50);
-            $table->string('receiver_phone',11);
-            $table->text('receiver_address',255);
-            $table->string('from_city',50);
-            $table->string('to_city',50);
-            $table->string('parcel_type',50);
+            $table->unsignedBigInteger('agent_id')->nullable();
+            $table->string('sender_name', 50);
+            $table->string('sender_phone', 15);
+            $table->text('sender_address');
+            $table->string('receiver_name', 50);
+            $table->string('receiver_phone', 15);
+            $table->text('receiver_address');
+            $table->string('from_city', 50);
+            $table->string('to_city', 50);
+            $table->date('delivery_date')->nullable();
+            $table->string('parcel_type', 50);
             $table->float('weight');
             $table->decimal('price', 10, 2);
             $table->enum('status', [
@@ -31,8 +33,13 @@ return new class extends Migration
                 'delivered',
                 'cancelled'
             ])->default('pending');
+            $table->foreign('agent_id')
+                ->references('id')
+                ->on('agents')
+                ->onDelete('set null');
+
             $table->timestamps();
-        });
+                    });
     }
 
     /**

@@ -25,7 +25,7 @@
             --text-main: #C5C6C7;
             --accent-primary: #66FCF1;
             --accent-secondary: #45A29E;
-            --glass-bg: rgba(31, 40, 51, 0.7);
+            --glass-bg: rgba(31, 40, 51, 0.95);
             --glass-border: rgba(102, 252, 241, 0.1);
         }
 

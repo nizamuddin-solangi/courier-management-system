@@ -44,9 +44,9 @@
             </button>
 
             <!-- Dropdown Menu -->
-            <div id="profileDropdown" class="hidden absolute right-0 mt-3 w-64 glass-panel rounded-2xl border border-white/10 premium-shadow overflow-hidden z-50 animate-fade-in" style="animation-duration: 0.15s;">
+            <div id="profileDropdown" class="hidden absolute right-0 mt-3 w-64 rounded-2xl border border-[#66FCF1]/20 shadow-[0_20px_60px_rgba(0,0,0,0.8)] overflow-hidden z-50 animate-fade-in" style="background: #0B0C10 !important; animation-duration: 0.15s;">
                 <!-- User Info Header -->
-                <div class="px-5 py-4 border-b border-white/5 bg-white/[0.02]">
+                <div class="px-5 py-4 border-b border-white/10" style="background: rgba(255,255,255,0.05);">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4dc3ff] to-[#45A29E] flex items-center justify-center text-[#0B0C10] font-bold text-lg shadow-lg">
                             A

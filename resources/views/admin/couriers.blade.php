@@ -1,9 +1,9 @@
-@extends('admin.layouts.admin')
+            @extends('admin.layouts.admin')
 
 @section('title', 'Shipment Registry')
 
 @section('content')
-<div class="space-y-8 animate-fade-in max-w-[1600px] mx-auto">
+<div class="space-y-8 animate-fade-in w-full">
     
     <!-- Table Toolbar -->
     <div class="flex flex-col md:flex-row gap-8 items-center justify-between glass-panel p-8 rounded-3xl border border-white/5 premium-shadow">
@@ -99,9 +99,8 @@
                         </td>
                         <td class="px-8 py-5">
                             <div class="flex items-center justify-center gap-1">
-                                <button class="w-8 h-8 rounded-lg flex items-center justify-center text-[#C5C6C7] hover:bg-[#66FCF1]/10 hover:text-[#66FCF1] transition-all border border-transparent hover:border-[#66FCF1]/20 text-sm" title="Scan Data"><i class="bi bi-qr-code"></i></button>
-                                <button class="w-8 h-8 rounded-lg flex items-center justify-center text-[#C5C6C7] hover:bg-blue-500/10 hover:text-blue-400 transition-all border border-transparent hover:border-blue-500/20 text-sm" title="Edit"><i class="bi bi-pencil-square"></i></button>
-                                <button class="w-8 h-8 rounded-lg flex items-center justify-center text-[#C5C6C7] hover:bg-red-500/10 hover:text-red-400 transition-all border border-transparent hover:border-red-500/20 text-sm" title="Delete"><i class="bi bi-trash3"></i></button>
+                                <a href="{{ url('/admin/update_courier/'.$ship->id) }}" class="w-8 h-8 rounded-lg flex items-center justify-center text-[#C5C6C7] hover:bg-blue-500/10 hover:text-blue-400 transition-all border border-transparent hover:border-blue-500/20 text-sm" title="Edit"><i class="bi bi-pencil-square"></i></a>
+                                <a href="{{ url('/admin/delete_courier/'.$ship->id) }}" class="w-8 h-8 rounded-lg flex items-center justify-center text-[#C5C6C7] hover:bg-red-500/10 hover:text-red-400 transition-all border border-transparent hover:border-red-500/20 text-sm" title="Delete"><i class="bi bi-trash3"></i></a>
                             </div>
                         </td>
                     </tr>

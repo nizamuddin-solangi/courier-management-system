@@ -73,14 +73,20 @@
                 <p class="text-xs text-[#C5C6C7] opacity-60">Authentication required for restricted fleet domains</p>
             </div>
 
-            <form class="space-y-6" onsubmit="event.preventDefault(); window.location.href='/admin/dashboard'">
+            <form class="space-y-6" action="{{ route('admin.login.submit') }}" method="POST">
+                @csrf
+                @if(session('error'))
+                    <div class="p-4 mb-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold text-center flex items-center justify-center gap-2">
+                        <i class="bi bi-shield-x text-lg"></i> {{ session('error') }}
+                    </div>
+                @endif
                 <div class="space-y-2">
                     <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Identifier</label>
                     <div class="relative group">
                         <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-[#C5C6C7]/30 group-focus-within:text-[#66FCF1] transition-colors">
                             <i class="bi bi-person text-lg"></i>
                         </div>
-                        <input type="email" 
+                        <input type="email" name="email"
                             class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white placeholder-[#C5C6C7]/20 focus:outline-none focus:ring-2 focus:ring-[#66FCF1]/50 focus:border-[#66FCF1]/50 transition-all"
                             placeholder="admin@courierpro.com" required>
                     </div>
@@ -95,7 +101,7 @@
                         <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-[#C5C6C7]/30 group-focus-within:text-[#66FCF1] transition-colors">
                             <i class="bi bi-shield-lock text-lg"></i>
                         </div>
-                        <input type="password" 
+                        <input type="password" name="password"
                             class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white placeholder-[#C5C6C7]/20 focus:outline-none focus:ring-2 focus:ring-[#66FCF1]/50 focus:border-[#66FCF1]/50 transition-all"
                             placeholder="••••••••••••" required>
                     </div>

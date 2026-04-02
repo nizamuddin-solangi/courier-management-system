@@ -1,14 +1,13 @@
 @extends('admin.layouts.admin')
 
-@section('title', 'Add New Courier')
+@section('title', 'Update Courier')
 
 @section('content')
 
 {{-- Use the project's premium styling --}}
 <style>
     .form-section {
-        background: rgba(31, 40, 51, 0.7);
-        backdrop-filter: blur(12px);
+        background: rgba(31, 40, 51, 0.95);
         border: 1px solid rgba(255, 255, 255, 0.06);
         border-radius: 20px;
         padding: 24px;
@@ -42,7 +41,7 @@
 
     .form-input {
         width: 100%;
-        background: rgba(0, 0, 0, 0.4);
+        background: #0B0C10;
         border: 1.5px solid rgba(255, 255, 255, 0.1);
         border-radius: 14px;
         padding: 12px 16px 12px 45px;
@@ -124,8 +123,8 @@
     <!-- Header -->
     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:30px;">
         <div>
-            <h2 style="color:#fff; font-size:26px; font-weight:800; margin:0;">Create Waybill</h2>
-            <p style="color:#45A29E; font-size:13px; font-weight:500; margin:4px 0 0; opacity:0.6;">Register shipment into operations</p>
+            <h2 style="color:#fff; font-size:26px; font-weight:800; margin:0;">Update Waybill</h2>
+            <p style="color:#45A29E; font-size:13px; font-weight:500; margin:4px 0 0; opacity:0.6;">Modify shipment parameters and status</p>
         </div>
         <div style="display:flex; gap:12px;">
             <a href="/admin/couriers" style="
@@ -134,10 +133,10 @@
                 color:#C5C6C7; text-decoration:none; transition: all 0.2s;
             " onmouseenter="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff'"
                onmouseleave="this.style.background='rgba(255,255,255,0.05)';this.style.color='#C5C6C7'">
-                Discard
+                Back to Ledger
             </a>
-            <button type="submit" form="courierForm" class="btn-premium">
-                <i class="bi bi-check2-circle"></i> Confirm Shipment
+            <button type="submit" form="updateCourierForm" class="btn-premium">
+                <i class="bi bi-arrow-repeat"></i> Update Shipment
             </button>
         </div>
     </div>
@@ -150,43 +149,49 @@
     @endif
 
     <!-- Form Container -->
-    <form id="courierForm" action="{{ route('admin.store_courier') }}" method="POST">
+    <form id="updateCourierForm" action="{{ route('admin.execute_update_courier', $ship->id) }}" method="POST">
         @csrf
         
         <div style="display: flex; flex-direction: column; gap: 24px;">
             
-            <!-- Logistics Row -->
+            <!-- Logistics & Status Row -->
             <div class="form-section">
                 <div class="section-title">
-                    <div class="badge-icon"><i class="bi bi-truck"></i></div>
-                    Logistics Identity
+                    <div class="badge-icon"><i class="bi bi-ui-checks"></i></div>
+                    Operational Control
                 </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px;">
                     <div>
-                        <label class="form-label">Waybill Number</label>
-                        <div class="input-group">
-                            <i class="bi bi-hash input-icon"></i>
-                            <input type="text" name="tracking_number" class="form-input" placeholder="CP-XXXXXX" readonly value="{{ 'CP-X-'.rand(1000, 9999) }}">
-                        </div>
+                        <label style="color:#C5C6C7; font-size:12px; margin-bottom:8px; display:block;">Tracking / Waybill No.</label>
+                        <input type="text" name="tracking_number" value="{{ $ship->tracking_number }}" readonly style="width:100%; border:1px solid #C5C6C7; padding:10px; border-radius:6px; background-color:#e9ecef;">
                     </div>
+                    
                     <div>
-                        <label class="form-label">Assigned Agent</label>
+                        <label style="color:#C5C6C7; font-size:12px; margin-bottom:8px; display:block;">Assigned Operator (Agent)</label>
+                        <select name="agent_id" required style="width:100%; border:1px solid #C5C6C7; padding:10px; border-radius:6px;">
+                            <option value="">Select Agent...</option>
+                            @foreach($agents as $agent)
+                                <option value="{{ $agent->id }}" {{ $ship->agent_id == $agent->id ? 'selected' : '' }}>{{ $agent->name }} ({{ $agent->city }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="color:#C5C6C7; font-size:12px; margin-bottom:8px; display:block;">Estimated Delivery Time</label>
+                        <input type="time" name="delivery_time" value="{{ \Carbon\Carbon::parse($ship->delivery_time)->format('H:i') }}" required style="width:100%; border:1px solid #C5C6C7; padding:10px; border-radius:6px;">
+                    </div>
+
+                    <div>
+                        <label class="form-label">Current Status</label>
                         <div class="input-group">
-                            <i class="bi bi-person-badge input-icon"></i>
-                            <select name="agent_id" required class="form-input">
-                                <option value="" hidden>Assign Courier Agent...</option>
-                                @foreach($agents as $agent)
-                                    <option value="{{ $agent->id }}">{{ $agent->name }} ({{ $agent->city }})</option>
-                                @endforeach
+                            <i class="bi bi-activity input-icon"></i>
+                            <select name="status" required class="form-input" style="color: #66FCF1; font-weight: 700; border-color: rgba(102,252,241,0.2);">
+                                <option value="pending" @selected($ship->status == 'pending')>Pending</option>
+                                <option value="in_transit" @selected($ship->status == 'in_transit')>In-Transit</option>
+                                <option value="delivered" @selected($ship->status == 'delivered')>Delivered</option>
+                                <option value="cancelled" @selected($ship->status == 'cancelled')>Cancelled</option>
                             </select>
-                            <i class="bi bi-chevron-down select-chevron"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="form-label">Delivery Time</label>
-                        <div class="input-group">
-                            <i class="bi bi-clock input-icon"></i>
-                            <input type="time" name="delivery_time" required class="form-input">
+                            <i class="bi bi-chevron-down select-chevron" style="color: #66FCF1;"></i>
                         </div>
                     </div>
                     <div>
@@ -194,10 +199,9 @@
                         <div class="input-group">
                             <i class="bi bi-box-seam input-icon"></i>
                             <select name="parcel_type" required class="form-input">
-                                <option value="" hidden>Select Parcel Type</option>
-                                <option value="document">Document</option>
-                                <option value="box">Box</option>
-                                <option value="fragile">Fragile</option>
+                                <option value="document" @selected($ship->parcel_type == 'document')>Document</option>
+                                <option value="box" @selected($ship->parcel_type == 'box')>Box</option>
+                                <option value="fragile" @selected($ship->parcel_type == 'fragile')>Fragile</option>
                             </select>
                             <i class="bi bi-chevron-down select-chevron"></i>
                         </div>
@@ -206,7 +210,7 @@
                         <label class="form-label">Weight (KG)</label>
                         <div class="input-group">
                             <i class="bi bi-speedometer2 input-icon"></i>
-                            <input type="number" step="0.01" name="weight" required class="form-input" placeholder="0.00">
+                            <input type="number" step="0.01" name="weight" required class="form-input" value="{{ $ship->weight }}">
                         </div>
                     </div>
                 </div>
@@ -218,35 +222,35 @@
                 <div class="form-section">
                     <div class="section-title">
                         <div class="badge-icon"><i class="bi bi-person-up"></i></div>
-                        Sender Details
+                        Sender Intelligence
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 16px;">
                         <div>
                             <label class="form-label">Full Name</label>
                             <div class="input-group">
                                 <i class="bi bi-person input-icon"></i>
-                                <input type="text" name="sender_name" required class="form-input" placeholder="Sender's Name">
+                                <input type="text" name="sender_name" required class="form-input" value="{{ $ship->sender_name }}">
                             </div>
                         </div>
                         <div>
                             <label class="form-label">Contact Number</label>
                             <div class="input-group">
                                 <i class="bi bi-telephone input-icon"></i>
-                                <input type="text" name="sender_phone" required class="form-input" placeholder="03XXXXXXXXX">
+                                <input type="text" name="sender_phone" required class="form-input" value="{{ $ship->sender_phone }}">
                             </div>
                         </div>
                         <div>
-                            <label class="form-label">Origin City</label>
+                            <label class="form-label">Origin Node (City)</label>
                             <div class="input-group">
                                 <i class="bi bi-buildings input-icon"></i>
-                                <input type="text" name="from_city" required class="form-input" placeholder="City">
+                                <input type="text" name="from_city" required class="form-input" value="{{ $ship->from_city }}">
                             </div>
                         </div>
                         <div>
                             <label class="form-label">Pickup Address</label>
                             <div class="input-group">
                                 <i class="bi bi-geo-alt input-icon" style="top: 15px;"></i>
-                                <textarea name="sender_address" required rows="3" class="form-input" style="padding-top: 12px;" placeholder="Full Address"></textarea>
+                                <textarea name="sender_address" required rows="3" class="form-input" style="padding-top: 12px;">{{ $ship->sender_address }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -258,35 +262,35 @@
                         <div class="badge-icon" style="color: #FF9F43; background: rgba(255,159,67,0.1); border-color: rgba(255,159,67,0.2);">
                             <i class="bi bi-person-down"></i>
                         </div>
-                        Receiver Details
+                        Receiver Intelligence
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 16px;">
                         <div>
                             <label class="form-label">Full Name</label>
                             <div class="input-group">
                                 <i class="bi bi-person input-icon" style="color: #FF9F43;"></i>
-                                <input type="text" name="receiver_name" required class="form-input" placeholder="Receiver's Name">
+                                <input type="text" name="receiver_name" required class="form-input" value="{{ $ship->receiver_name }}">
                             </div>
                         </div>
                         <div>
                             <label class="form-label">Contact Number</label>
                             <div class="input-group">
                                 <i class="bi bi-telephone input-icon" style="color: #FF9F43;"></i>
-                                <input type="text" name="receiver_phone" required class="form-input" placeholder="03XXXXXXXXX">
+                                <input type="text" name="receiver_phone" required class="form-input" value="{{ $ship->receiver_phone }}">
                             </div>
                         </div>
                         <div>
-                            <label class="form-label">Destination City</label>
+                            <label class="form-label">Target Node (City)</label>
                             <div class="input-group">
                                 <i class="bi bi-buildings input-icon" style="color: #FF9F43;"></i>
-                                <input type="text" name="to_city" required class="form-input" placeholder="City">
+                                <input type="text" name="to_city" required class="form-input" value="{{ $ship->to_city }}">
                             </div>
                         </div>
                         <div>
                             <label class="form-label">Delivery Address</label>
                             <div class="input-group">
                                 <i class="bi bi-geo-alt input-icon" style="top: 15px; color: #FF9F43;"></i>
-                                <textarea name="receiver_address" required rows="3" class="form-input" style="padding-top: 12px;" placeholder="Full Address"></textarea>
+                                <textarea name="receiver_address" required rows="3" class="form-input" style="padding-top: 12px;">{{ $ship->receiver_address }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -294,16 +298,16 @@
             </div>
 
             <!-- Pricing -->
-            <div class="form-section" style="background: linear-gradient(135deg, rgba(31,40,51,0.9), rgba(11,12,16,0.9));">
+            <div class="form-section" style="background: linear-gradient(135deg, rgba(31,40,51,0.95), rgba(11,12,16,0.95));">
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div>
                         <div class="section-title" style="margin-bottom: 4px;">
                             <div class="badge-icon" style="color:#66FCF1; background:rgba(102,252,241,0.1); border-color:rgba(102,252,241,0.2);">
                                 <i class="bi bi-receipt-cutoff"></i>
                             </div>
-                            Billing Summary
+                            Billing Settlement
                         </div>
-                        <p style="color:#45A29E; font-size:12px; margin-left: 44px;">Final tariff calculated per shipment</p>
+                        <p style="color:#45A29E; font-size:12px; margin-left: 44px;">Update tariff for this specific shipment</p>
                     </div>
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <span class="form-label" style="margin: 0;">Total Amount (PKR)</span>
@@ -311,7 +315,7 @@
                             <span style="position: absolute; left: 16px; color: #66FCF1; font-weight: 800; font-size: 16px;">Rs.</span>
                             <input type="number" step="0.01" name="price" required class="form-input" 
                                    style="padding-left: 50px; font-size: 20px; font-weight: 800; color: #66FCF1; border-color: rgba(102,252,241,0.3); text-align: right;" 
-                                   placeholder="0.00">
+                                   value="{{ $ship->price }}">
                         </div>
                     </div>
                 </div>

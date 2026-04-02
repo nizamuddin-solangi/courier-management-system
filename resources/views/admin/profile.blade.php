@@ -27,9 +27,8 @@
 
     /* ── Cards ── */
     .pcard {
-        background: rgba(31, 40, 51, 0.7);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        background: #1F2833;
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 20px;
         box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
     }
@@ -94,8 +93,8 @@
 
     .form-input {
         width: 100%;
-        background: rgba(0, 0, 0, 0.4);
-        border: 1.5px solid rgba(255, 255, 255, 0.1);
+        background: #0B0C10;
+        border: 1.5px solid rgba(255, 255, 255, 0.15);
         border-radius: 14px;
         padding: 13px 18px;
         font-size: 14px;

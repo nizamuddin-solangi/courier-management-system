@@ -3,35 +3,35 @@
 @section('title', 'System Intelligence')
 
 @section('content')
-<div class="space-y-6 max-w-[1600px] mx-auto animate-fade-in">
+<div class="space-y-6 w-full animate-fade-in">
  
      <!-- Hero Stats Grid -->
      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <x-stats-card 
             label="Active Fleet Shipments" 
-            value="1,284" 
-            change="12" 
+            value="{{ number_format($total_shipments) }}" 
+            change="0" 
             icon="bi-box-seam" 
             color="#66FCF1" 
         />
         <x-stats-card 
             label="Successful Deliveries" 
-            value="1,102" 
-            change="8" 
+            value="{{ number_format($delivered) }}" 
+            change="0" 
             icon="bi-check2-all" 
             color="#45A29E" 
         />
         <x-stats-card 
             label="In-Transit Nodes" 
-            value="154" 
-            change="5" 
+            value="{{ number_format($in_progress) }}" 
+            change="0" 
             icon="bi-truck-flatbed" 
             color="#00D2FF" 
         />
         <x-stats-card 
             label="Pending Confirmations" 
-            value="28" 
-            change="-2" 
+            value="{{ number_format($pending) }}" 
+            change="0" 
             icon="bi-clock-history" 
             color="#FF9F43" 
         />
@@ -123,26 +123,24 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
+                    @foreach($active_deployments as $ship)
                     @php
-                        $shipments = [
-                            ['id' => 'TRK-98214', 'entity' => 'Apex Corp Industries', 'node' => 'Logistics Hub A', 'status' => 'In-Transit', 'color' => '#66FCF1', 'time' => '12:45 PM'],
-                            ['id' => 'TRK-98215', 'entity' => 'Sarah J. Miller', 'node' => 'Sector 7 Residential', 'status' => 'Delivered', 'color' => '#45A29E', 'time' => '01:12 PM'],
-                            ['id' => 'TRK-98216', 'entity' => 'Techno-Systems GMBH', 'node' => 'Manufacturing Unit', 'status' => 'Pending', 'color' => '#FF9F43', 'time' => '02:05 PM'],
-                        ];
+                        $color = '#66FCF1';
+                        if($ship->status == 'pending') $color = '#FF9F43';
+                        if($ship->status == 'delivered') $color = '#45A29E';
+                        if($ship->status == 'cancelled') $color = '#EF4444';
                     @endphp
-
-                    @foreach($shipments as $ship)
                     <tr class="group hover:bg-white/[0.03] transition-colors">
-                        <td class="px-8 py-5 text-base font-bold text-white tracking-tight group-hover:text-[#66FCF1] transition-colors">{{ $ship['id'] }}</td>
-                        <td class="px-8 py-5 text-base text-[#C5C6C7] font-medium opacity-80">{{ $ship['entity'] }}</td>
-                        <td class="px-8 py-5 text-base text-[#C5C6C7] font-medium opacity-80">{{ $ship['node'] }}</td>
+                        <td class="px-8 py-5 text-base font-bold text-white tracking-tight group-hover:text-[#66FCF1] transition-colors">{{ $ship->tracking_number }}</td>
+                        <td class="px-8 py-5 text-base text-[#C5C6C7] font-medium opacity-80">{{ $ship->receiver_name }}</td>
+                        <td class="px-8 py-5 text-base text-[#C5C6C7] font-medium opacity-80">{{ $ship->to_city }}</td>
                         <td class="px-8 py-5">
-                            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold border" style="background-color: {{ $ship['color'] }}15; color: {{ $ship['color'] }}; border-color: {{ $ship['color'] }}30">
-                                <span class="w-2 h-2 rounded-full" style="background-color: {{ $ship['color'] }}"></span>
-                                {{ $ship['status'] }}
+                            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold border" style="background-color: {{ $color }}15; color: {{ $color }}; border-color: {{ $color }}30">
+                                <span class="w-2 h-2 rounded-full" style="background-color: {{ $color }}"></span>
+                                {{ ucfirst(str_replace('_', ' ', $ship->status)) }}
                             </span>
                         </td>
-                        <td class="px-8 py-5 text-sm text-[#45A29E] font-medium opacity-60 italic">{{ $ship['time'] }}</td>
+                        <td class="px-8 py-5 text-sm text-[#45A29E] font-medium opacity-60 italic">{{ $ship->created_at->format('h:i A \o\n M d') }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -165,10 +163,10 @@ document.addEventListener('DOMContentLoaded', () => {
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            labels: {!! json_encode($chart_labels) !!},
             datasets: [{
                 label: 'Global Shipments',
-                data: [65, 82, 71, 95, 110, 88, 75],
+                data: {!! json_encode($chart_data) !!},
                 borderColor: '#66FCF1',
                 borderWidth: 3,
                 tension: 0.4,
