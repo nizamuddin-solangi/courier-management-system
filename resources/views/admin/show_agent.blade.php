@@ -141,8 +141,12 @@
             
             <div class="flex items-start justify-between mb-4">
                 <div class="flex items-center gap-4">
-                    <div class="avatar-placeholder">
-                        {{ substr($agent->name, 0, 1) }}
+                    <div class="avatar-placeholder overflow-hidden">
+                        @if($agent->image)
+                            <img src="{{ asset('uploads/' . $agent->image) }}" class="w-full h-full object-cover">
+                        @else
+                            {{ substr($agent->name, 0, 1) }}
+                        @endif
                     </div>
                     <div>
                         <h3 class="text-white font-bold text-lg leading-tight">{{ $agent->name }}</h3>
@@ -150,9 +154,13 @@
                     </div>
                 </div>
                 
-                <div class="flex items-center gap-2 px-3 py-1 rounded-full border {{ $agent->is_active ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400' }}">
-                    <div class="status-dot {{ $agent->is_active ? 'text-emerald-400 bg-emerald-400' : 'text-red-400 bg-red-400' }}"></div>
-                    <span class="text-[10px] font-bold uppercase tracking-widest">{{ $agent->is_active ? 'Active' : 'Offline' }}</span>
+                @php
+                    $statusColor = $agent->is_active ? '#10B981' : '#EF4444';
+                    $statusLabel = $agent->is_active ? 'Active' : 'Offline';
+                @endphp
+                <div class="flex items-center gap-2 px-3 py-1 rounded-full border" style="background-color: {{ $statusColor }}15; border-color: {{ $statusColor }}30; color: {{ $statusColor }};">
+                    <div class="status-dot" style="background-color: {{ $statusColor }}; box-shadow: 0 0 10px {{ $statusColor }};"></div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest">{{ $statusLabel }}</span>
                 </div>
             </div>
 

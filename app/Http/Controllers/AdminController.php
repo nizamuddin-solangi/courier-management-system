@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\Courier;
 use App\Models\Agent;
+use App\Models\Branch;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -146,7 +148,22 @@ class AdminController extends Controller
             $request->session()->put('admin_logged_in', true);
             $request->session()->put('admin_id', $admin->id);
             $request->session()->put('admin_name', $admin->name);
+            
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Access Granted. Secure Session Initialized.',
+                    'redirect' => route('admin.dashboard')
+                ]);
+            }
             return redirect('/admin/dashboard');
+        }
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Credentials Denied. Access restricted.'
+            ], 401);
         }
 
         return redirect()->back()->with('error', 'Invalid Credentials Denied.');
@@ -322,7 +339,8 @@ class AdminController extends Controller
     }
 
     public function create_agent(){
-        return view('admin.create_agent');
+        $branches = Branch::where('is_active', 1)->get();
+        return view('admin.create_agent', compact('branches'));
     }
 
     public function store_agent(Request $request){
@@ -338,13 +356,20 @@ class AdminController extends Controller
         $myobject->email = $request->email;
         $myobject->phone = $request->phone;
         $myobject->username = $request->username;
-        $myobject->password = $request->password;
+        $myobject->password = Hash::make($request->password);
         $myobject->branch_name = $request->branch_name;
         $myobject->city = $request->city;
         $myobject->from_city = $request->from_city;
         $myobject->to_city = $request->to_city;
-        $myobject->is_active = 0;
+        $myobject->is_active = 1;
         $myobject->address = $request->address;
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads'), $filename);
+            $myobject->image = $filename;
+        }
         
         $myobject->save();
         return redirect()->route('admin.add_new_agent')->with('success', 'Agent added successfully!');
@@ -362,7 +387,8 @@ class AdminController extends Controller
 
     public function update_agent($id){
         $agent = Agent::find($id);
-        return view('admin.update_agent', compact('agent'));
+        $branches = Branch::where('is_active', 1)->get();
+        return view('admin.update_agent', compact('agent', 'branches'));
     }
 
     public function execute_update_agent(Request $request, $id){
@@ -377,7 +403,7 @@ class AdminController extends Controller
         $myobject->phone = $request->phone;
         $myobject->username = $request->username;
         if($request->filled('password')) {
-            $myobject->password = $request->password;
+            $myobject->password = Hash::make($request->password);
         }
         $myobject->branch_name = $request->branch_name;
         $myobject->city = $request->city;
@@ -385,6 +411,13 @@ class AdminController extends Controller
         $myobject->to_city = $request->to_city;
         $myobject->is_active = $request->has('is_active') ? 1 : 0;
         $myobject->address = $request->address;
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads'), $filename);
+            $myobject->image = $filename;
+        }
         
         $myobject->save();
         return redirect()->back()->with('success', 'Agent updated successfully!');

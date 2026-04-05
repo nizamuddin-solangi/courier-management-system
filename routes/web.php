@@ -3,6 +3,26 @@
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/', function () { return redirect()->route('admin.login'); });
+
+
+use App\Http\Controllers\AgentController;
+
+Route::get('/agent/login', [AgentController::class, 'login'])->name('agent.login');
+Route::post('/agent/login_submit', [AgentController::class, 'login_submit'])->name('agent.login.submit');
+Route::get('/agent/logout', [AgentController::class, 'logout'])->name('agent.logout');
+
+Route::middleware(['agent.auth'])->prefix('agent')->group(function () {
+    Route::get('/dashboard', [AgentController::class, 'dashboard'])->name('agent.dashboard');
+    Route::get('/new-courier', [AgentController::class, 'new_courier'])->name('agent.new_courier');
+    Route::post('/store-courier', [AgentController::class, 'store_courier'])->name('agent.store_courier');
+    Route::get('/couriers', [AgentController::class, 'view_couriers'])->name('agent.view_couriers');
+    Route::get('/sms', [AgentController::class, 'sms'])->name('agent.sms');
+    Route::get('/reports', [AgentController::class, 'reports'])->name('agent.reports');
+    Route::get('/profile', [AgentController::class, 'profile'])->name('agent.profile');
+    Route::post('/profile/update', [AgentController::class, 'update_profile'])->name('agent.profile.update');
+});
+
 Route::get('/admin/login', [AdminController::class, 'login'])->name('admin.login');
 Route::post('/admin/login_submit', [AdminController::class, 'login_submit'])->name('admin.login.submit');
 Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');

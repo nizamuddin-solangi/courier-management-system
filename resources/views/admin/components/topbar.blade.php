@@ -33,12 +33,16 @@
         <!-- Profile Section with Dropdown -->
         <div class="relative" id="profileDropdownContainer">
             <button id="profileDropdownBtn" onclick="toggleProfileDropdown()" class="flex items-center gap-3 p-1 pr-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all">
-                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[#4dc3ff] to-[#45A29E] flex items-center justify-center text-[#0B0C10] font-bold shadow-sm">
-                    A
+                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[#4dc3ff] to-[#45A29E] flex items-center justify-center text-[#0B0C10] font-bold shadow-sm overflow-hidden">
+                    @if(isset($current_admin) && $current_admin->image)
+                        <img src="{{ asset('uploads/' . $current_admin->image) }}" alt="Profile" class="w-full h-full object-cover">
+                    @else
+                        {{ strtoupper(substr(($current_admin?->name ?? 'A'), 0, 1)) }}
+                    @endif
                 </div>
-                <div class="hidden md:flex flex-col items-start leading-none gap-1">
-                    <span class="text-xs font-bold text-white">System Admin</span>
-                    <span class="text-[10px] text-[#45A29E] font-medium uppercase tracking-tighter">Level 4 Access</span>
+                <div class="hidden md:flex flex-col items-start leading-none gap-1 text-left">
+                    <span class="text-xs font-bold text-white">{{ $current_admin?->name ?? 'System Admin' }}</span>
+                    <span class="text-[10px] text-[#45A29E] font-medium uppercase tracking-tighter">Secure Session</span>
                 </div>
                 <i class="bi bi-chevron-down text-xs text-[#C5C6C7] opacity-50 transition-transform duration-200" id="profileChevron"></i>
             </button>
@@ -48,12 +52,16 @@
                 <!-- User Info Header -->
                 <div class="px-5 py-4 border-b border-white/10" style="background: rgba(255,255,255,0.05);">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4dc3ff] to-[#45A29E] flex items-center justify-center text-[#0B0C10] font-bold text-lg shadow-lg">
-                            A
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4dc3ff] to-[#45A29E] flex items-center justify-center text-[#0B0C10] font-bold text-lg shadow-lg overflow-hidden">
+                            @if(isset($current_admin) && $current_admin->image)
+                                <img src="{{ asset('uploads/' . $current_admin->image) }}" alt="Profile" class="w-full h-full object-cover">
+                            @else
+                                {{ strtoupper(substr(($current_admin?->name ?? 'A'), 0, 1)) }}
+                            @endif
                         </div>
                         <div>
-                            <p class="text-sm font-bold text-white">System Admin</p>
-                            <p class="text-[11px] text-[#45A29E] font-medium">admin@courierpro.com</p>
+                            <p class="text-sm font-bold text-white">{{ $current_admin?->name ?? 'System Admin' }}</p>
+                            <p class="text-[11px] text-[#45A29E] font-medium">{{ $current_admin?->email ?? 'admin@courierpro.com' }}</p>
                         </div>
                     </div>
                 </div>

@@ -13,6 +13,7 @@ class Courier extends Model
     
     protected $fillable = [
         'tracking_number',
+        'agent_id',
         'sender_name',
         'sender_phone',
         'sender_address',
@@ -25,4 +26,9 @@ class Courier extends Model
         'weight',
         'price'
     ];
+
+    public function agent()
+    {
+        return $this->belongsTo(Agent::class, 'agent_id');
+    }
 }

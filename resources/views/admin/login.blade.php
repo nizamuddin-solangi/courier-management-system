@@ -48,6 +48,89 @@
         .floating {
             animation: float 6s ease-in-out infinite;
         }
+
+        @keyframes pulse-subtle {
+            0% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 0.8; transform: scale(1); }
+        }
+
+        .animation-pulse-subtle {
+            animation: pulse-subtle 3s ease-in-out infinite;
+        }
+
+        /* Popup Styles */
+        .auth-popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 12, 16, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .auth-popup-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .auth-popup-card {
+            background: rgba(31, 40, 51, 0.95);
+            border: 1px solid rgba(102, 252, 241, 0.2);
+            border-radius: 40px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 320px;
+            width: 90%;
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        .auth-popup-overlay.active .auth-popup-card {
+            transform: scale(1);
+        }
+
+        .popup-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        /* Vibrate Animation */
+        @keyframes vibrate {
+            0% { transform: translateX(0); }
+            10% { transform: translateX(-10px); }
+            20% { transform: translateX(10px); }
+            30% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            50% { transform: translateX(-10px); }
+            60% { transform: translateX(10px); }
+            70% { transform: translateX(-10px); }
+            80% { transform: translateX(10px); }
+            90% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+        .vibrate {
+            animation: vibrate 0.2s linear 5; /* 0.2s * 5 = 1 second */
+        }
+
+        /* Success Bounce */
+        @keyframes success-bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-30px);}
+            60% {transform: translateY(-15px);}
+        }
+
+        .success-bounce {
+            animation: success-bounce 1s ease;
+        }
     </style>
 </head>
 <body class="antialiased overflow-hidden min-h-screen flex items-center justify-center p-6">
@@ -75,11 +158,7 @@
 
             <form class="space-y-6" action="{{ route('admin.login.submit') }}" method="POST">
                 @csrf
-                @if(session('error'))
-                    <div class="p-4 mb-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold text-center flex items-center justify-center gap-2">
-                        <i class="bi bi-shield-x text-lg"></i> {{ session('error') }}
-                    </div>
-                @endif
+                <!-- AJAX Success/Error container will be handled by Popup -->
                 <div class="space-y-2">
                     <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Identifier</label>
                     <div class="relative group">
@@ -95,7 +174,6 @@
                 <div class="space-y-2">
                     <div class="flex justify-between items-center pl-1 pr-1">
                         <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest">Access Key</label>
-                        <a href="#" class="text-[10px] font-bold text-[#66FCF1] hover:underline decoration-[#66FCF1]/30 underline-offset-4">Forgot Link?</a>
                     </div>
                     <div class="relative group">
                         <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-[#C5C6C7]/30 group-focus-within:text-[#66FCF1] transition-colors">
@@ -107,10 +185,7 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3 pl-1">
-                    <input type="checkbox" id="remember" class="w-4 h-4 rounded-md bg-black/40 border-white/10 text-[#66FCF1] focus:ring-[#66FCF1]/50 transition-all">
-                    <label for="remember" class="text-xs font-semibold text-[#C5C6C7] cursor-pointer">Maintain login session</label>
-                </div>
+               
 
                 <button type="submit" class="w-full bg-gradient-to-r from-[#45A29E] to-[#66FCF1] text-[#0B0C10] font-bold py-4 rounded-2xl shadow-[0_10px_20px_-5px_rgba(102,252,241,0.3)] hover:shadow-[0_15px_30px_-5px_rgba(102,252,241,0.5)] hover:-translate-y-1 transition-all duration-300">
                     Authorize Access <i class="bi bi-chevron-right ml-2 text-sm"></i>
@@ -122,5 +197,75 @@
             </div>
         </div>
     </div>
+    <!-- Auth Popup Overlay -->
+    <div id="authPopup" class="auth-popup-overlay">
+        <div class="auth-popup-card" id="popupCard">
+            <i id="popupIcon" class="bi"></i>
+            <h3 id="popupTitle" class="text-xl font-extrabold text-white mb-2"></h3>
+            <p id="popupMessage" class="text-xs text-[#C5C6C7] opacity-60"></p>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const button = form.querySelector('button[type="submit"]');
+            const originalBtnText = button.innerHTML;
+            
+            // Loading State
+            button.disabled = true;
+            button.innerHTML = '<i class="bi bi-arrow-repeat animate-spin mr-2"></i> Processing...';
+            
+            const formData = new FormData(form);
+            const popup = document.getElementById('authPopup');
+            const card = document.getElementById('popupCard');
+            const icon = document.getElementById('popupIcon');
+            const title = document.getElementById('popupTitle');
+            const msg = document.getElementById('popupMessage');
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Success State
+                    icon.className = 'bi bi-check-circle-fill popup-icon text-[#66FCF1] success-bounce';
+                    icon.style.filter = 'drop-shadow(0 0 20px rgba(102, 252, 241, 0.4))';
+                    title.innerText = 'ACCESS GRANTED';
+                    msg.innerText = data.message;
+                    popup.classList.add('active');
+                    
+                    setTimeout(() => {
+                        window.location.href = data.redirect;
+                    }, 2000);
+                } else {
+                    throw new Error(data.message);
+                }
+
+            } catch (error) {
+                // Error State
+                icon.className = 'bi bi-x-circle-fill popup-icon text-[#FF3B3F]';
+                icon.style.filter = 'drop-shadow(0 0 20px rgba(255, 59, 63, 0.4))';
+                title.innerText = 'ACCESS DENIED';
+                msg.innerText = error.message || 'Invalid Credentials Denied.';
+                popup.classList.add('active');
+
+                setTimeout(() => {
+                    popup.classList.remove('active');
+                    button.disabled = false;
+                    button.innerHTML = originalBtnText;
+                }, 1500); // 1.5s display duration
+            }
+        });
+    </script>
 </body>
 </html>

@@ -48,10 +48,10 @@
                 <tbody class="divide-y divide-white/5">
                     @php
                         $agents = [
-                            ['name' => 'John Smith', 'email' => 'j.smith@fleet.pro', 'phone' => '+1 (555) 012-9842', 'sector' => 'Downtown Core (Sector 1)', 'status' => 'Active', 'color' => '#66FCF1', 'efficiency' => 98],
-                            ['name' => 'Sarah Johnson', 'email' => 's.johnson@fleet.pro', 'phone' => '+1 (555) 012-7721', 'sector' => 'Industrial Heights (Sector 4)', 'status' => 'Active', 'color' => '#66FCF1', 'efficiency' => 96],
-                            ['name' => 'Michael Chen', 'email' => 'm.chen@fleet.pro', 'phone' => '+1 (555) 012-4432', 'sector' => 'Residential West (Sector 7)', 'status' => 'Offline', 'color' => '#FF4B5C', 'efficiency' => 92],
-                            ['name' => 'Elena Rodriguez', 'email' => 'e.rodriguez@fleet.pro', 'phone' => '+1 (555) 012-1109', 'sector' => 'Tech-Village Node (Sector 2)', 'status' => 'On-Leave', 'color' => '#FF9F43', 'efficiency' => 95],
+                            ['name' => 'John Smith', 'email' => 'j.smith@fleet.pro', 'phone' => '+1 (555) 012-9842', 'sector' => 'Downtown Core (Sector 1)', 'status' => 'Active', 'color' => '#10B981', 'efficiency' => 98],
+                            ['name' => 'Sarah Johnson', 'email' => 's.johnson@fleet.pro', 'phone' => '+1 (555) 012-7721', 'sector' => 'Industrial Heights (Sector 4)', 'status' => 'Active', 'color' => '#10B981', 'efficiency' => 96],
+                            ['name' => 'Michael Chen', 'email' => 'm.chen@fleet.pro', 'phone' => '+1 (555) 012-4432', 'sector' => 'Residential West (Sector 7)', 'status' => 'Offline', 'color' => '#EF4444', 'efficiency' => 92],
+                            ['name' => 'Elena Rodriguez', 'email' => 'e.rodriguez@fleet.pro', 'phone' => '+1 (555) 012-1109', 'sector' => 'Tech-Village Node (Sector 2)', 'status' => 'On-Leave', 'color' => '#EF4444', 'efficiency' => 95],
                         ];
                     @endphp
 
@@ -72,8 +72,8 @@
                             <span class="text-sm font-bold text-[#C5C6C7] opacity-90">{{ $agent['sector'] }}</span>
                         </td>
                         <td class="px-8 py-5">
-                            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-extrabold border" style="background-color: {{ $agent['color'] }}10; color: {{ $agent['color'] }}; border-color: {{ $agent['color'] }}30">
-                                <span class="w-2 h-2 rounded-full" style="background-color: {{ $agent['color'] }}"></span>
+                            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-extrabold border" style="background-color: {{ $agent['color'] }}15; color: {{ $agent['color'] }}; border-color: {{ $agent['color'] }}30">
+                                <span class="w-2 h-2 rounded-full" style="background-color: {{ $agent['color'] }}; box-shadow: 0 0 10px {{ $agent['color'] }}"></span>
                                 {{ $agent['status'] }}
                             </span>
                         </td>

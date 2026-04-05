@@ -240,7 +240,7 @@
         </div>
     </div>
 
-    <form action="{{ route('admin.store_agent') }}" method="POST" id="agentWizardForm">
+    <form action="{{ route('admin.store_agent') }}" method="POST" id="agentWizardForm" enctype="multipart/form-data">
         @csrf
         
         <!-- STEP 1: System Access -->
@@ -289,6 +289,17 @@
                     <input type="text" name="phone" class="wizard-input" placeholder="+1 (000) 000-0000">
                 </div>
             </div>
+
+            <div class="wizard-field">
+                <label class="wizard-label">Profile Image</label>
+                <div class="relative group">
+                    <input type="file" name="image" class="wizard-input pr-12" accept="image/*">
+                    <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[#45A29E] opacity-40 group-hover:opacity-100 transition-opacity">
+                        <i class="bi bi-camera-fill text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-[10px] text-[#45A29E] font-bold uppercase tracking-tighter mt-2 opacity-50">Upload a professional headshot (JPG, PNG)</p>
+            </div>
         </div>
 
         <!-- STEP 3: Location -->
@@ -318,7 +329,13 @@
 
             <div class="wizard-field">
                 <label class="wizard-label">Branch Assignment</label>
-                <input type="text" name="branch_name" class="wizard-input" placeholder="e.g. Northern Hub / NY Base">
+                <select name="branch_name" class="wizard-input cursor-pointer" required>
+                    <option value="" disabled selected>Select an operational hub...</option>
+                    @foreach($branches as $branch)
+                        <option value="{{ $branch->name }}">{{ $branch->name }} ({{ $branch->city }})</option>
+                    @endforeach
+                </select>
+                <p class="text-[10px] text-[#45A29E] font-bold uppercase tracking-tighter mt-2 opacity-50 italic">Allocated from authorized fleet nodes</p>
             </div>
 
             <div class="flex gap-4">

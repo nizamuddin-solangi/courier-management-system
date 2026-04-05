@@ -142,7 +142,7 @@
     </div>
     @endif
 
-    <form action="{{ url('admin/execute_update_agent/'.$agent->id) }}" method="POST" class="glass-card">
+    <form action="{{ url('admin/execute_update_agent/'.$agent->id) }}" method="POST" class="glass-card" enctype="multipart/form-data">
         @csrf
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
@@ -177,8 +177,31 @@
             <!-- Col 2 -->
             <div>
                 <div class="form-group">
+                    <label class="form-label">Profile Image</label>
+                    <div class="flex items-center gap-6 mt-2">
+                        <div class="w-16 h-16 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center overflow-hidden">
+                            @if($agent->image)
+                                <img src="{{ asset('uploads/' . $agent->image) }}" class="w-full h-full object-cover" id="updatePreview">
+                            @else
+                                <i class="bi bi-person text-2xl text-[#45A29E] opacity-40"></i>
+                            @endif
+                        </div>
+                        <div class="flex-1">
+                            <input type="file" name="image" class="form-input text-xs" accept="image/*" onchange="previewUpdate(this)">
+                            <p class="text-[9px] text-[#45A29E] mt-2 font-bold uppercase opacity-50 italic">Upload to replace current image</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label class="form-label">Assigned Branch</label>
-                    <input type="text" name="branch_name" value="{{ $agent->branch_name }}" class="form-input" required>
+                    <select name="branch_name" class="form-input cursor-pointer" required>
+                        @foreach($branches as $branch)
+                            <option value="{{ $branch->name }}" {{ $agent->branch_name == $branch->name ? 'selected' : '' }}>
+                                {{ $branch->name }} ({{ $branch->city }})
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class="form-group">
@@ -223,4 +246,22 @@
     </form>
 </div>
 
+<script>
+    function previewUpdate(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('updatePreview');
+                if (preview) {
+                    preview.src = e.target.result;
+                } else {
+                    // If no image existed before, replace the icon with an img tag
+                    const container = input.closest('.flex').querySelector('.w-16');
+                    container.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                }
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 @endsection

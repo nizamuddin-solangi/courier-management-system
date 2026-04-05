@@ -40,7 +40,7 @@
         <div>
             <button onclick="document.getElementById('agents-dropdown').classList.toggle('hidden'); document.getElementById('agents-chevron').classList.toggle('rotate-180');" type="button" class="w-full flex items-center gap-4 px-4 py-2.5 text-sm font-medium rounded-xl transition-all group duration-200 {{ $isAgentActive ? 'bg-[#66FCF1]/10 text-[#66FCF1] border border-[#66FCF1]/20 shadow-[0_0_15px_-3px_rgba(102,252,241,0.2)]' : 'text-[#C5C6C7] hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10' }}">
                 <i class="bi bi-people text-lg transition-transform duration-200 {{ $isAgentActive ? 'scale-110' : 'group-hover:scale-110 opacity-70 group-hover:opacity-100' }}"></i>
-                <span class="flex-1 text-left">Fleet Agents</span>
+                <span class="flex-1 text-left">Agents</span>
                 <i id="agents-chevron" class="bi bi-chevron-down ms-auto transition-transform duration-200 {{ $isAgentActive ? 'rotate-180' : '' }}"></i>
             </button>
             <div id="agents-dropdown" class="mt-2 space-y-1.5 pl-4 ml-6 border-l border-white/10 bg-[#0B0C10]/30 rounded-r-xl {{ $isAgentActive ? '' : 'hidden' }}">

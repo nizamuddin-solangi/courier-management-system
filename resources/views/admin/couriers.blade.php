@@ -38,6 +38,7 @@
                         <th class="px-8 py-5 border-b border-white/5">Receiver</th>
                         <th class="px-8 py-5 border-b border-white/5">Route</th>
                         <th class="px-8 py-5 border-b border-white/5">Logistics</th>
+                        <th class="px-8 py-5 border-b border-white/5">Agent</th>
                         <th class="px-8 py-5 border-b border-white/5">Price</th>
                         <th class="px-8 py-5 border-b border-white/5">Status</th>
                         <th class="px-8 py-5 border-b border-white/5 text-center">Actions</th>
@@ -86,6 +87,12 @@
                             <div class="flex flex-col gap-1">
                                 <span class="text-xs font-bold text-[#C5C6C7] uppercase">{{ $ship->parcel_type }}</span>
                                 <span class="text-xs text-[#45A29E] font-bold opacity-70">{{ $ship->weight }} KG</span>
+                            </div>
+                        </td>
+                        <td class="px-8 py-5">
+                            <div class="flex flex-col gap-0.5">
+                                <span class="text-xs font-bold text-white">{{ $ship->agent->name ?? 'SYSTEM' }}</span>
+                                <span class="text-[9px] text-[#45A29E] font-black uppercase tracking-widest opacity-60">{{ $ship->agent->agent_code ?? 'ROOT' }}</span>
                             </div>
                         </td>
                         <td class="px-8 py-5">
