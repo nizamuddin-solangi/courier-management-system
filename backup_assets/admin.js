@@ -12,7 +12,7 @@ const AREAS = ['Downtown', 'Uptown', 'Midtown', 'Eastside', 'Westside', 'Suburb 
 function randomFrom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 function randomName() { return `${randomFrom(FIRST_NAMES)} ${randomFrom(LAST_NAMES)}`; }
 function randomTrackingId() {
-  return 'CMS-' + Date.now().toString(36).toUpperCase().slice(-4) + Math.random().toString(36).toUpperCase().slice(2, 6);
+  return 'RPR-' + Date.now().toString(36).toUpperCase().slice(-4) + Math.random().toString(36).toUpperCase().slice(2, 6);
 }
 function randomDate(start, end) {
   const d = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
@@ -93,7 +93,7 @@ function seedNotifications() {
   const notifs = [
     { id: 1, type: 'alert', title: 'High Volume Alert', desc: 'Package volume in Downtown exceeds capacity by 15%.', time: '10 mins ago', read: false },
     { id: 2, type: 'success', title: 'Batch Delivered', desc: 'Agent James Smith delivered 12 packages in Uptown.', time: '1 hour ago', read: false },
-    { id: 3, type: 'system', title: 'System Update', desc: 'CourierPro v2.1.0 update complete. New features available.', time: '2 hours ago', read: true }
+    { id: 3, type: 'system', title: 'System Update', desc: 'Rapid Route v2.1.0 update complete. New features available.', time: '2 hours ago', read: true }
   ];
   localStorage.setItem('notifications', JSON.stringify(notifs));
 }
@@ -586,7 +586,7 @@ function lookupTracking() {
   if (c) {
     document.getElementById('smsSender').value = c.senderPhone || '';
     document.getElementById('smsReceiver').value = c.receiverPhone || '';
-    document.getElementById('smsMessage').value = `Hi ${c.receiver}, your package (${c.trackingId}) from ${c.sender} is currently ${c.status}. Track online at courierpro.com`;
+    document.getElementById('smsMessage').value = `Hi ${c.receiver}, your package (${c.trackingId}) from ${c.sender} is currently ${c.status}. Track online at rapidroute.com`;
     updateSmsCount();
     showToast('Tracking details loaded');
   } else {

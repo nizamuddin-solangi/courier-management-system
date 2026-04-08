@@ -3,10 +3,13 @@
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () { return redirect()->route('admin.login'); });
+Route::get('/', function () { 
+    return redirect()->route('admin.login');
+});
 
 
 use App\Http\Controllers\AgentController;
+use App\Http\Controllers\UserController;
 
 Route::get('/agent/login', [AgentController::class, 'login'])->name('agent.login');
 Route::post('/agent/login_submit', [AgentController::class, 'login_submit'])->name('agent.login.submit');
@@ -26,6 +29,12 @@ Route::middleware(['agent.auth'])->prefix('agent')->group(function () {
 Route::get('/admin/login', [AdminController::class, 'login'])->name('admin.login');
 Route::post('/admin/login_submit', [AdminController::class, 'login_submit'])->name('admin.login.submit');
 Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+
+
+Route::get('/user/index', [UserController::class, 'index'])->name('user.index');
+Route::get('/user/track', [UserController::class,'track'])->name('user.track');
+Route::get('/user/login', [UserController::class,'login'])->name('user.login');
+Route::get('/user/register', [UserController::class,'register'])->name('user.register');
 
 Route::middleware(['admin.auth'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
@@ -56,3 +65,4 @@ Route::middleware(['admin.auth'])->group(function () {
     Route::get('/admin/update_agent/{id}', [AdminController::class, 'update_agent'])->name('admin.update_agent');
     Route::post('/admin/execute_update_agent/{id}', [AdminController::class, 'execute_update_agent'])->name('admin.execute_update_agent');
 });
+

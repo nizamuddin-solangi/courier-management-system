@@ -18,6 +18,23 @@ class AdminController extends Controller
         $pending = \App\Models\Courier::where('status', 'pending')->count();
         $active_deployments = \App\Models\Courier::whereIn('status', ['in_transit', 'pending'])->orderBy('created_at', 'desc')->take(5)->get();
         
+        // Agent Stats for Pulse
+        $active_agents_count = \App\Models\Agent::where('is_active', 1)->count();
+        $total_agents_count = \App\Models\Agent::count();
+        $agent_capacity = $total_agents_count > 0 ? round(($active_agents_count / $total_agents_count) * 100) : 0;
+
+        // Delivery Throughput for Pulse
+        $delivery_throughput = $total_shipments > 0 ? round(($delivered / $total_shipments) * 100) : 0;
+
+        // Recent Telemetry logs
+        $latest_shipments = \App\Models\Courier::orderBy('updated_at', 'desc')->take(3)->get();
+        $recent_telemetry = [];
+        foreach($latest_shipments as $ship) {
+            $status = str_replace('_', ' ', strtoupper($ship->status));
+            $recent_telemetry[] = "Shipment #{$ship->tracking_number} {$status} in {$ship->to_city}";
+        }
+        if(empty($recent_telemetry)) $recent_telemetry = ['No recent telemetry recorded', 'Waiting for system handshake...', 'Network throughput optimal'];
+
         $chart_labels = [];
         $chart_data = [];
         for ($i = 6; $i >= 0; $i--) {
@@ -26,7 +43,11 @@ class AdminController extends Controller
             $chart_data[] = \App\Models\Courier::whereDate('created_at', $date)->count();
         }
 
-        return view('admin.dashboard', compact('total_shipments', 'in_progress', 'delivered', 'pending', 'active_deployments', 'chart_labels', 'chart_data'));
+        return view('admin.dashboard', compact(
+            'total_shipments', 'in_progress', 'delivered', 'pending', 
+            'active_deployments', 'chart_labels', 'chart_data', 
+            'agent_capacity', 'delivery_throughput', 'recent_telemetry'
+        ));
     }
 
     public function customers(Request $request){
@@ -205,7 +226,7 @@ class AdminController extends Controller
     }
 
     public function profile(){
-        $result = Admin::first() ?? new Admin(['name' => 'System Admin', 'email' => 'admin@courierpro.com', 'id' => 1]);
+        $result = Admin::first() ?? new Admin(['name' => 'System Admin', 'email' => 'admin@rapidroute.com', 'id' => 1]);
         return view('admin.profile', compact('result'));
     }
 
@@ -242,6 +263,7 @@ class AdminController extends Controller
         
         $myobject->tracking_number = 'CP-X-'.rand(1000, 9999);
         $myobject->agent_id = $request->agent_id;
+        $myobject->delivery_date = $request->delivery_date;
         $myobject->delivery_time = $request->delivery_time;
         $myobject->sender_name = $request->sender_name;
         $myobject->sender_phone = $request->sender_phone;
@@ -294,6 +316,7 @@ class AdminController extends Controller
     public function execute_update_courier(Request $request, $id){
         $myobject = Courier::find($id);
         $myobject->agent_id = $request->agent_id;
+        $myobject->delivery_date = $request->delivery_date;
         $myobject->delivery_time = $request->delivery_time;
         $myobject->sender_name = $request->sender_name;
         $myobject->sender_phone = $request->sender_phone;

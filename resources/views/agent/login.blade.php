@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Agent Access — CourierPro Premium</title>
+    <title>Agent Access — Rapid Route Premium</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,7 +62,7 @@
             <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#66FCF1] to-[#45A29E] flex items-center justify-center shadow-[0_0_30px_rgba(102,252,241,0.3)] mb-2">
                 <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="w-12 h-12 object-contain">
             </div>
-            <h1 class="text-3xl font-extrabold text-white tracking-tighter">Courier<span class="text-[#66FCF1]">Pro</span> Agent</h1>
+            <h1 class="text-3xl font-extrabold text-white tracking-tighter">Rapid<span class="text-[#66FCF1]">Route</span> Agent</h1>
             <p class="text-[#45A29E] text-xs font-bold uppercase tracking-[0.2em] opacity-80">Branch Logistics Portal</p>
         </div>
 

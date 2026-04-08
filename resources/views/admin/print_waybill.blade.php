@@ -170,7 +170,7 @@
         
         <div class="header">
             <div class="logo-text">
-                NizCourier<br>Systems
+                Rapid Route<br>Systems
             </div>
             <div class="tracking-box">
                 <div class="tracking-title">Consignment Tracking Reference</div>
@@ -244,7 +244,7 @@
         </div>
 
         <div class="footer">
-            Generated securely via NizCourier Administrative Node. All transits are subject to international logistics treaties.
+            Generated securely via Rapid Route Administrative Node. All transits are subject to international logistics treaties.
         </div>
 
     </div>

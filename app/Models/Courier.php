@@ -22,9 +22,12 @@ class Courier extends Model
         'receiver_address',
         'from_city',
         'to_city',
+        'delivery_date',
+        'delivery_time',
         'parcel_type',
         'weight',
-        'price'
+        'price',
+        'status'
     ];
 
     public function agent()

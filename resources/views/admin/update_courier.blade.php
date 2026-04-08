@@ -177,6 +177,11 @@
                     </div>
 
                     <div>
+                        <label style="color:#C5C6C7; font-size:12px; margin-bottom:8px; display:block;">Estimated Delivery Date</label>
+                        <input type="date" name="delivery_date" value="{{ $ship->delivery_date }}" required style="width:100%; border:1px solid #C5C6C7; padding:10px; border-radius:6px;">
+                    </div>
+                    
+                    <div>
                         <label style="color:#C5C6C7; font-size:12px; margin-bottom:8px; display:block;">Estimated Delivery Time</label>
                         <input type="time" name="delivery_time" value="{{ \Carbon\Carbon::parse($ship->delivery_time)->format('H:i') }}" required style="width:100%; border:1px solid #C5C6C7; padding:10px; border-radius:6px;">
                     </div>

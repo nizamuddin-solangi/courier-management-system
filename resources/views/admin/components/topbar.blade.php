@@ -61,7 +61,7 @@
                         </div>
                         <div>
                             <p class="text-sm font-bold text-white">{{ $current_admin?->name ?? 'System Admin' }}</p>
-                            <p class="text-[11px] text-[#45A29E] font-medium">{{ $current_admin?->email ?? 'admin@courierpro.com' }}</p>
+                            <p class="text-[11px] text-[#45A29E] font-medium">{{ $current_admin?->email ?? 'admin@rapidroute.com' }}</p>
                         </div>
                     </div>
                 </div>

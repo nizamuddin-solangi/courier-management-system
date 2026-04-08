@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Dashboard') — CourierPro Premium</title>
+    <title>@yield('title', 'Dashboard') — Rapid Route Premium</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -92,7 +92,7 @@
 
             <!-- Footer -->
             <footer class="mt-auto pt-8 pb-4 text-center text-sm opacity-50">
-                <p>&copy; {{ date('Y') }} CourierPro Premium MS. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} Rapid Route Premium MS. All rights reserved.</p>
             </footer>
         </div>
     </div>

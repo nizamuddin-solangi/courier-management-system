@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Personnel Auth — CourierPro Premium</title>
+    <title>Personnel Auth — Rapid Route Premium</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -145,7 +145,7 @@
             <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#66FCF1] to-[#45A29E] flex items-center justify-center shadow-[0_0_30px_rgba(102,252,241,0.3)] mb-2 floating">
                 <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="w-12 h-12 object-contain">
             </div>
-            <h1 class="text-3xl font-extrabold text-white tracking-tighter">Courier<span class="text-[#66FCF1]">Pro</span> Premium</h1>
+            <h1 class="text-3xl font-extrabold text-white tracking-tighter">Rapid<span class="text-[#66FCF1]">Route</span> Premium</h1>
             <p class="text-[#45A29E] text-xs font-bold uppercase tracking-[0.2em] opacity-80">Fleet Management System Authorization</p>
         </div>
 
@@ -167,7 +167,7 @@
                         </div>
                         <input type="email" name="email"
                             class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white placeholder-[#C5C6C7]/20 focus:outline-none focus:ring-2 focus:ring-[#66FCF1]/50 focus:border-[#66FCF1]/50 transition-all"
-                            placeholder="admin@courierpro.com" required>
+                            placeholder="admin@rapidroute.com" required>
                     </div>
                 </div>
 

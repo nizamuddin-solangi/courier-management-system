@@ -70,29 +70,29 @@
                 <div class="space-y-2">
                     <div class="flex justify-between text-xs font-bold">
                         <span class="text-[#C5C6C7]">Active Delivery Agents</span>
-                        <span class="text-[#66FCF1]">92% Capacity</span>
+                        <span class="text-[#64ffda] uppercase">{{ $agent_capacity }}% Capacity</span>
                     </div>
                     <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
-                        <div class="h-full bg-gradient-to-r from-[#45A29E] to-[#66FCF1] w-[92%] rounded-full shadow-[0_0_10px_rgba(102,252,241,0.3)]"></div>
+                        <div class="h-full bg-gradient-to-r from-[#45A29E] to-[#64ffda] rounded-full shadow-[0_0_10px_#64ffda40] transition-all duration-1000" style="width: {{ $agent_capacity }}%"></div>
                     </div>
                 </div>
 
                 <div class="space-y-2">
                     <div class="flex justify-between text-xs font-bold">
-                        <span class="text-[#C5C6C7]">Server Health Index</span>
-                        <span class="text-[#00D2FF]">Optimal (12ms)</span>
+                        <span class="text-[#C5C6C7]">Fulfillment Index</span>
+                        <span class="text-[#00D2FF] uppercase">{{ $delivery_throughput }}% Throughput</span>
                     </div>
                     <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
-                        <div class="h-full bg-gradient-to-r from-blue-500 to-[#00D2FF] w-[98%] rounded-full"></div>
+                        <div class="h-full bg-gradient-to-r from-blue-500 to-[#00D2FF] rounded-full transition-all duration-1000 shadow-[0_0_10px_#00D2FF40]" style="width: {{ $delivery_throughput }}%"></div>
                     </div>
                 </div>
 
                 <div class="pt-6 border-t border-white/5 space-y-4">
                     <h4 class="text-xs font-bold tracking-widest text-[#45A29E] uppercase opacity-60">Recent Telemetry</h4>
                     
-                    @foreach(['Shipment #4829 delivered in Downtown', 'New agent registered in Sector 4', 'API connectivity confirmed for Global-Scan'] as $log)
+                    @foreach($recent_telemetry as $log)
                     <div class="flex items-start gap-4 group">
-                        <div class="w-2 h-2 rounded-full mt-2 bg-[#66FCF1] group-hover:scale-150 transition-transform"></div>
+                        <div class="w-1.5 h-1.5 rounded-full mt-2 bg-[#66FCF1] shadow-[0_0_8px_#66FCF1] group-hover:scale-150 transition-transform"></div>
                         <p class="text-sm text-[#C5C6C7] font-medium leading-tight opacity-70 group-hover:opacity-100 transition-opacity">{{ $log }}</p>
                     </div>
                     @endforeach

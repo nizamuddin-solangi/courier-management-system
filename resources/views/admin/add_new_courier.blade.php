@@ -183,6 +183,13 @@
                         </div>
                     </div>
                     <div>
+                        <label class="form-label">Delivery Date</label>
+                        <div class="input-group">
+                            <i class="bi bi-calendar-event input-icon"></i>
+                            <input type="date" name="delivery_date" required class="form-input">
+                        </div>
+                    </div>
+                    <div>
                         <label class="form-label">Delivery Time</label>
                         <div class="input-group">
                             <i class="bi bi-clock input-icon"></i>

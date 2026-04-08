@@ -85,6 +85,7 @@ class AgentController extends Controller
         $myobject = new Courier();
         $myobject->tracking_number = 'CP-AGT-'.rand(10000, 99999);
         $myobject->agent_id = Session::get('agent_id');
+        $myobject->delivery_date = $request->delivery_date;
         $myobject->delivery_time = $request->delivery_time;
         $myobject->sender_name = $request->sender_name;
         $myobject->sender_phone = $request->sender_phone;
@@ -99,6 +100,26 @@ class AgentController extends Controller
         $myobject->price = $request->price;
         $myobject->status = 'pending';
         $myobject->save();
+
+        // Sync Sender to Customer Registry
+        \App\Models\Customer::updateOrCreate(
+            ['phone' => $request->sender_phone],
+            [
+                'name' => $request->sender_name,
+                'address' => $request->sender_address,
+                'city' => $request->from_city,
+            ]
+        );
+
+        // Sync Receiver to Customer Registry
+        \App\Models\Customer::updateOrCreate(
+            ['phone' => $request->receiver_phone],
+            [
+                'name' => $request->receiver_name,
+                'address' => $request->receiver_address,
+                'city' => $request->to_city,
+            ]
+        );
 
         return redirect()->back()->with('success', 'Shipment Registered Successfully!');
     }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Console') — CourierPro Agent</title>
+    <title>@yield('title', 'Console') — Rapid Route Agent</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -86,7 +86,7 @@
 
             <!-- Footer -->
             <footer class="mt-auto pt-12 pb-6 text-center text-[10px] uppercase tracking-[0.2em] text-[#45A29E] opacity-40 font-black">
-                <p>&copy; {{ date('Y') }} CourierPro Agent Node. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} Rapid Route Agent Node. All rights reserved.</p>
             </footer>
         </div>
     </div>

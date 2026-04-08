@@ -33,12 +33,21 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-4">
                     <label class="text-[11px] font-black text-[#45A29E] uppercase tracking-[0.2em] pl-1">Service Timeline</label>
-                    <div class="relative group">
-                        <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-white/20 group-focus-within:text-[#64ffda] transition-colors">
-                            <i class="bi bi-calendar-event text-lg"></i>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-white/20 group-focus-within:text-[#64ffda] transition-colors">
+                                <i class="bi bi-calendar-event text-lg"></i>
+                            </div>
+                            <input type="date" name="delivery_date" required
+                                class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#64ffda]/50 transition-all">
                         </div>
-                        <input type="date" name="delivery_time" required
-                            class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#64ffda]/50 transition-all">
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-white/20 group-focus-within:text-[#64ffda] transition-colors">
+                                <i class="bi bi-clock text-lg"></i>
+                            </div>
+                            <input type="time" name="delivery_time" required
+                                class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#64ffda]/50 transition-all">
+                        </div>
                     </div>
                 </div>
 

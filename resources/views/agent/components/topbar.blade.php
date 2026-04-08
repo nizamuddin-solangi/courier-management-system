@@ -48,7 +48,7 @@
                         </div>
                         <div>
                             <p class="text-sm font-bold text-white">{{ $current_agent->name ?? 'Agent Name' }}</p>
-                            <p class="text-[11px] text-[#45A29E] font-medium">{{ $current_agent->email ?? 'agent@courierpro.com' }}</p>
+                            <p class="text-[11px] text-[#45A29E] font-medium">{{ $current_agent->email ?? 'agent@rapidroute.com' }}</p>
                         </div>
                     </div>
                 </div>

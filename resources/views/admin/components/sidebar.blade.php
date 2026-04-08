@@ -2,7 +2,7 @@
     <div class="p-6 flex items-center gap-4">
         <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" style="height: 3.5rem; width: auto; display: block;" class="object-contain transform hover:scale-105 transition-transform duration-300">
         <div class="flex flex-col">
-            <span class="text-xl font-bold tracking-tight text-white leading-none">Courier<span class="text-[#66FCF1]">Pro</span></span>
+            <span class="text-xl font-bold tracking-tight text-white leading-none">Rapid<span class="text-[#66FCF1]">Route</span></span>
             <span class="text-[10px] text-[#45A29E] font-bold uppercase tracking-widest mt-1 opacity-60">Fleet Ops Console</span>
         </div>
     </div>
