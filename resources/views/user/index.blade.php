@@ -43,8 +43,31 @@
         <a href="#features" class="nav-link">Features</a>
         <a href="#how-it-works" class="nav-link">How It Works</a>
         <a href="/user/track" class="nav-link">Track</a>
-        <a href="/user/login" class="btn-nav-login">Sign In</a>
-        <a href="/user/register" class="btn-nav-signup">Get Started</a>
+        @if(session('user_logged_in'))
+          @php
+            $userImage = session('user_image');
+            $userName = session('user_name') ?: 'User';
+          @endphp
+          <div class="nav-user" style="display:flex;align-items:center;gap:10px;">
+            <a href="/user/profile" style="display:flex;align-items:center;gap:10px;padding:6px 10px;border:1px solid var(--border-glass);border-radius:999px;background:rgba(255,255,255,0.04);text-decoration:none;">
+              @if($userImage)
+                <img src="{{ asset('uploads/users/' . $userImage) }}" alt="Profile" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,0.12);" />
+              @else
+                <div style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(108,99,255,0.18);border:1px solid rgba(108,99,255,0.35);font-weight:800;color:var(--purple-light);">
+                  {{ strtoupper(substr($userName, 0, 1)) }}
+                </div>
+              @endif
+              <span style="font-weight:700;color:var(--text-primary);max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                {{ $userName }}
+              </span>
+            </a>
+            <a href="/user/notifications" class="btn-nav-login" style="background:rgba(108,99,255,0.08);border-color:rgba(108,99,255,0.25);color:var(--purple-light);">Notifications</a>
+            <a href="/user/logout" class="btn-nav-login" style="background:rgba(255,255,255,0.04);border-color:var(--border-glass);color:var(--text-secondary);">Sign Out</a>
+          </div>
+        @else
+          <a href="/user/login" class="btn-nav-login">Sign In</a>
+          <a href="/user/register" class="btn-nav-signup">Get Started</a>
+        @endif
       </div>
       <button class="hamburger" id="hamburger" aria-label="Toggle menu">
         <span></span><span></span><span></span>
@@ -53,9 +76,13 @@
     <div class="mobile-menu" id="mobileMenu">
       <a href="#features">Features</a>
       <a href="#how-it-works">How It Works</a>
-      <a href="track.html">Track</a>
-      <a href="login.html">Sign In</a>
-      <a href="register.html">Get Started</a>
+      <a href="/user/track">Track</a>
+      @if(session('user_logged_in'))
+        <a href="/user/logout">Sign Out</a>
+      @else
+        <a href="/user/login">Sign In</a>
+        <a href="/user/register">Get Started</a>
+      @endif
     </div>
   </nav>
 
@@ -284,8 +311,8 @@
       <h2 class="cta-title">Ready to track your next shipment?</h2>
       <p class="cta-subtitle">Join over 500,000 users who trust Rapid Route every day.</p>
       <div class="cta-buttons">
-        <a href="register.html" class="btn-primary">Create Free Account</a>
-        <a href="track.html" class="btn-ghost">Track a Package</a>
+        <a href="/user/register" class="btn-primary">Create Free Account</a>
+        <a href="/user/track" class="btn-ghost">Track a Package</a>
       </div>
     </div>
   </section>
@@ -308,9 +335,9 @@
       <div class="footer-links">
         <div class="footer-col">
           <h4>Platform</h4>
-          <a href="track.html">Track Shipment</a>
-          <a href="login.html">Sign In</a>
-          <a href="register.html">Register</a>
+          <a href="/user/track">Track Shipment</a>
+          <a href="/user/login">Sign In</a>
+          <a href="/user/register">Register</a>
         </div>
         <div class="footer-col">
           <h4>Support</h4>

@@ -5,11 +5,38 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Agent;
 use App\Models\Courier;
+use App\Models\Notification;
+use App\Models\User;
+use App\Support\Exports\XlsxExport;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class AgentController extends Controller
 {
+    private function agentAllowedCities(): array
+    {
+        $agentId = Session::get('agent_id');
+        $agent = Agent::find($agentId);
+        $cities = [];
+        if ($agent?->from_city) $cities[] = (string) $agent->from_city;
+        if ($agent?->to_city) $cities[] = (string) $agent->to_city;
+        if (empty($cities) && $agent?->city) $cities[] = (string) $agent->city; // fallback
+        return array_values(array_unique(array_filter($cities)));
+    }
+
+    private function branchCourierQuery()
+    {
+        $cities = $this->agentAllowedCities();
+        return Courier::query()->when(!empty($cities), function ($q) use ($cities) {
+            $q->where(function ($qq) use ($cities) {
+                foreach ($cities as $city) {
+                    $qq->orWhere('from_city', $city)->orWhere('to_city', $city);
+                }
+            });
+        });
+    }
+
     public function login()
     {
         return view('agent.login');
@@ -63,13 +90,12 @@ class AgentController extends Controller
 
     public function dashboard()
     {
-        $agent_id = Session::get('agent_id');
-        $total_shipments = Courier::where('agent_id', $agent_id)->count();
-        $in_progress = Courier::where('agent_id', $agent_id)->where('status', 'in_transit')->count();
-        $delivered = Courier::where('agent_id', $agent_id)->where('status', 'delivered')->count();
-        $pending = Courier::where('agent_id', $agent_id)->where('status', 'pending')->count();
-        
-        $active_deployments = Courier::where('agent_id', $agent_id)
+        $total_shipments = $this->branchCourierQuery()->count();
+        $in_progress = $this->branchCourierQuery()->where('status', 'in_transit')->count();
+        $delivered = $this->branchCourierQuery()->where('status', 'delivered')->count();
+        $pending = $this->branchCourierQuery()->where('status', 'pending')->count();
+
+        $active_deployments = $this->branchCourierQuery()
             ->orderBy('created_at', 'desc')->take(5)->get();
 
         return view('agent.dashboard', compact('total_shipments', 'in_progress', 'delivered', 'pending', 'active_deployments'));
@@ -126,21 +152,103 @@ class AgentController extends Controller
 
     public function view_couriers()
     {
-        $agent_id = Session::get('agent_id');
-        $couriers = Courier::where('agent_id', $agent_id)->get();
+        $couriers = $this->branchCourierQuery()->orderBy('created_at', 'desc')->get();
         return view('agent.view_couriers', compact('couriers'));
     }
 
     public function sms()
     {
-        $agent_id = Session::get('agent_id');
-        $couriers = Courier::where('agent_id', $agent_id)->orderBy('created_at', 'desc')->get();
+        $couriers = $this->branchCourierQuery()->orderBy('created_at', 'desc')->get();
         return view('agent.sms', compact('couriers'));
+    }
+
+    public function send_sms(Request $request)
+    {
+        $request->validate([
+            'courier_id' => 'required|exists:courier,id',
+            'sms_type' => 'required|in:dispatch,delivery',
+        ]);
+
+        $courier = Courier::find($request->courier_id);
+
+        // Restrict agent to configured lanes (from_city/to_city)
+        $cities = $this->agentAllowedCities();
+        if (!empty($cities) && !in_array($courier->from_city, $cities, true) && !in_array($courier->to_city, $cities, true)) {
+            return back()->with('error', 'Unauthorized: shipment is outside your assigned route.');
+        }
+
+        $message = $request->sms_type === 'dispatch'
+            ? "Your package {$courier->tracking_number} has been dispatched from {$courier->from_city} to {$courier->to_city}."
+            : "Your package {$courier->tracking_number} has been successfully delivered! Thank you for using our service.";
+
+        Log::info("[SMS SIMULATION][AGENT] Sent to {$courier->receiver_phone}: {$message}");
+
+        $recipientUsers = User::query()
+            ->whereIn('phone', array_values(array_unique(array_filter([$courier->sender_phone, $courier->receiver_phone]))))
+            ->get();
+
+        foreach ($recipientUsers as $u) {
+            Notification::create([
+                'user_id' => $u->id,
+                'courier_id' => $courier->id,
+                'type' => 'sms',
+                'title' => $request->sms_type === 'dispatch' ? 'Shipment Dispatched' : 'Shipment Delivered',
+                'message' => $message,
+                'sent_by_type' => 'agent',
+                'sent_by_id' => Session::get('agent_id'),
+            ]);
+        }
+
+        return back()->with('success', "Simulated SMS sent to {$courier->receiver_phone} successfully!");
     }
 
     public function reports()
     {
-        return view('agent.reports');
+        $current_agent = Agent::find(Session::get('agent_id'));
+        return view('agent.reports', compact('current_agent'));
+    }
+
+    public function download_report(Request $request)
+    {
+        $query = $this->branchCourierQuery();
+
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('created_at', [$request->start_date . " 00:00:00", $request->end_date . " 23:59:59"]);
+        }
+
+        if ($request->filled('city')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('from_city', 'like', "%{$request->city}%")
+                  ->orWhere('to_city', 'like', "%{$request->city}%");
+            });
+        }
+
+        $shipments = $query->orderBy('created_at', 'desc')->get();
+
+        $columns = [
+            'Tracking ID',
+            'Sender Name',
+            'Origin City',
+            'Receiver Name',
+            'Destination City',
+            'Current Status',
+            'Logged Timestamp',
+        ];
+        $rows = [];
+        foreach ($shipments as $ship) {
+            $rows[] = [
+                $ship->tracking_number,
+                $ship->sender_name,
+                $ship->from_city,
+                $ship->receiver_name,
+                $ship->to_city,
+                str_replace("_", " ", strtoupper($ship->status)),
+                optional($ship->created_at)->format('Y-m-d H:i:s'),
+            ];
+        }
+
+        $filename = "branch_report_" . date('Y-m-d_H-i') . ".xlsx";
+        return XlsxExport::download($filename, $columns, $rows);
     }
 
     public function profile()

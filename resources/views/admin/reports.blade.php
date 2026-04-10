@@ -106,7 +106,7 @@
 
         <div class="mt-12">
             <button type="submit" class="btn-export">
-                <i class="bi bi-file-earmark-excel-fill text-xl"></i> Complete CSV Extraction Pipeline
+                <i class="bi bi-file-earmark-excel-fill text-xl"></i> Download Report (XLSX)
             </button>
         </div>
 

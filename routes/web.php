@@ -21,7 +21,9 @@ Route::middleware(['agent.auth'])->prefix('agent')->group(function () {
     Route::post('/store-courier', [AgentController::class, 'store_courier'])->name('agent.store_courier');
     Route::get('/couriers', [AgentController::class, 'view_couriers'])->name('agent.view_couriers');
     Route::get('/sms', [AgentController::class, 'sms'])->name('agent.sms');
+    Route::post('/sms/send', [AgentController::class, 'send_sms'])->name('agent.sms.send');
     Route::get('/reports', [AgentController::class, 'reports'])->name('agent.reports');
+    Route::get('/reports/download', [AgentController::class, 'download_report'])->name('agent.reports.download');
     Route::get('/profile', [AgentController::class, 'profile'])->name('agent.profile');
     Route::post('/profile/update', [AgentController::class, 'update_profile'])->name('agent.profile.update');
 });
@@ -31,10 +33,23 @@ Route::post('/admin/login_submit', [AdminController::class, 'login_submit'])->na
 Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 
 
-Route::get('/user/index', [UserController::class, 'index'])->name('user.index');
+Route::middleware(['user.auth'])->group(function () {
+    Route::get('/user/index', [UserController::class, 'index'])->name('user.index');
+    Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
+    Route::post('/user/profile/update', [UserController::class, 'update_profile'])->name('user.profile.update');
+    Route::get('/user/notifications', [UserController::class, 'notifications'])->name('user.notifications');
+    Route::post('/user/notifications/mark-read', [UserController::class, 'notifications_mark_read'])->name('user.notifications.mark_read');
+});
 Route::get('/user/track', [UserController::class,'track'])->name('user.track');
+Route::middleware(['user.auth'])->group(function () {
+    Route::get('/user/track/lookup', [UserController::class,'track_lookup'])->name('user.track.lookup');
+    Route::get('/user/track/download', [UserController::class,'track_download'])->name('user.track.download');
+});
 Route::get('/user/login', [UserController::class,'login'])->name('user.login');
 Route::get('/user/register', [UserController::class,'register'])->name('user.register');
+Route::post('/user/login_submit', [UserController::class,'login_submit'])->name('user.login.submit');
+Route::post('/user/register_submit', [UserController::class,'register_submit'])->name('user.register.submit');
+Route::get('/user/logout', [UserController::class,'logout'])->name('user.logout');
 
 Route::middleware(['admin.auth'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
@@ -65,4 +80,5 @@ Route::middleware(['admin.auth'])->group(function () {
     Route::get('/admin/update_agent/{id}', [AdminController::class, 'update_agent'])->name('admin.update_agent');
     Route::post('/admin/execute_update_agent/{id}', [AdminController::class, 'execute_update_agent'])->name('admin.execute_update_agent');
 });
+
 

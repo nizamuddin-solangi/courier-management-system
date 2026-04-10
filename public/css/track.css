@@ -220,6 +220,31 @@
   white-space: nowrap;
 }
 
+/* Status highlighting */
+.result-status-badge.status-pending {
+  background: rgba(247, 151, 30, 0.12);
+  border: 1px solid rgba(247, 151, 30, 0.35);
+  color: #f7b34a;
+}
+
+.result-status-badge.status-in-transit {
+  background: rgba(108, 99, 255, 0.12);
+  border: 1px solid rgba(108, 99, 255, 0.35);
+  color: var(--purple-light);
+}
+
+.result-status-badge.status-delivered {
+  background: rgba(67, 233, 123, 0.12);
+  border: 1px solid rgba(67, 233, 123, 0.35);
+  color: var(--green);
+}
+
+.result-status-badge.status-cancelled {
+  background: rgba(255, 107, 107, 0.12);
+  border: 1px solid rgba(255, 107, 107, 0.35);
+  color: var(--red);
+}
+
 .result-details-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

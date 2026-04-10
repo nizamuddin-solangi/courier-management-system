@@ -29,15 +29,15 @@
                 </div>
             </div>
 
-            <div class="flex-1 space-y-6 pt-4">
+            <form class="flex-1 space-y-6 pt-4" method="GET" action="{{ route('agent.reports.download') }}">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1">
                         <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Start Date</label>
-                        <input type="date" class="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:ring-2 focus:ring-[#64ffda]/50 transition-all">
+                        <input type="date" name="start_date" class="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:ring-2 focus:ring-[#64ffda]/50 transition-all">
                     </div>
                     <div class="space-y-1">
                         <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">End Date</label>
-                        <input type="date" class="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:ring-2 focus:ring-[#64ffda]/50 transition-all">
+                        <input type="date" name="end_date" class="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:ring-2 focus:ring-[#64ffda]/50 transition-all">
                     </div>
                 </div>
                 
@@ -54,11 +54,10 @@
                         </label>
                     </div>
                 </div>
-            </div>
-
-            <button onclick="alert('Module Processing: Compiling branch performance data for download...');" class="w-full py-4 rounded-2xl bg-gradient-to-r from-[#45A29E] to-[#64ffda] text-[#0B0C10] font-black text-sm shadow-[0_10px_20px_-5px_rgba(100,255,218,0.2)] hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
-                <i class="bi bi-download"></i> Download Temporal Report
-            </button>
+                <button type="submit" class="w-full py-4 rounded-2xl bg-gradient-to-r from-[#45A29E] to-[#64ffda] text-[#0B0C10] font-black text-sm shadow-[0_10px_20px_-5px_rgba(100,255,218,0.2)] hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+                    <i class="bi bi-download"></i> Download Temporal Report
+                </button>
+            </form>
         </div>
 
         <!-- City Wise Report -->
@@ -73,16 +72,10 @@
                 </div>
             </div>
 
-            <div class="flex-1 space-y-6 pt-4">
+            <form class="flex-1 space-y-6 pt-4" method="GET" action="{{ route('agent.reports.download') }}">
                 <div class="space-y-1">
                     <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Target Region</label>
-                    <select class="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:ring-2 focus:ring-purple-400/50 transition-all">
-                        <option>All Branch Destinations</option>
-                        <option>Lahore Delivery Route</option>
-                        <option>Islamabad Delivery Route</option>
-                        <option>Quetta Delivery Route</option>
-                        <option>Peshawar Delivery Route</option>
-                    </select>
+                    <input type="text" name="city" class="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:ring-2 focus:ring-purple-400/50 transition-all" placeholder="e.g. Lahore">
                 </div>
 
                 <div class="p-5 rounded-2xl bg-white/5 border border-white/5 space-y-3">
@@ -98,11 +91,10 @@
                         </label>
                     </div>
                 </div>
-            </div>
-
-            <button onclick="alert('Export Initialized: Compiling geographic metrics for {{ $current_agent->branch_name }}...')" class="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-500 text-white font-black text-sm shadow-[0_10px_20px_-5px_rgba(139,92,246,0.3)] hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
-                <i class="bi bi-file-earmark-spreadsheet"></i> Export Geographic Data
-            </button>
+                <button type="submit" class="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-500 text-white font-black text-sm shadow-[0_10px_20px_-5px_rgba(139,92,246,0.3)] hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+                    <i class="bi bi-file-earmark-spreadsheet"></i> Export Geographic Data
+                </button>
+            </form>
         </div>
     </div>
 </div>

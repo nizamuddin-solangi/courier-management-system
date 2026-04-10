@@ -7,7 +7,10 @@ use App\Models\Admin;
 use App\Models\Courier;
 use App\Models\Agent;
 use App\Models\Branch;
+use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Support\Exports\XlsxExport;
 
 class AdminController extends Controller
 {
@@ -112,41 +115,32 @@ class AdminController extends Controller
         }
         
         $shipments = $query->get();
-        
-        $filename = "shipment_report_" . date('Y-m-d_H-i') . ".csv";
-        $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$filename",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
-        ];
-        
+
         $columns = [
-            'Tracking ID', 'Sender Name', 'Origin City', 
-            'Receiver Name', 'Destination City', 'Current Status', 'Logged Timestamp'
+            'Tracking ID',
+            'Sender Name',
+            'Origin City',
+            'Receiver Name',
+            'Destination City',
+            'Current Status',
+            'Logged Timestamp',
         ];
-        
-        $callback = function() use($shipments, $columns) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, $columns);
-            
-            foreach ($shipments as $ship) {
-                $row = [
-                    $ship->tracking_number,
-                    $ship->sender_name,
-                    $ship->from_city,
-                    $ship->receiver_name,
-                    $ship->to_city,
-                    str_replace("_", " ", strtoupper($ship->status)),
-                    $ship->created_at->format('Y-m-d H:i:s')
-                ];
-                fputcsv($file, $row);
-            }
-            fclose($file);
-        };
-        
-        return response()->stream($callback, 200, $headers);
+
+        $rows = [];
+        foreach ($shipments as $ship) {
+            $rows[] = [
+                $ship->tracking_number,
+                $ship->sender_name,
+                $ship->from_city,
+                $ship->receiver_name,
+                $ship->to_city,
+                str_replace("_", " ", strtoupper($ship->status)),
+                optional($ship->created_at)->format('Y-m-d H:i:s'),
+            ];
+        }
+
+        $filename = "shipment_report_" . date('Y-m-d_H-i') . ".xlsx";
+        return XlsxExport::download($filename, $columns, $rows);
     }
 
     public function login(){
@@ -217,6 +211,23 @@ class AdminController extends Controller
 
         // Simulate SMS sending by logging it
         \Illuminate\Support\Facades\Log::info("[SMS SIMULATION] Sent to {$courier->receiver_phone}: {$message}");
+
+        // Store notifications for registered users (sender/receiver phone matches users.phone)
+        $recipientUsers = User::query()
+            ->whereIn('phone', array_values(array_unique(array_filter([$courier->sender_phone, $courier->receiver_phone]))))
+            ->get();
+
+        foreach ($recipientUsers as $u) {
+            Notification::create([
+                'user_id' => $u->id,
+                'courier_id' => $courier->id,
+                'type' => 'sms',
+                'title' => $request->sms_type === 'dispatch' ? 'Shipment Dispatched' : 'Shipment Delivered',
+                'message' => $message,
+                'sent_by_type' => 'admin',
+                'sent_by_id' => $request->session()->get('admin_id'),
+            ]);
+        }
 
         return back()->with('success', "Simulated SMS sent to {$courier->receiver_phone} successfully!");
     }

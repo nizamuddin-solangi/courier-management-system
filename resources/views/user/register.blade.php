@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Register – Rapid Route</title>
   <meta name="description" content="Create your Rapid Route account to start tracking shipments and managing your deliveries."/>
+  <meta name="csrf-token" content="{{ csrf_token() }}"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -103,6 +104,24 @@
               <input type="tel" id="regPhone" name="phone" class="form-input" placeholder="+91 98765 43210" required/>
             </div>
             <span class="field-error" id="regPhoneError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="regAddress" class="form-label">Address</label>
+            <div class="input-wrap">
+              <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <input type="text" id="regAddress" name="address" class="form-input" placeholder="House #, Street, Area, City"/>
+            </div>
+            <span class="field-error" id="regAddressError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="regImage" class="form-label">Profile Image (optional)</label>
+            <div class="input-wrap">
+              <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+              <input type="file" id="regImage" name="image" class="form-input" accept="image/png,image/jpeg,image/jpg,image/webp"/>
+            </div>
+            <span class="field-error" id="regImageError"></span>
           </div>
 
           <div class="form-group">

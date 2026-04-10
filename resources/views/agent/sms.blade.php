@@ -29,10 +29,11 @@
                 <p class="text-xs text-[#45A29E] font-medium opacity-60">Authorize manual dispatch or delivery notifications</p>
             </div>
 
-            <form class="space-y-6">
+            <form class="space-y-6" method="POST" action="{{ route('agent.sms.send') }}">
+                @csrf
                 <div class="space-y-1">
                     <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Select Consignment</label>
-                    <select class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-4 text-sm text-white focus:ring-2 focus:ring-[#64ffda]/50 transition-all appearance-none cursor-pointer">
+                    <select name="courier_id" required class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-4 text-sm text-white focus:ring-2 focus:ring-[#64ffda]/50 transition-all appearance-none cursor-pointer">
                         @foreach($couriers as $shipment)
                             <option value="{{ $shipment->id }}">{{ $shipment->tracking_number }} — {{ $shipment->receiver_name }}</option>
                         @endforeach
@@ -40,12 +41,12 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <button type="button" class="group p-6 rounded-3xl bg-white/5 border border-white/5 hover:border-[#64ffda]/30 transition-all text-left">
+                    <button type="submit" name="sms_type" value="dispatch" class="group p-6 rounded-3xl bg-white/5 border border-white/5 hover:border-[#64ffda]/30 transition-all text-left">
                         <i class="bi bi-truck text-2xl text-[#64ffda] mb-4 block group-hover:scale-110 transition-transform"></i>
                         <span class="block text-sm font-bold text-white mb-1">Dispatch Alert</span>
                         <span class="block text-[10px] text-[#45A29E] font-medium tracking-tight opacity-60 italic">Package departure notification</span>
                     </button>
-                    <button type="button" class="group p-6 rounded-3xl bg-white/5 border border-white/5 hover:border-emerald-500/30 transition-all text-left">
+                    <button type="submit" name="sms_type" value="delivery" class="group p-6 rounded-3xl bg-white/5 border border-white/5 hover:border-emerald-500/30 transition-all text-left">
                         <i class="bi bi-check2-all text-2xl text-emerald-400 mb-4 block group-hover:scale-110 transition-transform"></i>
                         <span class="block text-sm font-bold text-white mb-1">Delivery Sync</span>
                         <span class="block text-[10px] text-[#45A29E] font-medium tracking-tight opacity-60 italic">Arrival confirmation alert</span>
@@ -57,8 +58,8 @@
                     <p class="text-xs text-[#C5C6C7] opacity-60 leading-relaxed font-medium">Standard carrier charges apply. SMS will be dispatched via the system's global SMS gateway to the consignee's registered mobile number.</p>
                 </div>
 
-                <button type="button" onclick="alert('Simulation: SMS Dispatched via System Gateway')" class="w-full py-5 rounded-2xl bg-gradient-to-r from-[#45A29E] to-[#64ffda] text-[#0B0C10] font-black text-xs uppercase tracking-widest shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all">
-                    Initiate Transmission
+                <button type="submit" name="sms_type" value="dispatch" class="w-full py-5 rounded-2xl bg-gradient-to-r from-[#45A29E] to-[#64ffda] text-[#0B0C10] font-black text-xs uppercase tracking-widest shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all">
+                    Initiate Transmission (Dispatch)
                 </button>
             </form>
         </div>
