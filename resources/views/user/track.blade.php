@@ -66,7 +66,7 @@
     <p>Enter your consignment number to get real-time updates on your delivery</p>
   </div>
 
-  <!-- Login Required Modal -->
+  <!-- Information Modal (Repurposed from Login Required) -->
   <div id="loginRequiredModal" style="display:none; position:fixed; inset:0; z-index:9999;">
     <div style="position:absolute; inset:0; background:rgba(0,0,0,0.55);"></div>
     <div style="position:relative; height:100%; display:flex; align-items:center; justify-content:center; padding:18px;">
@@ -80,9 +80,9 @@
               </svg>
             </div>
             <div>
-              <h3 style="margin:0; font-size:1.2rem; font-weight:800; color:var(--text-primary);">Login required</h3>
+              <h3 style="margin:0; font-size:1.2rem; font-weight:800; color:var(--text-primary);">Join Rapid Route</h3>
               <p style="margin:6px 0 0; color:var(--text-secondary); font-family:var(--font-body); line-height:1.5;">
-                Please sign in first to track your courier and view shipment details.
+                Create an account to save your tracking history and get instant SMS alerts for your shipments.
               </p>
             </div>
           </div>
@@ -98,7 +98,7 @@
             Sign In
           </a>
           <a href="/user/register" class="btn-action btn-new-track" style="text-decoration:none;">
-            Create Account
+            Register Free
           </a>
         </div>
       </div>
@@ -803,6 +803,14 @@
         const url = `/user/track/download?tracking_number=${encodeURIComponent(trackingId)}`;
         window.location.href = url;
       };
+
+      // Auto-track on load
+      const urlParams = new URLSearchParams(window.location.search);
+      const trackingId = urlParams.get('id');
+      if (trackingId && el.input) {
+        el.input.value = trackingId;
+        window.performTrack();
+      }
 
       // Enter key support
       if (el.input) {

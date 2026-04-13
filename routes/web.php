@@ -4,7 +4,7 @@ use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () { 
-    return redirect()->route('admin.login');
+    return redirect()->route('user.index');
 });
 
 
@@ -33,15 +33,14 @@ Route::post('/admin/login_submit', [AdminController::class, 'login_submit'])->na
 Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 
 
+Route::get('/user/index', [UserController::class, 'index'])->name('user.index');
+Route::get('/user/track', [UserController::class,'track'])->name('user.track');
+
 Route::middleware(['user.auth'])->group(function () {
-    Route::get('/user/index', [UserController::class, 'index'])->name('user.index');
     Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::post('/user/profile/update', [UserController::class, 'update_profile'])->name('user.profile.update');
     Route::get('/user/notifications', [UserController::class, 'notifications'])->name('user.notifications');
     Route::post('/user/notifications/mark-read', [UserController::class, 'notifications_mark_read'])->name('user.notifications.mark_read');
-});
-Route::get('/user/track', [UserController::class,'track'])->name('user.track');
-Route::middleware(['user.auth'])->group(function () {
     Route::get('/user/track/lookup', [UserController::class,'track_lookup'])->name('user.track.lookup');
     Route::get('/user/track/download', [UserController::class,'track_download'])->name('user.track.download');
 });

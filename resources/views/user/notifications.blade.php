@@ -57,39 +57,41 @@
           Inbox
         </h3>
 
-        <form method="POST" action="{{ route('user.notifications.mark_read') }}">
-          @csrf
-          <button class="btn-action btn-new-track" type="submit">Mark all as read</button>
-        </form>
+        @if(session('user_logged_in'))
+          <form method="POST" action="{{ route('user.notifications.mark_read') }}">
+            @csrf
+            <button class="btn-action btn-new-track" type="submit">Mark all as read</button>
+          </form>
+        @endif
       </div>
 
-      <div style="margin-top:16px;display:flex;flex-direction:column;gap:12px;">
+      <div style="margin-top:24px;display:flex;flex-direction:column;gap:16px;">
         @forelse($notifications as $n)
-          <div style="padding:14px 14px;border-radius:16px;border:1px solid rgba(255,255,255,0.10);background:{{ $n->is_read ? 'rgba(255,255,255,0.03)' : 'rgba(108,99,255,0.08)' }};">
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
-              <div>
-                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                  <span style="font-weight:900;color:var(--text-primary);">{{ $n->title ?: 'Message' }}</span>
-                  <span style="font-size:12px;opacity:.7;">{{ strtoupper($n->type) }}</span>
-                  @if(!$n->is_read)
-                    <span style="font-size:11px;font-weight:800;color:var(--purple-light);">NEW</span>
-                  @endif
+          <div style="padding:18px;border-radius:20px;border:1px solid rgba(255,255,255,0.08);background:{{ $n->is_read ? 'rgba(255,255,255,0.02)' : 'linear-gradient(135deg, rgba(108,99,255,0.08), rgba(255,255,255,0.02))' }}; transition:all 0.3s ease; cursor:default;" onmouseover="this.style.borderColor='rgba(108,99,255,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:15px;flex-wrap:wrap;">
+              <div style="flex:1; min-width:280px;">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+                  <span style="width:8px; height:8px; border-radius:50%; background:{{ $n->is_read ? 'rgba(255,255,255,0.2)' : 'var(--purple-light)' }}; {{ $n->is_read ? '' : 'box-shadow: 0 0 10px var(--purple-light)' }}"></span>
+                  <span style="font-weight:800; font-size:1.05rem; color:var(--text-primary);">{{ $n->title ?: 'System Notification' }}</span>
+                  <span style="font-size:11px; font-weight:700; color:var(--text-muted); padding:2px 8px; border-radius:50px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08);">{{ strtoupper($n->type) }}</span>
                 </div>
-                <div style="margin-top:6px;color:var(--text-secondary);font-family:var(--font-body);line-height:1.6;">
+                <div style="color:var(--text-secondary); font-family:var(--font-body); line-height:1.6; font-size:0.95rem;">
                   {{ $n->message }}
                 </div>
               </div>
-              <div style="text-align:right;min-width:150px;">
-                <div style="font-size:12px;opacity:.7;">{{ $n->created_at?->format('Y-m-d H:i') }}</div>
+              <div style="text-align:right; font-family:var(--font-body);">
+                <div style="font-size:12px; color:var(--text-muted); font-weight:500;">{{ $n->created_at?->diffForHumans() }}</div>
                 @if($n->courier_id)
-                  <div style="font-size:12px;margin-top:6px;opacity:.85;">Courier ID: {{ $n->courier_id }}</div>
+                  <a href="/user/track?id={{ $n->courier_id }}" style="display:inline-block; font-size:12px; margin-top:10px; color:var(--purple-light); font-weight:700; text-decoration:none; padding:4px 10px; border-radius:8px; background:rgba(108,99,255,0.08); border:1px solid rgba(108,99,255,0.2);">
+                    View Shipment
+                  </a>
                 @endif
               </div>
             </div>
           </div>
         @empty
-          <div style="padding:22px;border-radius:18px;border:1px dashed rgba(255,255,255,0.15);color:var(--text-secondary);text-align:center;">
-            No notifications yet.
+          <div style="padding:4rem 2rem; border-radius:18px; border:1px dashed rgba(255,255,255,0.1); text-align:center;">
+            <p style="color:var(--text-muted); font-style:italic;">No notifications yet. You're all caught up!</p>
           </div>
         @endforelse
       </div>
@@ -99,4 +101,3 @@
   <script src="{{ asset('js/main.js') }}"></script>
 </body>
 </html>
-

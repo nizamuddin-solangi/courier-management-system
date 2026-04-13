@@ -1,42 +1,41 @@
-/* ==========================================
-   Rapid Route – Global Design System
-   ========================================== */
-
-/* --- CSS Variables --- */
+/* --- CSS Variables (Nxt-Gen Design System) --- */
 :root {
-  --purple: #6C63FF;
-  --purple-light: #8B85FF;
-  --purple-dark: #4A43D9;
-  --red: #FF6B6B;
-  --green: #43E97B;
-  --blue: #38BDF8;
-  --orange: #F7971E;
-  --yellow: #FFD93D;
+  --purple-h: 243;
+  --purple-s: 100%;
+  --purple-l: 69%;
+  --purple: hsl(var(--purple-h), var(--purple-s), var(--purple-l));
+  --purple-light: hsl(var(--purple-h), var(--purple-s), 76%);
+  --purple-dark: hsl(var(--purple-h), var(--purple-s), 56%);
+  
+  --red-h: 0;
+  --red-s: 100%;
+  --red-l: 71%;
+  --red: hsl(var(--red-h), var(--red-s), var(--red-l));
+  
+  --green: hsl(141, 78%, 60%);
+  --blue: hsl(199, 94%, 59%);
+  
+  --bg-dark: #05050e;
+  --bg-card: rgba(255, 255, 255, 0.03);
+  --bg-glass: rgba(255, 255, 255, 0.05);
+  
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.45);
 
-  --bg-dark: #0A0A1A;
-  --bg-card: rgba(255, 255, 255, 0.04);
-  --bg-card-hover: rgba(255, 255, 255, 0.08);
-  --bg-glass: rgba(255, 255, 255, 0.06);
-  --bg-glass-border: rgba(255, 255, 255, 0.12);
+  --border-glass: rgba(255, 255, 255, 0.1);
+  --border-glow: rgba(108, 99, 255, 0.2);
 
-  --text-primary: #F0F0FF;
-  --text-secondary: rgba(240, 240, 255, 0.65);
-  --text-muted: rgba(240, 240, 255, 0.4);
+  --shadow-card: 0 20px 50px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 50px -10px rgba(108, 99, 255, 0.4);
 
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-glass: rgba(255, 255, 255, 0.14);
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 36px;
 
-  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
-  --shadow-glow: 0 0 40px rgba(108, 99, 255, 0.25);
-  --shadow-glow-red: 0 0 40px rgba(255, 107, 107, 0.2);
-
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
-
-  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition: 0.4s cubic-bezier(0.2, 0, 0.2, 1);
+  --transition-fast: 0.2s cubic-bezier(0.2, 0, 0.2, 1);
 
   --font-main: 'Outfit', sans-serif;
   --font-body: 'Inter', sans-serif;
@@ -439,6 +438,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .print-timeline h3 { font-size: 1.1rem; color: #1a1a2e; margin-bottom: 16px; }
 .print-tl-item { display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; }
 .print-tl-dot { width: 12px; height: 12px; border-radius: 50%; background: #6C63FF; margin-top: 4px; flex-shrink: 0; }
-.print-tl-info {}
+
 .print-tl-event { font-weight: 600; color: #1a1a2e; }
 .print-tl-time { font-size: 0.85rem; color: #666; }

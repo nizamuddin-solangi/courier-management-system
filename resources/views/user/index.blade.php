@@ -107,7 +107,7 @@
           <svg class="track-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
           </svg>
-          <input type="text" id="heroTrackInput" placeholder="Enter consignment / tracking number..." class="track-input" />
+          <input type="text" id="heroTrackInput" placeholder="Enter consignment / tracking number..." class="track-input" onkeydown="if(event.key==='Enter') trackFromHero()" />
         </div>
         <button class="btn-track" id="heroTrackBtn" onclick="trackFromHero()">
           <span>Track Now</span>
@@ -115,6 +115,45 @@
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
         </button>
+      </div>
+
+      <!-- Login Required Modal (Copy from track page) -->
+      <div id="loginRequiredModal" style="display:none; position:fixed; inset:0; z-index:9999;">
+        <div style="position:absolute; inset:0; background:rgba(0,0,0,0.55);"></div>
+        <div style="position:relative; height:100%; display:flex; align-items:center; justify-content:center; padding:18px;">
+          <div style="width:min(520px, 100%); background:#101323; border:1px solid rgba(255,255,255,0.10); border-radius:24px; padding:22px; box-shadow: 0 20px 80px rgba(0,0,0,0.55); backdrop-filter:blur(30px);">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+              <div style="display:flex; gap:12px; align-items:flex-start;">
+                <div style="width:44px; height:44px; border-radius:14px; display:flex; align-items:center; justify-content:center; background:rgba(108,99,255,0.18); border:1px solid rgba(108,99,255,0.35);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="url(#lgReq)" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <defs><linearGradient id="lgReq" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#6C63FF"/><stop offset="1" stop-color="#FF6B6B"/></linearGradient></defs>
+                  </svg>
+                </div>
+                <div>
+                  <h3 style="margin:0; font-size:1.2rem; font-weight:800; color:var(--text-primary);">Join Rapid Route</h3>
+                  <p style="margin:6px 0 0; color:var(--text-secondary); font-family:var(--font-body); line-height:1.5;">
+                    Create an account to save your tracking history and get instant SMS alerts for your shipments.
+                  </p>
+                </div>
+              </div>
+              <button type="button" onclick="closeLoginRequired()" aria-label="Close"
+                style="background:transparent; border:0; color:var(--text-secondary); cursor:pointer; padding:6px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 6 6 18M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:18px;">
+              <a href="/user/login" class="btn-primary" style="text-decoration:none; padding:0.8rem 1.4rem; font-size:0.9rem;">
+                Sign In
+              </a>
+              <a href="/user/register" class="btn-ghost" style="text-decoration:none; padding:0.8rem 1.4rem; font-size:0.9rem;">
+                Register Free
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="hero-stats">
@@ -304,6 +343,90 @@
     </div>
   </section>
 
+  <!-- Our Work / Success Showcase -->
+  <section class="work-section" id="our-work">
+    <div class="section-container">
+      <div class="section-header">
+        <div class="section-badge">✦ Our Proven Track Record</div>
+        <h2 class="section-title">Showcasing our <br/><span class="gradient-text">global success stories</span></h2>
+      </div>
+      
+      <div class="work-grid">
+        <div class="work-card">
+          <div class="work-image">
+            <div class="work-overlay"></div>
+            <div class="work-tag">Express Delivery</div>
+            <div class="work-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+          </div>
+          <div class="work-details">
+            <h3>99.9% Route Optimization</h3>
+            <p>We implemented AI-driven pathfinding for our European fleet, reducing delivery times by 40%.</p>
+            <div class="work-stats">
+              <div class="ws-item"><span>12M+</span><label>Kms Optimized</label></div>
+              <div class="ws-item"><span>2024</span><label>Year</label></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="work-card">
+          <div class="work-image" style="background: linear-gradient(45deg, #FF6B6B22, #6C63FF11);">
+            <div class="work-overlay"></div>
+            <div class="work-tag">Technological Edge</div>
+            <div class="work-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+          </div>
+          <div class="work-details">
+            <h3>Zero-Data Breach Security</h3>
+            <p>Our platform handles millions of shipments with bank-grade encryption and secure private cloud storage.</p>
+            <div class="work-stats">
+              <div class="ws-item"><span>100%</span><label>Uptime</label></div>
+              <div class="ws-item"><span>Cloud</span><label>Native</label></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="work-card">
+          <div class="work-image" style="background: linear-gradient(45deg, #43E97B22, #38BDF811);">
+            <div class="work-overlay"></div>
+            <div class="work-tag">Global Presence</div>
+            <div class="work-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+          </div>
+          <div class="work-details">
+            <h3>Cross-Border Excellence</h3>
+            <p>Connecting 150+ cities with a unified tracking network that never sleeps, ensuring trust every mile.</p>
+            <div class="work-stats">
+              <div class="ws-item"><span>150+</span><label>Cities</label></div>
+              <div class="ws-item"><span>24/7</span><label>Support</label></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="achievement-banner">
+        <div class="ach-glow"></div>
+        <div class="ach-item">
+          <span class="ach-number" data-target="500000">0</span><span class="ach-plus">+</span>
+          <label>Satisfied Users</label>
+        </div>
+        <div class="ach-divider"></div>
+        <div class="ach-item">
+          <span class="ach-number" data-target="1000000">0</span><span class="ach-plus">+</span>
+          <label>Packages Delivered</label>
+        </div>
+        <div class="ach-divider"></div>
+        <div class="ach-item">
+          <span class="ach-number" data-target="98">0</span><span class="ach-plus">%</span>
+          <label>Positive Feedback</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CTA Section -->
   <section class="cta-section">
     <div class="cta-container">
@@ -352,7 +475,18 @@
     </div>
   </footer>
 
-  <script src="js/main.js"></script>
-  <script src="js/landing.js"></script>
+  <script>
+      const IS_LOGGED_IN = @json((bool) session('user_logged_in'));
+      window.closeLoginRequired = function() {
+          const m = document.getElementById('loginRequiredModal');
+          if(m) m.style.display = 'none';
+      };
+      window.showLoginRequired = function() {
+          const m = document.getElementById('loginRequiredModal');
+          if(m) m.style.display = '';
+      };
+  </script>
+  <script src="{{ asset('js/main.js') }}"></script>
+  <script src="{{ asset('js/landing.js') }}"></script>
 </body>
 </html>

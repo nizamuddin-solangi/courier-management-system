@@ -608,3 +608,193 @@
   from { opacity: 0; transform: translateX(40px); }
   to { opacity: 1; transform: translateX(0); }
 }
+
+/* --- Work Section / Success Showcase --- */
+.work-section {
+  padding: 120px 2rem;
+  position: relative;
+  background: radial-gradient(circle at top right, rgba(108, 99, 255, 0.05), transparent 40%),
+              radial-gradient(circle at bottom left, rgba(255, 107, 107, 0.05), transparent 40%);
+}
+
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 5rem;
+}
+
+.work-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+
+.work-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(108, 99, 255, 0.3);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.4), 0 0 40px rgba(108,99,255,0.1);
+}
+
+.work-image {
+  height: 200px;
+  background: linear-gradient(45deg, rgba(108,99,255,0.15), rgba(255,107,107,0.08));
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.work-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 30%, rgba(10,10,26,0.8));
+}
+
+.work-tag {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
+  background: rgba(108, 99, 255, 0.2);
+  border: 1px solid rgba(108, 99, 255, 0.4);
+  backdrop-filter: blur(10px);
+  color: var(--purple-light);
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.work-icon {
+  width: 56px;
+  height: 56px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  z-index: 2;
+  transition: var(--transition);
+}
+
+.work-card:hover .work-icon {
+  transform: scale(1.1) rotate(5deg);
+  background: var(--purple);
+  border-color: var(--purple-light);
+}
+
+.work-details {
+  padding: 1.8rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.work-details h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-bottom: 0.8rem;
+  color: var(--text-primary);
+}
+
+.work-details p {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.work-stats {
+  display: flex;
+  gap: 1.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border-glass);
+}
+
+.ws-item { display: flex; flex-direction: column; }
+.ws-item span { font-weight: 800; color: var(--purple-light); font-size: 1.1rem; }
+.ws-item label { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+
+/* Achievement Banner */
+.achievement-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-xl);
+  padding: 3.5rem 2rem;
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+}
+
+.ach-glow {
+  position: absolute;
+  width: 400px; height: 100%;
+  background: radial-gradient(circle, rgba(108,99,255,0.1), transparent 70%);
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.ach-item {
+  text-align: center;
+  flex: 1;
+  position: relative;
+  z-index: 2;
+}
+
+.ach-number {
+  font-size: 3.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #fff, #6C63FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -2px;
+}
+
+.ach-plus {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--purple-light);
+  margin-left: 2px;
+}
+
+.ach-item label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+.ach-divider {
+  width: 1px;
+  height: 60px;
+  background: var(--border-glass);
+}
+
+@media (max-width: 992px) {
+  .work-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .work-grid { grid-template-columns: 1fr; }
+  .achievement-banner { flex-direction: column; gap: 3rem; }
+  .ach-divider { width: 100%; height: 1px; }
+  .ach-number { font-size: 2.8rem; }
+}

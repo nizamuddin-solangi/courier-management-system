@@ -213,6 +213,13 @@ class UserController extends Controller
     public function notifications()
     {
         $userId = Session::get('user_id');
+
+        if (!$userId) {
+            $notifications = collect();
+            $unreadCount = 0;
+            return view('user.notifications', compact('notifications', 'unreadCount'));
+        }
+
         $notifications = Notification::query()
             ->where('user_id', $userId)
             ->orderByDesc('id')

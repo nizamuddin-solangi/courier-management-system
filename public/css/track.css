@@ -2,25 +2,31 @@
    Rapid Route – Track Page Styles
    ========================================== */
 
-.track-body { min-height: 100vh; }
+.track-body { 
+  min-height: 100vh;
+  position: relative;
+}
 
 .track-page-header {
   text-align: center;
-  padding: 120px 2rem 3rem;
+  padding: 140px 2rem 4rem;
   position: relative;
 }
 
 .track-page-header h1 {
-  font-size: clamp(2.2rem, 4vw, 3.5rem);
-  font-weight: 900;
-  letter-spacing: -1px;
-  margin-bottom: 0.75rem;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 950;
+  letter-spacing: -2.5px;
+  margin-bottom: 1rem;
+  line-height: 0.95;
 }
 
 .track-page-header p {
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: var(--text-secondary);
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 /* --- Search Card --- */
@@ -31,18 +37,29 @@
 }
 
 .track-search-card {
-  background: rgba(255,255,255,0.04);
+  background: var(--bg-card);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-xl);
-  padding: 2.5rem;
-  backdrop-filter: blur(20px);
+  padding: 3rem;
+  backdrop-filter: blur(24px);
   box-shadow: var(--shadow-card);
   transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.track-search-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at top left, var(--border-glow), transparent 60%);
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .track-search-card:focus-within {
   border-color: rgba(108,99,255,0.4);
-  box-shadow: var(--shadow-card), var(--shadow-glow);
+  box-shadow: 0 40px 100px -20px rgba(0,0,0,0.6), var(--shadow-glow);
 }
 
 .search-label {
@@ -248,7 +265,7 @@
 .result-details-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 @media (max-width: 768px) {
