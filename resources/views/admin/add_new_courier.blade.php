@@ -117,6 +117,18 @@
         color: #66FCF1;
         font-size: 14px;
     }
+
+    .error-msg {
+        color: #ff4d4d;
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 5px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .form-input:invalid:not(:placeholder-shown) {
+        border-color: #ff4d4d;
+    }
 </style>
 
 <div style="max-width: 1200px; margin: 0 auto; padding-bottom: 40px;">
@@ -148,6 +160,11 @@
         {{ session('success') }}
     </div>
     @endif
+
+    <div class="form-notice">
+        <i class="bi bi-info-circle-fill"></i>
+        <p class="text-xs font-bold text-white uppercase tracking-widest">Notice: Please complete all required fields. Real-time validation is active to ensure data integrity.</p>
+    </div>
 
     <!-- Form Container -->
     <form id="courierForm" action="{{ route('admin.store_courier') }}" method="POST">
@@ -186,8 +203,9 @@
                         <label class="form-label">Delivery Date</label>
                         <div class="input-group">
                             <i class="bi bi-calendar-event input-icon"></i>
-                            <input type="date" name="delivery_date" required class="form-input">
+                            <input type="date" name="delivery_date" required class="form-input" min="{{ date('Y-m-d') }}" value="{{ old('delivery_date') }}">
                         </div>
+                        @error('delivery_date') <div class="error-msg">{{ $message }}</div> @enderror
                     </div>
                     <div>
                         <label class="form-label">Delivery Time</label>
@@ -195,6 +213,7 @@
                             <i class="bi bi-clock input-icon"></i>
                             <input type="time" name="delivery_time" required class="form-input">
                         </div>
+                        <div class="error-msg"></div>
                     </div>
                     <div>
                         <label class="form-label">Parcel Type</label>
@@ -215,6 +234,7 @@
                             <i class="bi bi-speedometer2 input-icon"></i>
                             <input type="number" step="0.01" name="weight" required class="form-input" placeholder="0.00">
                         </div>
+                        <div class="error-msg"></div>
                     </div>
                 </div>
             </div>
@@ -232,15 +252,21 @@
                             <label class="form-label">Full Name</label>
                             <div class="input-group">
                                 <i class="bi bi-person input-icon"></i>
-                                <input type="text" name="sender_name" required class="form-input" placeholder="Sender's Name">
+                                <input type="text" name="sender_name" required class="form-input" placeholder="Sender's Name" 
+                                       pattern="[a-zA-Z\s]+" title="Real Pattern: Only letters and spaces allowed (e.g. John Doe)"
+                                       value="{{ old('sender_name') }}">
                             </div>
+                            @error('sender_name') <div class="error-msg">{{ $message }}</div> @enderror
                         </div>
                         <div>
                             <label class="form-label">Contact Number</label>
                             <div class="input-group">
                                 <i class="bi bi-telephone input-icon"></i>
-                                <input type="text" name="sender_phone" required class="form-input" placeholder="03XXXXXXXXX">
+                                <input type="text" name="sender_phone" required class="form-input" placeholder="03XXXXXXXXX"
+                                       pattern="[0-9+]+" title="Real Pattern: Only digits and + allowed"
+                                       value="{{ old('sender_phone') }}">
                             </div>
+                            @error('sender_phone') <div class="error-msg">{{ $message }}</div> @enderror
                         </div>
                         <div>
                             <label class="form-label">Origin City</label>
@@ -248,6 +274,7 @@
                                 <i class="bi bi-buildings input-icon"></i>
                                 <input type="text" name="from_city" required class="form-input" placeholder="City">
                             </div>
+                            <div class="error-msg"></div>
                         </div>
                         <div>
                             <label class="form-label">Pickup Address</label>
@@ -255,6 +282,7 @@
                                 <i class="bi bi-geo-alt input-icon" style="top: 15px;"></i>
                                 <textarea name="sender_address" required rows="3" class="form-input" style="padding-top: 12px;" placeholder="Full Address"></textarea>
                             </div>
+                            <div class="error-msg"></div>
                         </div>
                     </div>
                 </div>
@@ -272,15 +300,21 @@
                             <label class="form-label">Full Name</label>
                             <div class="input-group">
                                 <i class="bi bi-person input-icon" style="color: #FF9F43;"></i>
-                                <input type="text" name="receiver_name" required class="form-input" placeholder="Receiver's Name">
+                                <input type="text" name="receiver_name" required class="form-input" placeholder="Receiver's Name"
+                                       pattern="[a-zA-Z\s]+" title="Real Pattern: Only letters and spaces allowed"
+                                       value="{{ old('receiver_name') }}">
                             </div>
+                            @error('receiver_name') <div class="error-msg">{{ $message }}</div> @enderror
                         </div>
                         <div>
                             <label class="form-label">Contact Number</label>
                             <div class="input-group">
                                 <i class="bi bi-telephone input-icon" style="color: #FF9F43;"></i>
-                                <input type="text" name="receiver_phone" required class="form-input" placeholder="03XXXXXXXXX">
+                                <input type="text" name="receiver_phone" required class="form-input" placeholder="03XXXXXXXXX"
+                                       pattern="[0-9+]+" title="Real Pattern: Only digits and + allowed"
+                                       value="{{ old('receiver_phone') }}">
                             </div>
+                            @error('receiver_phone') <div class="error-msg">{{ $message }}</div> @enderror
                         </div>
                         <div>
                             <label class="form-label">Destination City</label>
@@ -288,6 +322,7 @@
                                 <i class="bi bi-buildings input-icon" style="color: #FF9F43;"></i>
                                 <input type="text" name="to_city" required class="form-input" placeholder="City">
                             </div>
+                            <div class="error-msg"></div>
                         </div>
                         <div>
                             <label class="form-label">Delivery Address</label>
@@ -295,6 +330,7 @@
                                 <i class="bi bi-geo-alt input-icon" style="top: 15px; color: #FF9F43;"></i>
                                 <textarea name="receiver_address" required rows="3" class="form-input" style="padding-top: 12px;" placeholder="Full Address"></textarea>
                             </div>
+                            <div class="error-msg"></div>
                         </div>
                     </div>
                 </div>

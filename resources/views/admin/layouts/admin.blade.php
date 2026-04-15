@@ -73,6 +73,31 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+
+        .form-notice {
+            background: rgba(102, 252, 241, 0.05);
+            border-left: 4px solid var(--accent-primary);
+            padding: 1rem;
+            border-radius: 0 1rem 1rem 0;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .error-msg, .live-error-msg {
+            color: #ff4d4d;
+            font-size: 10px;
+            font-weight: 700;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: none;
+        }
+
+        input:invalid:not(:placeholder-shown) {
+            border-color: #ff4d4d !important;
+        }
     </style>
 </head>
 <body class="antialiased">

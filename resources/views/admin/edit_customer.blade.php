@@ -57,6 +57,18 @@
         transform: translateY(-2px);
         box-shadow: 0 10px 20px rgba(102, 252, 241, 0.2);
     }
+
+    .error-msg {
+        color: #ff4d4d;
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 5px;
+        font-family: inherit;
+    }
+
+    .form-input:invalid:not(:placeholder-shown) {
+        border-color: #ff4d4d;
+    }
 </style>
 
 <div class="max-w-[800px] mx-auto pb-10">
@@ -70,28 +82,39 @@
         </a>
     </div>
 
+    <div class="form-notice">
+        <i class="bi bi-info-circle-fill"></i>
+        <p class="text-xs font-bold text-white uppercase tracking-widest">Notice: Please complete all required fields. Real-time validation is active to ensure data integrity.</p>
+    </div>
+
     <form action="{{ route('admin.customer.update', $customer->id) }}" method="POST" class="glass-card">
         @csrf
         <div class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="form-label">Full Name / Entity</label>
-                    <input type="text" name="name" value="{{ $customer->name }}" required class="form-input">
+                    <input type="text" name="name" value="{{ old('name', $customer->name) }}" required class="form-input"
+                           pattern="[a-zA-Z\s]+" title="Real Pattern: Only letters and spaces allowed">
+                    @error('name') <div class="error-msg">{{ $message }}</div> @enderror
                 </div>
                 <div>
                     <label class="form-label">Contact Number (Phone)</label>
-                    <input type="text" name="phone" value="{{ $customer->phone }}" required class="form-input">
+                    <input type="text" name="phone" value="{{ old('phone', $customer->phone) }}" required class="form-input"
+                           pattern="[0-9+]+" title="Real Pattern: Only digits and + allowed">
+                    @error('phone') <div class="error-msg">{{ $message }}</div> @enderror
                 </div>
             </div>
 
             <div>
                 <label class="form-label">Location (City)</label>
                 <input type="text" name="city" value="{{ $customer->city }}" required class="form-input">
+                <div class="error-msg"></div>
             </div>
 
             <div>
                 <label class="form-label">Mailing / Business Address</label>
                 <textarea name="address" rows="4" required class="form-input">{{ $customer->address }}</textarea>
+                <div class="error-msg"></div>
             </div>
 
             <div class="pt-4">

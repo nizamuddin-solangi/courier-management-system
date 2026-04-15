@@ -295,6 +295,18 @@
         display: inline-block;
         animation: _spin 0.6s linear infinite;
     }
+
+    .error-msg {
+        color: #ff4d4d;
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 5px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .form-input:invalid:not(:placeholder-shown) {
+        border-color: #ff4d4d;
+    }
 </style>
 
 <div class="profile-wrap animate-fade-in mb-8">
@@ -355,8 +367,9 @@
                             <span
                                 style="color:white; font-size:9px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase;">Upload</span>
                         </div>
-                        <input id="avatarInput" type="file" accept="image/*" style="display:none;" name="image" form="profileForm">
+                        <input id="avatarInput" type="file" accept="image/jpeg,image/png,image/webp" style="display:none;" name="image" form="profileForm">
                     </label>
+                    @error('image') <div class="error-msg" style="text-align:center;">{{ $message }}</div> @enderror
 
                     <h3
                         style="color:#fff; font-size:20px; font-weight:800; margin:0 0 4px; font-family:'Plus Jakarta Sans',sans-serif;">
@@ -415,6 +428,11 @@
         {{-- RIGHT COLUMN: Forms --}}
         <div style="display:flex; flex-direction:column; gap:24px;">
 
+            <div class="form-notice">
+                <i class="bi bi-info-circle-fill"></i>
+                <p class="text-xs font-bold text-white uppercase tracking-widest">Notice: Please complete all required fields. Real-time validation is active to ensure data integrity.</p>
+            </div>
+
             {{-- Personal Details --}}
             <div class="pcard" style="padding: 28px;">
                 <div
@@ -437,12 +455,15 @@
                     @csrf
                     <div style="margin-bottom:20px;">
                         <label class="form-label">Full Name</label>
-                        <input class="form-input" type="text" value="{{ $result->name }}" name="name">
+                        <input class="form-input" type="text" value="{{ old('name', $result->name) }}" name="name" required
+                               pattern="[a-zA-Z\s]+" title="Real Pattern: Only letters and spaces allowed">
+                        @error('name') <div class="error-msg">{{ $message }}</div> @enderror
                     </div>
 
                     <div style="margin-bottom:28px;">
                         <label class="form-label">Email Address</label>
-                        <input class="form-input" type="email" value="{{ $result->email }}" name="email">
+                        <input class="form-input" type="email" value="{{ old('email', $result->email) }}" name="email" required>
+                        @error('email') <div class="error-msg">{{ $message }}</div> @enderror
                     </div>
 
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
@@ -480,21 +501,24 @@
                         <label class="form-label">Current Password</label>
                         <div class="pw-wrap">
                             <input class="form-input" type="password" id="currentPwd" name="current_password"
-                                value="{{ $result->password }}" placeholder="Enter current password">
+                                value="{{ $result->password }}" placeholder="Enter current password" required>
                             <button type="button" class="pw-eye" onclick="togglePwd('currentPwd',this)"><i
                                     class="bi bi-eye"></i></button>
                         </div>
+                        <div class="error-msg"></div>
                     </div>
 
                     <div class="field-grid" style="margin-bottom:8px;">
                         <div>
                             <label class="form-label">New Password</label>
                             <div class="pw-wrap">
-                                <input class="form-input" type="password" id="newPwd" name="password" placeholder="Min. 8 characters"
-                                    oninput="checkStrength(this.value)">
+                                <input class="form-input" type="password" id="newPwd" name="password" placeholder="Min. 6 characters"
+                                    oninput="checkStrength(this.value)" minlength="6">
                                 <button type="button" class="pw-eye" onclick="togglePwd('newPwd',this)"><i
                                         class="bi bi-eye"></i></button>
                             </div>
+                            <div class="error-msg"></div>
+                            @error('password') <div class="error-msg">{{ $message }}</div> @enderror
                         </div>
                         <div>
                             <label class="form-label">Confirm Password</label>
@@ -504,6 +528,7 @@
                                 <button type="button" class="pw-eye" onclick="togglePwd('confirmPwd',this)"><i
                                         class="bi bi-eye"></i></button>
                             </div>
+                            <div class="error-msg"></div>
                             <p id="matchMsg"
                                 style="display:none; font-size:11px; font-weight:600; margin:6px 0 0; font-family:'Plus Jakarta Sans',sans-serif;">
                             </p>

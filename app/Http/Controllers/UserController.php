@@ -250,12 +250,16 @@ class UserController extends Controller
         $userId = Session::get('user_id');
 
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$userId],
-            'phone' => ['required', 'string', 'max:30', 'unique:users,phone,'.$userId],
+            'phone' => ['required', 'string', 'max:30', 'regex:/^[0-9+]+$/', 'unique:users,phone,'.$userId],
             'address' => ['nullable', 'string', 'max:2000'],
-            'image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'password' => ['nullable', 'string', 'min:6', 'confirmed'],
+        ], [
+            'name.regex' => 'Name must only contain letters and spaces (e.g., John Doe).',
+            'phone.regex' => 'Phone number must only contain digits and + (e.g., +123456789).',
+            'image.image' => 'The file must be an image (JPG, PNG, WebP).',
         ]);
 
         $user = User::findOrFail($userId);
@@ -337,13 +341,18 @@ class UserController extends Controller
     public function register_submit(Request $request)
     {
         $request->validate([
-            'first_name' => ['required', 'string', 'max:100'],
-            'last_name' => ['required', 'string', 'max:100'],
+            'first_name' => ['required', 'string', 'max:100', 'regex:/^[a-zA-Z\s]+$/'],
+            'last_name' => ['required', 'string', 'max:100', 'regex:/^[a-zA-Z\s]+$/'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'phone' => ['required', 'string', 'max:30', 'unique:users,phone'],
+            'phone' => ['required', 'string', 'max:30', 'regex:/^[0-9+]+$/', 'unique:users,phone'],
             'address' => ['nullable', 'string', 'max:2000'],
-            'image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
+        ], [
+            'first_name.regex' => 'First name must only contain letters and spaces.',
+            'last_name.regex' => 'Last name must only contain letters and spaces.',
+            'phone.regex' => 'Phone number must only contain digits and +.',
+            'image.image' => 'The file must be an image.',
         ]);
 
         $name = trim($request->first_name . ' ' . $request->last_name);

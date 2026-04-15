@@ -108,6 +108,28 @@ class AgentController extends Controller
 
     public function store_courier(Request $request)
     {
+        $request->validate([
+            'delivery_date' => 'required|date|after_or_equal:today',
+            'delivery_time' => 'required',
+            'sender_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
+            'sender_phone' => ['required', 'string', 'max:20', 'regex:/^[0-9+]+$/'],
+            'sender_address' => 'required|string|max:500',
+            'receiver_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
+            'receiver_phone' => ['required', 'string', 'max:20', 'regex:/^[0-9+]+$/'],
+            'receiver_address' => 'required|string|max:500',
+            'from_city' => 'required|string',
+            'to_city' => 'required|string',
+            'parcel_type' => 'required|string',
+            'weight' => 'required|numeric|min:0.1',
+            'price' => 'required|numeric|min:0',
+        ], [
+            'sender_name.regex' => 'Sender name must contain only letters and spaces.',
+            'receiver_name.regex' => 'Receiver name must contain only letters and spaces.',
+            'delivery_date.after_or_equal' => 'The delivery date cannot be in the past.',
+            'sender_phone.regex' => 'Sender phone must only contain digits and +.',
+            'receiver_phone.regex' => 'Receiver phone must only contain digits and +.',
+        ]);
+
         $myobject = new Courier();
         $myobject->tracking_number = 'CP-AGT-'.rand(10000, 99999);
         $myobject->agent_id = Session::get('agent_id');
@@ -262,8 +284,17 @@ class AgentController extends Controller
     {
         $agent_id = Session::get('agent_id');
         $request->validate([
+            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'email' => 'required|email|unique:agents,email,'.$agent_id,
+            'phone' => ['required', 'string', 'max:20', 'regex:/^[0-9+]+$/'],
             'username' => 'required|unique:agents,username,'.$agent_id,
+            'address' => 'required|string|max:500',
+            'password' => 'nullable|min:6',
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ], [
+            'name.regex' => 'Name must only contain letters and spaces.',
+            'phone.regex' => 'Phone must only contain digits and +.',
+            'image.image' => 'The file must be an image.',
         ]);
 
         $agent = Agent::find($agent_id);

@@ -114,6 +114,18 @@
     .minimal-toggle input:checked + .toggle-ring .toggle-core {
         transform: translate(-50%, -50%) scale(1);
     }
+
+    .error-msg {
+        color: #ff4d4d;
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 5px;
+        font-family: inherit;
+    }
+
+    .form-input:invalid:not(:placeholder-shown) {
+        border-color: #ff4d4d;
+    }
 </style>
 
 <div class="update-container">
@@ -126,6 +138,11 @@
         <a href="/admin/show_agent" class="text-xs font-bold text-[#C5C6C7] hover:text-[#66FCF1] uppercase tracking-widest transition-colors">
             <i class="bi bi-arrow-left"></i> Roster
         </a>
+    </div>
+
+    <div class="form-notice">
+        <i class="bi bi-info-circle-fill"></i>
+        <p class="text-xs font-bold text-white uppercase tracking-widest">Notice: Please complete all required fields. Real-time validation is active to ensure data integrity.</p>
     </div>
 
     @if(session('success'))
@@ -150,27 +167,36 @@
             <div>
                 <div class="form-group">
                     <label class="form-label">Full Name</label>
-                    <input type="text" name="name" value="{{ $agent->name }}" class="form-input" required>
+                    <input type="text" name="name" value="{{ old('name', $agent->name) }}" class="form-input" required
+                           pattern="[a-zA-Z\s]+" title="Real Pattern: Only letters and spaces allowed">
+                    @error('name') <div class="error-msg">{{ $message }}</div> @enderror
                 </div>
                 
                 <div class="form-group">
                     <label class="form-label">Email Address</label>
-                    <input type="email" name="email" value="{{ $agent->email }}" class="form-input" required>
+                    <input type="email" name="email" value="{{ old('email', $agent->email) }}" class="form-input" required>
+                    @error('email') <div class="error-msg">{{ $message }}</div> @enderror
                 </div>
                 
                 <div class="form-group">
                     <label class="form-label">Contact Number</label>
-                    <input type="text" name="phone" value="{{ $agent->phone }}" class="form-input" required>
+                    <input type="text" name="phone" value="{{ old('phone', $agent->phone) }}" class="form-input" required
+                           pattern="[0-9+]+" title="Real Pattern: Only digits and + allowed">
+                    @error('phone') <div class="error-msg">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Username</label>
-                    <input type="text" name="username" value="{{ $agent->username }}" class="form-input" required>
+                    <input type="text" name="username" value="{{ old('username', $agent->username) }}" class="form-input" required>
+                    <div class="error-msg"></div>
+                    @error('username') <div class="error-msg">{{ $message }}</div> @enderror
                 </div>
                 
                 <div class="form-group">
                     <label class="form-label">Update Password <span class="text-[#C5C6C7] opacity-50 lowercase text-[10px] tracking-normal">(leave blank to keep current)</span></label>
-                    <input type="password" name="password" class="form-input" placeholder="••••••••">
+                    <input type="password" name="password" class="form-input" placeholder="••••••••" minlength="6">
+                    <div class="error-msg"></div>
+                    @error('password') <div class="error-msg">{{ $message }}</div> @enderror
                 </div>
             </div>
 
@@ -187,7 +213,9 @@
                             @endif
                         </div>
                         <div class="flex-1">
-                            <input type="file" name="image" class="form-input text-xs" accept="image/*" onchange="previewUpdate(this)">
+                            <input type="file" name="image" class="form-input text-xs" accept="image/jpeg,image/png,image/webp" onchange="previewUpdate(this)">
+                            <div class="error-msg"></div>
+                            @error('image') <div class="error-msg">{{ $message }}</div> @enderror
                             <p class="text-[9px] text-[#45A29E] mt-2 font-bold uppercase opacity-50 italic">Upload to replace current image</p>
                         </div>
                     </div>
@@ -202,21 +230,25 @@
                             </option>
                         @endforeach
                     </select>
+                    <div class="error-msg"></div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Home City</label>
                     <input type="text" name="city" value="{{ $agent->city }}" class="form-input" required>
+                    <div class="error-msg"></div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Origin jurisdiction (From)</label>
                     <input type="text" name="from_city" value="{{ $agent->from_city }}" class="form-input" required>
+                    <div class="error-msg"></div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Target jurisdiction (To)</label>
                     <input type="text" name="to_city" value="{{ $agent->to_city }}" class="form-input" required>
+                    <div class="error-msg"></div>
                 </div>
 
                 <div class="form-group">
@@ -235,6 +267,7 @@
         <div class="form-group">
             <label class="form-label">Residential Address</label>
             <input type="text" name="address" value="{{ $agent->address }}" class="form-input" required>
+            <div class="error-msg"></div>
         </div>
 
         <div class="mt-8 flex justify-end">

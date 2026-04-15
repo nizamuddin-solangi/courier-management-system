@@ -116,6 +116,18 @@
         color: #66FCF1;
         font-size: 14px;
     }
+
+    .error-msg {
+        color: #ff4d4d;
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 5px;
+        font-family: inherit;
+    }
+
+    .form-input:invalid:not(:placeholder-shown) {
+        border-color: #ff4d4d;
+    }
 </style>
 
 <div style="max-width: 1200px; margin: 0 auto; padding-bottom: 40px;">
@@ -148,6 +160,11 @@
     </div>
     @endif
 
+    <div class="form-notice">
+        <i class="bi bi-info-circle-fill"></i>
+        <p class="text-xs font-bold text-white uppercase tracking-widest">Notice: Please complete all required fields. Real-time validation is active to ensure data integrity.</p>
+    </div>
+
     <!-- Form Container -->
     <form id="updateCourierForm" action="{{ route('admin.execute_update_courier', $ship->id) }}" method="POST">
         @csrf
@@ -174,16 +191,21 @@
                                 <option value="{{ $agent->id }}" {{ $ship->agent_id == $agent->id ? 'selected' : '' }}>{{ $agent->name }} ({{ $agent->city }})</option>
                             @endforeach
                         </select>
+                        <div class="error-msg"></div>
                     </div>
 
                     <div>
                         <label style="color:#C5C6C7; font-size:12px; margin-bottom:8px; display:block;">Estimated Delivery Date</label>
-                        <input type="date" name="delivery_date" value="{{ $ship->delivery_date }}" required style="width:100%; border:1px solid #C5C6C7; padding:10px; border-radius:6px;">
+                        <input type="date" name="delivery_date" value="{{ old('delivery_date', $ship->delivery_date) }}" required
+                               min="{{ date('Y-m-d') }}" style="width:100%; border:1px solid #C5C6C7; padding:10px; border-radius:6px;">
+                        @error('delivery_date') <div class="error-msg">{{ $message }}</div> @enderror
+                        <div class="error-msg"></div>
                     </div>
                     
                     <div>
                         <label style="color:#C5C6C7; font-size:12px; margin-bottom:8px; display:block;">Estimated Delivery Time</label>
                         <input type="time" name="delivery_time" value="{{ \Carbon\Carbon::parse($ship->delivery_time)->format('H:i') }}" required style="width:100%; border:1px solid #C5C6C7; padding:10px; border-radius:6px;">
+                        <div class="error-msg"></div>
                     </div>
 
                     <div>
@@ -198,6 +220,7 @@
                             </select>
                             <i class="bi bi-chevron-down select-chevron" style="color: #66FCF1;"></i>
                         </div>
+                        <div class="error-msg"></div>
                     </div>
                     <div>
                         <label class="form-label">Parcel Type</label>
@@ -210,6 +233,7 @@
                             </select>
                             <i class="bi bi-chevron-down select-chevron"></i>
                         </div>
+                        <div class="error-msg"></div>
                     </div>
                     <div>
                         <label class="form-label">Weight (KG)</label>
@@ -217,6 +241,7 @@
                             <i class="bi bi-speedometer2 input-icon"></i>
                             <input type="number" step="0.01" name="weight" required class="form-input" value="{{ $ship->weight }}">
                         </div>
+                        <div class="error-msg"></div>
                     </div>
                 </div>
             </div>
@@ -234,15 +259,19 @@
                             <label class="form-label">Full Name</label>
                             <div class="input-group">
                                 <i class="bi bi-person input-icon"></i>
-                                <input type="text" name="sender_name" required class="form-input" value="{{ $ship->sender_name }}">
+                                <input type="text" name="sender_name" required class="form-input" value="{{ old('sender_name', $ship->sender_name) }}"
+                                       pattern="[a-zA-Z\s]+" title="Real Pattern: Only letters and spaces allowed">
                             </div>
+                            @error('sender_name') <div class="error-msg">{{ $message }}</div> @enderror
                         </div>
                         <div>
                             <label class="form-label">Contact Number</label>
                             <div class="input-group">
                                 <i class="bi bi-telephone input-icon"></i>
-                                <input type="text" name="sender_phone" required class="form-input" value="{{ $ship->sender_phone }}">
+                                <input type="text" name="sender_phone" required class="form-input" value="{{ old('sender_phone', $ship->sender_phone) }}"
+                                       pattern="[0-9+]+" title="Real Pattern: Only digits and + allowed">
                             </div>
+                            @error('sender_phone') <div class="error-msg">{{ $message }}</div> @enderror
                         </div>
                         <div>
                             <label class="form-label">Origin Node (City)</label>
@@ -250,6 +279,7 @@
                                 <i class="bi bi-buildings input-icon"></i>
                                 <input type="text" name="from_city" required class="form-input" value="{{ $ship->from_city }}">
                             </div>
+                            <div class="error-msg"></div>
                         </div>
                         <div>
                             <label class="form-label">Pickup Address</label>
@@ -257,6 +287,7 @@
                                 <i class="bi bi-geo-alt input-icon" style="top: 15px;"></i>
                                 <textarea name="sender_address" required rows="3" class="form-input" style="padding-top: 12px;">{{ $ship->sender_address }}</textarea>
                             </div>
+                            <div class="error-msg"></div>
                         </div>
                     </div>
                 </div>
@@ -274,15 +305,19 @@
                             <label class="form-label">Full Name</label>
                             <div class="input-group">
                                 <i class="bi bi-person input-icon" style="color: #FF9F43;"></i>
-                                <input type="text" name="receiver_name" required class="form-input" value="{{ $ship->receiver_name }}">
+                                <input type="text" name="receiver_name" required class="form-input" value="{{ old('receiver_name', $ship->receiver_name) }}"
+                                       pattern="[a-zA-Z\s]+" title="Real Pattern: Only letters and spaces allowed">
                             </div>
+                            @error('receiver_name') <div class="error-msg">{{ $message }}</div> @enderror
                         </div>
                         <div>
                             <label class="form-label">Contact Number</label>
                             <div class="input-group">
                                 <i class="bi bi-telephone input-icon" style="color: #FF9F43;"></i>
-                                <input type="text" name="receiver_phone" required class="form-input" value="{{ $ship->receiver_phone }}">
+                                <input type="text" name="receiver_phone" required class="form-input" value="{{ old('receiver_phone', $ship->receiver_phone) }}"
+                                       pattern="[0-9+]+" title="Real Pattern: Only digits and + allowed">
                             </div>
+                            @error('receiver_phone') <div class="error-msg">{{ $message }}</div> @enderror
                         </div>
                         <div>
                             <label class="form-label">Target Node (City)</label>
@@ -290,6 +325,7 @@
                                 <i class="bi bi-buildings input-icon" style="color: #FF9F43;"></i>
                                 <input type="text" name="to_city" required class="form-input" value="{{ $ship->to_city }}">
                             </div>
+                            <div class="error-msg"></div>
                         </div>
                         <div>
                             <label class="form-label">Delivery Address</label>
@@ -297,6 +333,7 @@
                                 <i class="bi bi-geo-alt input-icon" style="top: 15px; color: #FF9F43;"></i>
                                 <textarea name="receiver_address" required rows="3" class="form-input" style="padding-top: 12px;">{{ $ship->receiver_address }}</textarea>
                             </div>
+                            <div class="error-msg"></div>
                         </div>
                     </div>
                 </div>
@@ -322,6 +359,7 @@
                                    style="padding-left: 50px; font-size: 20px; font-weight: 800; color: #66FCF1; border-color: rgba(102,252,241,0.3); text-align: right;" 
                                    value="{{ $ship->price }}">
                         </div>
+                        <div class="error-msg"></div>
                     </div>
                 </div>
             </div>

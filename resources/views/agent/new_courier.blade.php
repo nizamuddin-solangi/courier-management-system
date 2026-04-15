@@ -12,8 +12,18 @@
         <div class="glass-panel px-4 py-2 rounded-xl flex items-center gap-3 border border-white/5">
             <div class="w-2 h-2 rounded-full bg-[#64ffda] animate-pulse shadow-[0_0_10px_#64ffda]"></div>
             <span class="text-[10px] font-bold text-white uppercase tracking-widest">{{ $current_agent->agent_code }} TERMINAL</span>
-        </div>
     </div>
+
+    <style>
+        .error-msg {
+            color: #ff4d4d;
+            font-size: 10px;
+            font-weight: 700;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
 
     @if(session('success'))
     <div class="glass-panel p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 text-sm font-bold flex items-center gap-3 animate-slide-up">
@@ -21,6 +31,11 @@
         {{ session('success') }}
     </div>
     @endif
+
+    <div class="form-notice">
+        <i class="bi bi-info-circle-fill"></i>
+        <p class="text-[10px] font-bold text-white uppercase tracking-widest">Notice: Please complete all required fields. Real-time validation is active to ensure data integrity.</p>
+    </div>
 
     <form action="/agent/store-courier" method="POST" class="space-y-8">
         @csrf
@@ -39,14 +54,18 @@
                                 <i class="bi bi-calendar-event text-lg"></i>
                             </div>
                             <input type="date" name="delivery_date" required
+                                min="{{ date('Y-m-d') }}" value="{{ old('delivery_date') }}"
                                 class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#64ffda]/50 transition-all">
+                            <div class="error-msg"></div>
                         </div>
+                        @error('delivery_date') <div class="error-msg">{{ $message }}</div> @enderror
                         <div class="relative group">
                             <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-white/20 group-focus-within:text-[#64ffda] transition-colors">
                                 <i class="bi bi-clock text-lg"></i>
                             </div>
                             <input type="time" name="delivery_time" required
                                 class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#64ffda]/50 transition-all">
+                            <div class="error-msg"></div>
                         </div>
                     </div>
                 </div>
@@ -72,19 +91,26 @@
                 <div class="space-y-1">
                     <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Full Identity</label>
                     <input type="text" name="sender_name" placeholder="Name or Organization" required
+                        pattern="[a-zA-Z\s]+" title="Real Pattern: Only letters and spaces allowed"
+                        value="{{ old('sender_name') }}"
                         class="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:ring-1 focus:ring-[#64ffda]/50 transition-all">
+                    @error('sender_name') <div class="error-msg">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="space-y-1">
                     <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Secure Contact</label>
                     <input type="tel" name="sender_phone" placeholder="+92 XXX XXXXXXX" required
+                        pattern="[0-9+]+" title="Real Pattern: Only digits and + allowed"
+                        value="{{ old('sender_phone') }}"
                         class="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:ring-1 focus:ring-[#64ffda]/50 transition-all">
+                    @error('sender_phone') <div class="error-msg">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="space-y-1">
                     <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Physical Address</label>
                     <textarea name="sender_address" rows="3" placeholder="Full pickup coordinates..." required
                         class="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:ring-1 focus:ring-[#64ffda]/50 transition-all resize-none"></textarea>
+                    <div class="error-msg"></div>
                 </div>
             </div>
 
@@ -95,7 +121,10 @@
                 <div class="space-y-1">
                     <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Recipient Identity</label>
                     <input type="text" name="receiver_name" placeholder="Receiver full name" required
+                        pattern="[a-zA-Z\s]+" title="Real Pattern: Only letters and spaces allowed"
+                        value="{{ old('receiver_name') }}"
                         class="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:ring-1 focus:ring-[#64ffda]/50 transition-all">
+                    @error('receiver_name') <div class="error-msg">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="space-y-1 flex gap-4">
@@ -103,11 +132,15 @@
                         <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">City Hub</label>
                         <input type="text" name="to_city" placeholder="Lahore, KHI..." required
                             class="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:ring-1 focus:ring-[#64ffda]/50 transition-all">
+                        <div class="error-msg"></div>
                     </div>
                     <div class="w-1/2 space-y-1">
                         <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Contact No</label>
                         <input type="tel" name="receiver_phone" placeholder="+92 XXX..." required
+                            pattern="[0-9+]+" title="Real Pattern: Only digits and + allowed"
+                            value="{{ old('receiver_phone') }}"
                             class="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:ring-1 focus:ring-[#64ffda]/50 transition-all">
+                        @error('receiver_phone') <div class="error-msg">{{ $message }}</div> @enderror
                     </div>
                 </div>
 
@@ -115,6 +148,7 @@
                     <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Delivery Destination</label>
                     <textarea name="receiver_address" rows="3" placeholder="Full street address..." required
                         class="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:ring-1 focus:ring-[#64ffda]/50 transition-all resize-none"></textarea>
+                    <div class="error-msg"></div>
                 </div>
             </div>
         </div>
@@ -137,11 +171,13 @@
                     <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Weight (kg)</label>
                     <input type="number" step="0.1" name="weight" placeholder="0.0" required
                         class="w-full bg-black/20 border border-white/10 rounded-xl py-4 px-4 text-sm text-white focus:ring-1 focus:ring-[#64ffda]/50 transition-all outline-none">
+                    <div class="error-msg"></div>
                 </div>
                 <div class="space-y-1">
                     <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Freight Cost</label>
                     <input type="number" name="price" placeholder="PKR" required
                         class="w-full bg-black/20 border border-white/10 rounded-xl py-4 px-4 text-sm text-white focus:ring-1 focus:ring-[#64ffda]/50 transition-all outline-none">
+                    <div class="error-msg"></div>
                 </div>
             </div>
 

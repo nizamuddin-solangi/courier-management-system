@@ -177,6 +177,31 @@
 
     /* Make file input look premium */
     input[type="file"].form-input { padding-left: 2.8rem; }
+
+    .error-msg {
+      color: #ff6b6b;
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 5px;
+      margin-left: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input:invalid:not(:placeholder-shown) {
+      border-color: #ff6b6b !important;
+    }
+
+    .form-notice {
+      background: rgba(108,99,255,0.05);
+      border-left: 4px solid #6c63ff;
+      padding: 1rem;
+      border-radius: 0 1rem 1rem 0;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
   </style>
 
   <div class="auth-wrapper">
@@ -246,6 +271,11 @@
                 </div>
               @endif
 
+              <div class="form-notice">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <p style="font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin: 0;">Notice: Please complete all required fields. Real-time validation is active.</p>
+              </div>
+
               <form class="auth-form" method="POST" action="{{ route('user.profile.update') }}" enctype="multipart/form-data" novalidate>
                 @csrf
 
@@ -255,22 +285,25 @@
                 </div>
 
                 <input type="file" id="profileImageInput" name="image" class="form-input" accept="image/png,image/jpeg,image/jpg,image/webp" style="display:none;"/>
+                @error('image') <div class="error-msg" style="text-align:center; margin-top: -10px; margin-bottom: 10px;">{{ $message }}</div> @enderror
 
                 <div class="form-row">
                   <div class="form-group">
                     <label class="form-label">Full Name</label>
                     <div class="input-wrap">
                       <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                      <input type="text" name="name" class="form-input" value="{{ old('name', $user->name) }}" required/>
+                      <input type="text" name="name" class="form-input" value="{{ old('name', $user->name) }}" required pattern="[a-zA-Z\s]+" title="Real Pattern: Only letters and spaces allowed"/>
                     </div>
+                    @error('name') <div class="error-msg">{{ $message }}</div> @enderror
                   </div>
 
                   <div class="form-group">
                     <label class="form-label">Phone</label>
                     <div class="input-wrap">
                       <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.84h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81"/></svg>
-                      <input type="text" name="phone" class="form-input" value="{{ old('phone', $user->phone) }}" required/>
+                      <input type="text" name="phone" class="form-input" value="{{ old('phone', $user->phone) }}" required pattern="[0-9+]+" title="Real Pattern: Only digits and + allowed"/>
                     </div>
+                    @error('phone') <div class="error-msg">{{ $message }}</div> @enderror
                   </div>
                 </div>
 
@@ -280,14 +313,16 @@
                     <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                     <input type="email" name="email" class="form-input" value="{{ old('email', $user->email) }}" required autocomplete="email"/>
                   </div>
+                  @error('email') <div class="error-msg">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="form-group">
                   <label class="form-label">Address</label>
                   <div class="input-wrap">
                     <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    <input type="text" name="address" class="form-input" value="{{ old('address', $user->address) }}" placeholder="House #, Street, Area, City"/>
+                    <input type="text" name="address" class="form-input" value="{{ old('address', $user->address) }}" placeholder="House #, Street, Area, City" required/>
                   </div>
+                  <div class="error-msg"></div>
                 </div>
 
                 <div class="auth-divider"><span>Security</span></div>
@@ -307,6 +342,7 @@
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                       </button>
                     </div>
+                    <div class="error-msg"></div>
                   </div>
 
                   <div class="form-group">
@@ -318,6 +354,7 @@
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                       </button>
                     </div>
+                    @error('password') <div class="error-msg">{{ $message }}</div> @enderror
                   </div>
                 </div>
 
@@ -365,7 +402,43 @@
         }
       });
     })();
+
+    // Live Validation for User Portal
+    document.addEventListener('DOMContentLoaded', () => {
+        const inputs = document.querySelectorAll('.form-input');
+        inputs.forEach(input => {
+            input.addEventListener('input', () => validateField(input));
+            input.addEventListener('blur', () => validateField(input));
+        });
+
+        function validateField(input) {
+            let container = input.closest('.form-group');
+            let errorMsg = container.querySelector('.error-msg');
+            
+            if (input.required && !input.value.trim()) {
+                showError(input, errorMsg, 'Required field');
+            } else if (input.pattern && !new RegExp('^' + input.pattern + '$').test(input.value)) {
+                showError(input, errorMsg, input.title || 'Invalid format');
+            } else if (!input.checkValidity()) {
+                showError(input, errorMsg, input.validationMessage);
+            } else {
+                clearError(input, errorMsg);
+            }
+        }
+
+        function showError(input, errorMsg, message) {
+            input.style.borderColor = '#ff6b6b';
+            if (errorMsg) {
+                errorMsg.textContent = message;
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        function clearError(input, errorMsg) {
+            input.style.borderColor = '';
+            if (errorMsg) errorMsg.style.display = 'none';
+        }
+    });
   </script>
 </body>
 </html>
-

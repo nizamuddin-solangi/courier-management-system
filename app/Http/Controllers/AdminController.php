@@ -77,6 +77,16 @@ class AdminController extends Controller
     }
 
     public function update_customer(Request $request, $id){
+        $request->validate([
+            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
+            'phone' => ['required', 'string', 'max:20', 'regex:/^[0-9+]+$/'],
+            'city' => ['required', 'string', 'max:100'],
+            'address' => ['required', 'string', 'max:500'],
+        ], [
+            'name.regex' => 'The name must only contain letters and spaces (e.g., John Doe).',
+            'phone.regex' => 'The phone number must only contain digits and the plus symbol (e.g., +923001234567).',
+        ]);
+
         $customer = \App\Models\Customer::findOrFail($id);
         $customer->update($request->all());
         return redirect()->route('admin.customers')->with('success', 'Customer updated successfully');
@@ -247,6 +257,16 @@ class AdminController extends Controller
     }
 
     public function update_admin(Request $request,$id){
+        $request->validate([
+            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
+            'email' => ['required', 'email', 'unique:admins,email,'.$id],
+            'password' => ['nullable', 'min:6'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ], [
+            'name.regex' => 'The name must only contain letters and spaces.',
+            'image.image' => 'The file must be an image (JPG, PNG, WebP).',
+        ]);
+
         $myobject = Admin::find($id);
         
         if($request->has('name')) $myobject->name = $request->name;
@@ -261,7 +281,7 @@ class AdminController extends Controller
         }
         
         $myobject->save();
-        return redirect()->route('admin.profile');
+        return redirect()->route('admin.profile')->with('success', 'Admin profile updated successfully');
     }
 
     public function add_new_courier(){
@@ -270,6 +290,29 @@ class AdminController extends Controller
     }
 
     public function store_courier(Request $request){
+        $request->validate([
+            'agent_id' => 'required|exists:agents,id',
+            'delivery_date' => 'required|date|after_or_equal:today',
+            'delivery_time' => 'required',
+            'sender_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
+            'sender_phone' => ['required', 'string', 'max:20', 'regex:/^[0-9+]+$/'],
+            'sender_address' => 'required|string|max:500',
+            'receiver_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
+            'receiver_phone' => ['required', 'string', 'max:20', 'regex:/^[0-9+]+$/'],
+            'receiver_address' => 'required|string|max:500',
+            'from_city' => 'required|string',
+            'to_city' => 'required|string',
+            'parcel_type' => 'required|string',
+            'weight' => 'required|numeric|min:0.1',
+            'price' => 'required|numeric|min:0',
+        ], [
+            'sender_name.regex' => 'Sender name must contain only letters and spaces (e.g., Jane Smith).',
+            'receiver_name.regex' => 'Receiver name must contain only letters and spaces (e.g., Bob Johnson).',
+            'delivery_date.after_or_equal' => 'The delivery date cannot be in the past.',
+            'sender_phone.regex' => 'Sender phone must only contain digits and +.',
+            'receiver_phone.regex' => 'Receiver phone must only contain digits and +.',
+        ]);
+
         $myobject = new Courier();
         
         $myobject->tracking_number = 'CP-X-'.rand(1000, 9999);
@@ -325,6 +368,29 @@ class AdminController extends Controller
     }
 
     public function execute_update_courier(Request $request, $id){
+        $request->validate([
+            'agent_id' => 'required|exists:agents,id',
+            'delivery_date' => 'required|date', // Allowing past dates on edit for already existing records if needed, but usually it should be valid date
+            'delivery_time' => 'required',
+            'sender_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
+            'sender_phone' => ['required', 'string', 'max:20', 'regex:/^[0-9+]+$/'],
+            'sender_address' => 'required|string|max:500',
+            'receiver_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
+            'receiver_phone' => ['required', 'string', 'max:20', 'regex:/^[0-9+]+$/'],
+            'receiver_address' => 'required|string|max:500',
+            'from_city' => 'required|string',
+            'to_city' => 'required|string',
+            'parcel_type' => 'required|string',
+            'weight' => 'required|numeric|min:0.1',
+            'price' => 'required|numeric|min:0',
+            'status' => 'required|string',
+        ], [
+            'sender_name.regex' => 'Sender name must contain only letters and spaces.',
+            'receiver_name.regex' => 'Receiver name must contain only letters and spaces.',
+            'sender_phone.regex' => 'Sender phone must only contain digits and +.',
+            'receiver_phone.regex' => 'Receiver phone must only contain digits and +.',
+        ]);
+
         $myobject = Courier::find($id);
         $myobject->agent_id = $request->agent_id;
         $myobject->delivery_date = $request->delivery_date;
@@ -379,8 +445,21 @@ class AdminController extends Controller
 
     public function store_agent(Request $request){
         $request->validate([
+            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'email' => 'required|email|unique:agents,email',
+            'phone' => ['required', 'string', 'max:20', 'regex:/^[0-9+]+$/'],
             'username' => 'required|unique:agents,username',
+            'password' => 'required|min:6',
+            'branch_name' => 'required|string',
+            'city' => 'required|string',
+            'from_city' => 'required|string',
+            'to_city' => 'required|string',
+            'address' => 'required|string|max:500',
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ], [
+            'name.regex' => 'Agent name must only contain letters and spaces (e.g., Alan Walker).',
+            'phone.regex' => 'Phone number must only contain digits and +.',
+            'image.image' => 'The profile picture must be an image file.',
         ]);
 
         $myobject = new Agent();
@@ -427,8 +506,21 @@ class AdminController extends Controller
 
     public function execute_update_agent(Request $request, $id){
         $request->validate([
+            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'email' => 'required|email|unique:agents,email,'.$id,
+            'phone' => ['required', 'string', 'max:20', 'regex:/^[0-9+]+$/'],
             'username' => 'required|unique:agents,username,'.$id,
+            'password' => 'nullable|min:6',
+            'branch_name' => 'required|string',
+            'city' => 'required|string',
+            'from_city' => 'required|string',
+            'to_city' => 'required|string',
+            'address' => 'required|string|max:500',
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ], [
+            'name.regex' => 'Agent name must only contain letters and spaces.',
+            'phone.regex' => 'Phone number must only contain digits and +.',
+            'image.image' => 'The profile picture must be an image file.',
         ]);
 
         $myobject = Agent::find($id);

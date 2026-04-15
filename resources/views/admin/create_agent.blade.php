@@ -196,6 +196,18 @@
         transform: translateY(-2px);
         box-shadow: 0 15px 30px rgba(102, 252, 241, 0.3);
     }
+
+    .error-msg {
+        color: #ff4d4d;
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 5px;
+        font-family: inherit;
+    }
+
+    .wizard-input:invalid:not(:placeholder-shown) {
+        border-color: #ff4d4d;
+    }
 </style>
 
 <div class="wizard-container">
@@ -203,6 +215,11 @@
     <div class="text-center mb-10">
         <h2 class="text-4xl font-black text-white tracking-tight">Agent Provisioning</h2>
         <p class="text-[#45A29E] mt-2 font-medium">Follow the sequence to initialize new fleet personnel</p>
+    </div>
+
+    <div class="form-notice">
+        <i class="bi bi-info-circle-fill"></i>
+        <p class="text-xs font-bold text-white uppercase tracking-widest">Notice: Please complete all required fields. Real-time validation is active to ensure data integrity.</p>
     </div>
 
     @if(session('success'))
@@ -257,12 +274,14 @@
             
             <div class="wizard-field">
                 <label class="wizard-label">Username</label>
-                <input type="text" name="username" class="wizard-input" placeholder="e.g. operative_john">
+                <input type="text" name="username" class="wizard-input" placeholder="e.g. operative_john" value="{{ old('username') }}" required>
+                @error('username') <div class="error-msg">{{ $message }}</div> @enderror
             </div>
 
             <div class="wizard-field">
                 <label class="wizard-label">Portal Password</label>
-                <input type="password" name="password" class="wizard-input" placeholder="••••••••">
+                <input type="password" name="password" class="wizard-input" placeholder="••••••••" required minlength="6">
+                @error('password') <div class="error-msg">{{ $message }}</div> @enderror
             </div>
             
         </div>
@@ -276,29 +295,38 @@
 
             <div class="wizard-field">
                 <label class="wizard-label">Full Legal Name</label>
-                <input type="text" name="name" class="wizard-input" placeholder="Enter operative name">
+                <input type="text" name="name" class="wizard-input" placeholder="Enter operative name" required
+                       pattern="[a-zA-Z\s]+" title="Real Pattern: Only letters and spaces allowed"
+                       value="{{ old('name') }}">
+                @error('name') <div class="error-msg">{{ $message }}</div> @enderror
             </div>
             
             <div class="flex gap-4">
                 <div class="wizard-field flex-1">
                     <label class="wizard-label">Email Address</label>
-                    <input type="email" name="email" class="wizard-input" placeholder="agent@fleet.net">
+                    <input type="email" name="email" class="wizard-input" placeholder="agent@fleet.net" required value="{{ old('email') }}">
+                    @error('email') <div class="error-msg">{{ $message }}</div> @enderror
                 </div>
                 <div class="wizard-field flex-1">
                     <label class="wizard-label">Contact Number</label>
-                    <input type="text" name="phone" class="wizard-input" placeholder="+1 (000) 000-0000">
+                    <input type="text" name="phone" class="wizard-input" placeholder="+1 (000) 000-0000" required
+                           pattern="[0-9+]+" title="Real Pattern: Only digits and + allowed"
+                           value="{{ old('phone') }}">
+                    @error('phone') <div class="error-msg">{{ $message }}</div> @enderror
                 </div>
             </div>
 
             <div class="wizard-field">
                 <label class="wizard-label">Profile Image</label>
                 <div class="relative group">
-                    <input type="file" name="image" class="wizard-input pr-12" accept="image/*">
+                    <input type="file" name="image" class="wizard-input pr-12" accept="image/jpeg,image/png,image/webp" required>
                     <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[#45A29E] opacity-40 group-hover:opacity-100 transition-opacity">
                         <i class="bi bi-camera-fill text-xl"></i>
                     </div>
                 </div>
-                <p class="text-[10px] text-[#45A29E] font-bold uppercase tracking-tighter mt-2 opacity-50">Upload a professional headshot (JPG, PNG)</p>
+                <div class="error-msg"></div>
+                @error('image') <div class="error-msg">{{ $message }}</div> @enderror
+                <p class="text-[10px] text-[#45A29E] font-bold uppercase tracking-tighter mt-2 opacity-50">Upload a professional headshot (JPG, PNG, WebP)</p>
             </div>
         </div>
 
@@ -311,12 +339,14 @@
 
             <div class="wizard-field">
                 <label class="wizard-label">Home City</label>
-                <input type="text" name="city" class="wizard-input" placeholder="Metropolis">
+                <input type="text" name="city" class="wizard-input" placeholder="Metropolis" required value="{{ old('city') }}">
+                @error('city') <div class="error-msg">{{ $message }}</div> @enderror
             </div>
 
             <div class="wizard-field">
                 <label class="wizard-label">Full Residential Address</label>
-                <textarea name="address" class="wizard-input" rows="3" placeholder="123 Fleet Street, Sector B..."></textarea>
+                <textarea name="address" class="wizard-input" rows="3" placeholder="123 Fleet Street, Sector B..." required>{{ old('address') }}</textarea>
+                @error('address') <div class="error-msg">{{ $message }}</div> @enderror
             </div>
         </div>
 
@@ -332,20 +362,23 @@
                 <select name="branch_name" class="wizard-input cursor-pointer" required>
                     <option value="" disabled selected>Select an operational hub...</option>
                     @foreach($branches as $branch)
-                        <option value="{{ $branch->name }}">{{ $branch->name }} ({{ $branch->city }})</option>
+                        <option value="{{ $branch->name }}" {{ old('branch_name') == $branch->name ? 'selected' : '' }}>{{ $branch->name }} ({{ $branch->city }})</option>
                     @endforeach
                 </select>
+                @error('branch_name') <div class="error-msg">{{ $message }}</div> @enderror
                 <p class="text-[10px] text-[#45A29E] font-bold uppercase tracking-tighter mt-2 opacity-50 italic">Allocated from authorized fleet nodes</p>
             </div>
 
             <div class="flex gap-4">
                 <div class="wizard-field flex-1">
                     <label class="wizard-label">Jurisdiction Origin (From)</label>
-                    <input type="text" name="from_city" class="wizard-input" placeholder="City A">
+                    <input type="text" name="from_city" class="wizard-input" placeholder="City A" required value="{{ old('from_city') }}">
+                    @error('from_city') <div class="error-msg">{{ $message }}</div> @enderror
                 </div>
                 <div class="wizard-field flex-1">
                     <label class="wizard-label">Jurisdiction Target (To)</label>
-                    <input type="text" name="to_city" class="wizard-input" placeholder="City B">
+                    <input type="text" name="to_city" class="wizard-input" placeholder="City B" required value="{{ old('to_city') }}">
+                    @error('to_city') <div class="error-msg">{{ $message }}</div> @enderror
                 </div>
             </div>
         </div>

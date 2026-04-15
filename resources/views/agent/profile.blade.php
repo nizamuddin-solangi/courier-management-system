@@ -47,6 +47,19 @@
     .avatar-box:hover .avatar-overlay {
         opacity: 1;
     }
+
+    .error-msg {
+        color: #ff4d4d;
+        font-size: 10px;
+        font-weight: 700;
+        margin-top: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    input:invalid:not(:placeholder-shown) {
+        border-color: #ff4d4d !important;
+    }
 </style>
 
 <div class="max-w-5xl mx-auto space-y-8 animate-fade-in pb-12">
@@ -71,6 +84,11 @@
     </div>
     @endif
 
+    <div class="form-notice">
+        <i class="bi bi-info-circle-fill"></i>
+        <p class="text-[10px] font-bold text-white uppercase tracking-widest">Notice: Please complete all required fields. Real-time validation is active to ensure data integrity.</p>
+    </div>
+
     <form action="{{ route('agent.profile.update') }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         @csrf
         <!-- Left Column: Avatar & Branch -->
@@ -89,8 +107,9 @@
                             <i class="bi bi-camera-fill text-white text-2xl"></i>
                             <span class="text-white text-[10px] font-black uppercase tracking-widest">Update</span>
                         </div>
-                        <input type="file" name="image" id="imageUpload" class="hidden" accept="image/*" onchange="previewImage(this)">
+                        <input type="file" name="image" id="imageUpload" class="hidden" accept="image/jpeg,image/png,image/webp" onchange="previewImage(this)">
                     </label>
+                    @error('image') <div class="error-msg mt-4">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="space-y-4 mb-6">
@@ -137,23 +156,29 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-2">
                         <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Full Name</label>
-                        <input type="text" name="name" value="{{ $agent->name }}" required
+                        <input type="text" name="name" value="{{ old('name', $agent->name) }}" required
+                            pattern="[a-zA-Z\s]+" title="Real Pattern: Only letters and spaces allowed"
                             class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-sm text-white focus:ring-2 focus:ring-[#64ffda]/50 transition-all outline-none">
+                        @error('name') <div class="error-msg">{{ $message }}</div> @enderror
                     </div>
                     <div class="space-y-2">
                         <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Username</label>
                         <input type="text" name="username" value="{{ $agent->username }}" required
                             class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-sm text-white focus:ring-2 focus:ring-[#64ffda]/50 transition-all outline-none">
+                        <div class="error-msg"></div>
                     </div>
                     <div class="space-y-2">
                         <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Primary Email</label>
                         <input type="email" name="email" value="{{ $agent->email }}" required
                             class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-sm text-white focus:ring-2 focus:ring-[#64ffda]/50 transition-all outline-none">
+                        <div class="error-msg"></div>
                     </div>
                     <div class="space-y-2">
                         <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Contact Phone</label>
-                        <input type="tel" name="phone" value="{{ $agent->phone }}" required
+                        <input type="tel" name="phone" value="{{ old('phone', $agent->phone) }}" required
+                            pattern="[0-9+]+" title="Real Pattern: Only digits and + allowed"
                             class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-sm text-white focus:ring-2 focus:ring-[#64ffda]/50 transition-all outline-none">
+                        @error('phone') <div class="error-msg">{{ $message }}</div> @enderror
                     </div>
                 </div>
 
@@ -161,6 +186,7 @@
                     <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Residential/Office Address</label>
                     <textarea name="address" rows="3" required
                         class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-sm text-white focus:ring-2 focus:ring-[#64ffda]/50 transition-all outline-none resize-none">{{ $agent->address }}</textarea>
+                    <div class="error-msg"></div>
                 </div>
             </div>
 
@@ -182,12 +208,15 @@
                     <div class="space-y-2">
                         <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">New Password</label>
                         <input type="password" name="password" placeholder="••••••••"
-                            class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-sm text-white focus:ring-2 focus:ring-[#64ffda]/50 transition-all outline-none">
+                            class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-sm text-white focus:ring-2 focus:ring-[#64ffda]/50 transition-all outline-none" minlength="6">
+                        <div class="error-msg"></div>
                     </div>
                     <div class="space-y-2">
                         <label class="text-[10px] font-bold text-[#45A29E] uppercase tracking-widest pl-1">Confirm Update</label>
                         <input type="password" name="password_confirmation" placeholder="••••••••"
                             class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-sm text-white focus:ring-2 focus:ring-[#64ffda]/50 transition-all outline-none">
+                        <div class="error-msg"></div>
+                        @error('password') <div class="error-msg">{{ $message }}</div> @enderror
                     </div>
                 </div>
             </div>
