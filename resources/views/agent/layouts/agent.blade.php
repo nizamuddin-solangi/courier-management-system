@@ -92,6 +92,14 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.7; }
         }
+
+        .animate-fade-in {
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); filter: blur(4px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
     </style>
 </head>
 <body class="antialiased">

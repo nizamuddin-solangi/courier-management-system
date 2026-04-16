@@ -222,9 +222,15 @@ class AdminController extends Controller
         // Simulate SMS sending by logging it
         \Illuminate\Support\Facades\Log::info("[SMS SIMULATION] Sent to {$courier->receiver_phone}: {$message}");
 
-        // Store notifications for registered users (sender/receiver phone matches users.phone)
+        // Store notifications for registered users using robust phone matching (last 10 digits)
+        $p1 = $courier->sender_phone;
+        $p2 = $courier->receiver_phone;
+
         $recipientUsers = User::query()
-            ->whereIn('phone', array_values(array_unique(array_filter([$courier->sender_phone, $courier->receiver_phone]))))
+            ->where(function($q) use ($p1, $p2) {
+                if ($p1 && strlen($p1) >= 10) $q->where('phone', 'like', '%' . substr($p1, -10));
+                if ($p2 && strlen($p2) >= 10) $q->orWhere('phone', 'like', '%' . substr($p2, -10));
+            })
             ->get();
 
         foreach ($recipientUsers as $u) {
@@ -239,7 +245,7 @@ class AdminController extends Controller
             ]);
         }
 
-        return back()->with('success', "Simulated SMS sent to {$courier->receiver_phone} successfully!");
+        return back()->with('success', "Simulated SMS sent successfully!");
     }
 
     public function status(){
@@ -252,14 +258,14 @@ class AdminController extends Controller
     }
 
     public function edit_admin($id){
-        $result = Admin::find($id);
+        $result = Admin::findOrFail($id);
         return view('admin.profile', compact('result'));
     }
 
     public function update_admin(Request $request,$id){
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
-            'email' => ['required', 'email', 'unique:admins,email,'.$id],
+            'email' => ['required', 'email', 'unique:admin,email,'.$id],
             'password' => ['nullable', 'min:6'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ], [
@@ -271,7 +277,7 @@ class AdminController extends Controller
         
         if($request->has('name')) $myobject->name = $request->name;
         if($request->has('email')) $myobject->email = $request->email;
-        if($request->filled('password')) $myobject->password = $request->password;
+        if($request->filled('password')) $myobject->password = \Illuminate\Support\Facades\Hash::make($request->password);
         
         if($request->hasFile('image')){
             $file = $request->file('image');
@@ -352,6 +358,29 @@ class AdminController extends Controller
                 'city' => $request->to_city,
             ]
         );
+        
+        // --- Automated Notifications using robust phone matching ---
+        $p1 = $request->sender_phone;
+        $p2 = $request->receiver_phone;
+        
+        $recipients = User::query()
+            ->where(function($q) use ($p1, $p2) {
+                if ($p1 && strlen($p1) >= 10) $q->where('phone', 'like', '%' . substr($p1, -10));
+                if ($p2 && strlen($p2) >= 10) $q->orWhere('phone', 'like', '%' . substr($p2, -10));
+            })
+            ->get();
+
+        foreach ($recipients as $u) {
+            Notification::create([
+                'user_id' => $u->id,
+                'courier_id' => $myobject->id,
+                'type' => 'system',
+                'title' => 'New Shipment Booked',
+                'message' => "A new shipment #{$myobject->tracking_number} has been booked from {$myobject->from_city} to {$myobject->to_city} for you.",
+                'sent_by_type' => 'admin',
+                'sent_by_id' => $request->session()->get('admin_id'),
+            ]);
+        }
 
         return redirect()->route('admin.add_new_courier')->with('success', 'Courier added successfully!');
     }
@@ -392,6 +421,7 @@ class AdminController extends Controller
         ]);
 
         $myobject = Courier::find($id);
+        $oldStatus = $myobject->status;
         $myobject->agent_id = $request->agent_id;
         $myobject->delivery_date = $request->delivery_date;
         $myobject->delivery_time = $request->delivery_time;
@@ -409,6 +439,32 @@ class AdminController extends Controller
         $myobject->status = $request->status;
         
         $myobject->save();
+
+        // --- Automated Notifications for Status Change using robust phone matching ---
+        if ($oldStatus !== $myobject->status) {
+            $formattedStatus = str_replace('_', ' ', ucwords($myobject->status));
+            $p1 = $myobject->sender_phone;
+            $p2 = $myobject->receiver_phone;
+
+            $recipients = User::query()
+                ->where(function($q) use ($p1, $p2) {
+                    if ($p1 && strlen($p1) >= 10) $q->where('phone', 'like', '%' . substr($p1, -10));
+                    if ($p2 && strlen($p2) >= 10) $q->orWhere('phone', 'like', '%' . substr($p2, -10));
+                })
+                ->get();
+
+            foreach ($recipients as $u) {
+                Notification::create([
+                    'user_id' => $u->id,
+                    'courier_id' => $myobject->id,
+                    'type' => 'system',
+                    'title' => 'Shipment Status Updated',
+                    'message' => "Your shipment #{$myobject->tracking_number} status has been updated to: {$formattedStatus}.",
+                    'sent_by_type' => 'admin',
+                    'sent_by_id' => $request->session()->get('admin_id'),
+                ]);
+            }
+        }
 
         // Sync Sender to Customer Registry
         \App\Models\Customer::updateOrCreate(

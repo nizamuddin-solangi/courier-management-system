@@ -12,6 +12,7 @@
         <div class="glass-panel px-4 py-2 rounded-xl flex items-center gap-3 border border-white/5">
             <div class="w-2 h-2 rounded-full bg-[#64ffda] animate-pulse shadow-[0_0_10px_#64ffda]"></div>
             <span class="text-[10px] font-bold text-white uppercase tracking-widest">{{ $current_agent->agent_code }} TERMINAL</span>
+        </div>
     </div>
 
     <style>

@@ -22,7 +22,7 @@
   <div class="auth-wrapper">
     <!-- Left Panel -->
     <div class="auth-panel-left">
-      <a href="index.html" class="auth-logo">
+      <a href="/user/index" class="auth-logo">
         <div class="logo-icon">
           <svg width="32" height="32" viewBox="0 0 28 28" fill="none">
             <path d="M4 8L14 3L24 8V20L14 25L4 20V8Z" stroke="url(#authLogo)" stroke-width="2" fill="none"/>

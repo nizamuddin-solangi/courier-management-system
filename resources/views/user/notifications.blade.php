@@ -30,6 +30,7 @@
       </a>
 
       <div class="nav-links">
+        <a href="/user/index" class="nav-link">Home</a>
         <a href="/user/track" class="nav-link">Track</a>
         <a href="/user/profile" class="nav-link">Profile</a>
         <a href="/user/notifications" class="nav-link" style="position:relative;">

@@ -20,7 +20,7 @@
   <!-- Navbar -->
   <nav class="navbar" id="navbar">
     <div class="nav-container">
-      <a href="index.html" class="nav-logo">
+      <a href="/user/index" class="nav-logo">
         <div class="logo-icon">
           <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
             <path d="M4 8L14 3L24 8V20L14 25L4 20V8Z" stroke="url(#tLogo)" stroke-width="2" fill="none"/>

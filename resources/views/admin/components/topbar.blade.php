@@ -101,7 +101,7 @@
 
                 <!-- Logout -->
                 <div class="px-2 pb-2 pt-1 border-t border-white/5">
-                    <a href="/admin/login" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all group">
+                    <a href="{{ route('admin.logout') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all group">
                         <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 group-hover:bg-red-500/15 transition-all">
                             <i class="bi bi-box-arrow-right text-red-400 text-base"></i>
                         </div>

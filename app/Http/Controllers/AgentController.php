@@ -168,6 +168,29 @@ class AgentController extends Controller
                 'city' => $request->to_city,
             ]
         );
+        
+        // --- Automated Notifications using robust phone matching ---
+        $p1 = $request->sender_phone;
+        $p2 = $request->receiver_phone;
+        
+        $recipients = User::query()
+            ->where(function($q) use ($p1, $p2) {
+                if ($p1 && strlen($p1) >= 10) $q->where('phone', 'like', '%' . substr($p1, -10));
+                if ($p2 && strlen($p2) >= 10) $q->orWhere('phone', 'like', '%' . substr($p2, -10));
+            })
+            ->get();
+
+        foreach ($recipients as $u) {
+            Notification::create([
+                'user_id' => $u->id,
+                'courier_id' => $myobject->id,
+                'type' => 'system',
+                'title' => 'New Shipment Booked',
+                'message' => "A new shipment #{$myobject->tracking_number} has been booked from {$myobject->from_city} to {$myobject->to_city} for you.",
+                'sent_by_type' => 'agent',
+                'sent_by_id' => Session::get('agent_id'),
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Shipment Registered Successfully!');
     }
@@ -205,8 +228,15 @@ class AgentController extends Controller
 
         Log::info("[SMS SIMULATION][AGENT] Sent to {$courier->receiver_phone}: {$message}");
 
+        // Store notifications for registered users using robust phone matching (last 10 digits)
+        $p1 = $courier->sender_phone;
+        $p2 = $courier->receiver_phone;
+
         $recipientUsers = User::query()
-            ->whereIn('phone', array_values(array_unique(array_filter([$courier->sender_phone, $courier->receiver_phone]))))
+            ->where(function($q) use ($p1, $p2) {
+                if ($p1 && strlen($p1) >= 10) $q->where('phone', 'like', '%' . substr($p1, -10));
+                if ($p2 && strlen($p2) >= 10) $q->orWhere('phone', 'like', '%' . substr($p2, -10));
+            })
             ->get();
 
         foreach ($recipientUsers as $u) {
@@ -221,7 +251,7 @@ class AgentController extends Controller
             ]);
         }
 
-        return back()->with('success', "Simulated SMS sent to {$courier->receiver_phone} successfully!");
+        return back()->with('success', "Simulated SMS sent successfully!");
     }
 
     public function reports()

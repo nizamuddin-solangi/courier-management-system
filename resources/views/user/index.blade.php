@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body class="landing-body">
 
@@ -24,7 +25,7 @@
   <!-- Navbar -->
   <nav class="navbar" id="navbar">
     <div class="nav-container">
-      <a href="index" class="nav-logo">
+      <a href="/user/index" class="nav-logo">
         <div class="logo-icon">
           <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
             <path d="M4 8L14 3L24 8V20L14 25L4 20V8Z" stroke="url(#logoGrad)" stroke-width="2" fill="none"/>
@@ -240,6 +241,79 @@
       </div>
     </div>
   </section>
+
+  <!-- My Shipments Section (Visible after login) -->
+  @if(session('user_logged_in') && isset($shipments) && $shipments->isNotEmpty())
+  <section class="user-shipments-section" id="my-shipments" style="padding: 40px 2rem 100px; position: relative; z-index: 10;">
+    <div class="section-container">
+      <div class="section-header" style="text-align: left; margin-bottom: 2.5rem; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+        <div class="animate-in">
+          <div class="section-badge">✦ Welcome Back</div>
+          <h2 class="section-title">Your <span class="gradient-text">Recent Shipments</span></h2>
+          <p style="color:var(--text-secondary); margin-top: 10px; font-family: var(--font-body); max-width: 500px;">We've automatically synced shipments associated with your phone number.</p>
+        </div>
+        <a href="/user/track" class="btn-ghost animate-in" style="text-decoration: none; padding: 12px 24px; border-radius: 12px;">View All Tracking</a>
+      </div>
+
+      <div class="shipments-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 1.5rem;">
+        @foreach($shipments as $ship)
+        <div class="feature-card animate-in" style="padding: 2rem; display: flex; flex-direction: column; height: 100%; position: relative; overflow: hidden; animation-delay: {{ $loop->index * 0.1 }}s">
+          <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: radial-gradient(circle, rgba(108,99,255,0.05) 0%, transparent 70%); pointer-events: none;"></div>
+          
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+            <div style="display: flex; flex-direction: column;">
+              <span style="font-size: 0.7rem; color: var(--purple-light); font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 4px; opacity: 0.8;">Awb / Tracking Id</span>
+              <h4 style="font-size: 1.3rem; font-weight: 800; color: #fff; letter-spacing: -0.5px;">{{ $ship->tracking_number }}</h4>
+            </div>
+            @php
+              $status = strtolower($ship->status);
+              $badgeColor = '#F7971E'; // Pending
+              if($status == 'in_transit') $badgeColor = '#6C63FF';
+              if($status == 'delivered') $badgeColor = '#43E97B';
+              if($status == 'cancelled') $badgeColor = '#FF6B6B';
+            @endphp
+            <div style="padding: 6px 14px; border-radius: 50px; background: {{ $badgeColor }}12; border: 1px solid {{ $badgeColor }}30; color: {{ $badgeColor }}; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px;">
+              <span style="width: 6px; height: 6px; border-radius: 50%; background: {{ $badgeColor }}; box-shadow: 0 0 8px {{ $badgeColor }};"></span>
+              {{ str_replace('_', ' ', $status) }}
+            </div>
+          </div>
+
+          <div style="margin-bottom: 2rem; position: relative;">
+            <div style="position: absolute; left: 15px; top: 25px; bottom: 25px; width: 2px; background: linear-gradient(to bottom, var(--purple) 0%, rgba(255,255,255,0.05) 100%); opacity: 0.3;"></div>
+            
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 12px; position: relative; z-index: 1;">
+              <div style="width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                <i class="bi bi-geo-alt" style="font-size: 14px;"></i>
+              </div>
+              <div style="display: flex; flex-direction: column;">
+                <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Origin Hub</span>
+                <span style="font-size: 1rem; font-weight: 700; color: var(--text-primary);">{{ $ship->from_city }}</span>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 15px; position: relative; z-index: 1;">
+              <div style="width: 32px; height: 32px; border-radius: 10px; background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.25); display: flex; align-items: center; justify-content: center; color: var(--purple-light);">
+                <i class="bi bi-geo-alt-fill" style="font-size: 14px;"></i>
+              </div>
+              <div style="display: flex; flex-direction: column;">
+                <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Destination</span>
+                <span style="font-size: 1rem; font-weight: 700; color: var(--text-primary);">{{ $ship->to_city }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: auto; display: flex; gap: 10px; position: relative; z-index: 5;">
+            <a href="/user/track?id={{ $ship->tracking_number }}" class="btn-track" style="flex: 1; justify-content: center; padding: 12px; font-size: 0.9rem; text-decoration: none; border-radius: 14px;">
+              <span>Track Now</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        @endforeach
+      </div>
+    </div>
+  </section>
+  @endif
 
   <!-- Features Section -->
   <section class="features-section" id="features">

@@ -375,6 +375,7 @@
   background: linear-gradient(135deg, rgba(108,99,255,0.05), transparent);
   opacity: 0;
   transition: var(--transition);
+  pointer-events: none;
 }
 
 .feature-card:hover {

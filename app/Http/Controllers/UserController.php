@@ -14,8 +14,21 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UserController extends Controller
 {
-    public function index(){
-        return view("user.index");
+    public function index()
+    {
+        $shipments = collect();
+        if (Session::has('user_id')) {
+            $user = User::find(Session::get('user_id'));
+            if ($user && $user->phone) {
+                $shipments = Courier::query()
+                    ->where('sender_phone', $user->phone)
+                    ->orWhere('receiver_phone', $user->phone)
+                    ->orderBy('created_at', 'desc')
+                    ->take(8) // Displaying last 8 shipments for a clean UI
+                    ->get();
+            }
+        }
+        return view("user.index", compact('shipments'));
     }
 
     public function track(){
