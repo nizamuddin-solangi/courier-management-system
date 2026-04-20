@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +20,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Force HTTPS in production (required when behind a reverse proxy like Railway/Render)
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         \Illuminate\Support\Facades\View::composer('*', function ($view) {
             if (\Illuminate\Support\Facades\Session::has('admin_id')) {
                 $admin = \App\Models\Admin::find(\Illuminate\Support\Facades\Session::get('admin_id'));
