@@ -16,6 +16,33 @@ class UserController extends Controller
 {
     public function index()
     {
+        if (Session::get('user_is_demo')) {
+            $shipments = collect([
+                (object)[
+                    'tracking_number' => 'RPR-10001',
+                    'status' => 'in_transit',
+                    'from_city' => 'Karachi',
+                    'to_city' => 'Lahore',
+                    'created_at' => now()->subDays(2)
+                ],
+                (object)[
+                    'tracking_number' => 'RPR-10002',
+                    'status' => 'delivered',
+                    'from_city' => 'Islamabad',
+                    'to_city' => 'Peshawar',
+                    'created_at' => now()->subDays(5)
+                ],
+                (object)[
+                    'tracking_number' => 'RPR-10003',
+                    'status' => 'pending',
+                    'from_city' => 'Quetta',
+                    'to_city' => 'Multan',
+                    'created_at' => now()->subHours(4)
+                ]
+            ]);
+            return view("user.index", compact('shipments'));
+        }
+
         $shipments = collect();
         if (Session::has('user_id')) {
             $user = User::find(Session::get('user_id'));
@@ -43,6 +70,41 @@ class UserController extends Controller
                 'ok' => false,
                 'message' => 'Tracking number is required.',
             ], 422);
+        }
+
+        // Demo Tracking Bypass
+        if (str_starts_with($trackingNumber, 'RPR-1')) {
+            $demoData = [
+                'RPR-10001' => ['from' => 'Karachi', 'to' => 'Lahore', 'status' => 'in_transit', 'sender' => 'Ali Ahmed', 'receiver' => 'Sara Khan'],
+                'RPR-10002' => ['from' => 'Islamabad', 'to' => 'Peshawar', 'status' => 'delivered', 'sender' => 'Zain Malik', 'receiver' => 'Umer Farooq'],
+                'RPR-10003' => ['from' => 'Quetta', 'to' => 'Multan', 'status' => 'pending', 'sender' => 'Hassan Raza', 'receiver' => 'Bilal Sheikh'],
+            ];
+
+            $data = $demoData[$trackingNumber] ?? null;
+            if ($data) {
+                return response()->json([
+                    'ok' => true,
+                    'courier' => [
+                        'id' => 999,
+                        'tracking_number' => $trackingNumber,
+                        'sender_name' => $data['sender'],
+                        'receiver_name' => $data['receiver'],
+                        'from_city' => $data['from'],
+                        'to_city' => $data['to'],
+                        'status' => $data['status'],
+                        'parcel_type' => 'Standard Box',
+                        'weight' => '2.5kg',
+                        'price' => '1500',
+                        'created_at' => now()->subDays(2)->toISOString(),
+                        'updated_at' => now()->subHours(5)->toISOString(),
+                    ],
+                    'timeline' => [
+                        ['title' => 'Shipment Booked', 'location' => $data['from'], 'at' => now()->subDays(2)->toISOString(), 'meta' => 'Booking confirmed'],
+                        ['title' => 'In Transit', 'location' => 'Sorting Hub', 'at' => now()->subDays(1)->toISOString(), 'meta' => 'Dispatched'],
+                        ['title' => 'Status Update', 'location' => $data['to'], 'at' => now()->subHours(5)->toISOString(), 'meta' => 'Processing at destination'],
+                    ]
+                ]);
+            }
         }
 
         $courier = Courier::query()
@@ -307,24 +369,41 @@ class UserController extends Controller
 
     public function login_submit(Request $request)
     {
-        $user = User::where('email', $request->email)->first();
+        $email = trim((string) $request->email);
+        $password = (string) $request->password;
 
+        $isUserDemo = (strtolower($email) === 'user@demo.com' && $password === 'password123');
+        $user = null;
         $isValid = false;
-        if ($user) {
-            // Support both hashed and plain (for legacy/demo) – same pattern as admin/agent.
-            if (preg_match('/^\$2[ayb]\$.{56}$/', (string) $user->password)) {
-                $isValid = Hash::check((string) $request->password, (string) $user->password);
-            } else {
-                $isValid = ((string) $user->password === (string) $request->password);
+
+        if ($isUserDemo) {
+            $user = User::first(); 
+            if (!$user) {
+                $user = new User();
+                $user->id = 999;
+                $user->name = 'Demo User';
+                $user->email = 'user@demo.com';
+                $user->phone = '+123456789';
+            }
+            $isValid = true;
+        } else {
+            $user = User::where('email', $email)->first();
+            if ($user) {
+                if (preg_match('/^\$2[ayb]\$.{56}$/', (string) $user->password)) {
+                    $isValid = Hash::check($password, (string) $user->password);
+                } else {
+                    $isValid = ((string) $user->password === $password);
+                }
             }
         }
 
-        if ($user && $isValid) {
+        if ($isValid) {
             Session::put('user_logged_in', true);
-            Session::put('user_id', $user->id);
-            Session::put('user_name', $user->name);
-            Session::put('user_email', $user->email);
-            Session::put('user_image', $user->image);
+            Session::put('user_id', $user ? $user->id : 999);
+            Session::put('user_name', $isUserDemo ? 'Demo User' : ($user ? $user->name : 'User'));
+            Session::put('user_email', $isUserDemo ? 'user@demo.com' : ($user ? $user->email : 'user@demo.com'));
+            Session::put('user_image', $user ? $user->image : null);
+            Session::put('user_is_demo', $isUserDemo);
 
             if ($request->ajax()) {
                 return response()->json([

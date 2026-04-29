@@ -99,7 +99,62 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
         </form>
-        <a href="/user/register" class="btn-auth-outline">Create Account</a>
+
+        <!-- Unified Sandbox Experience Hub -->
+        <div class="pt-8 mt-8 border-t border-white/5">
+            <div class="p-5 rounded-[2.5rem] bg-[#6C63FF]/5 border border-[#6C63FF]/10 flex flex-col gap-4">
+                <div class="flex items-center justify-between px-1">
+                    <span class="text-[10px] font-bold text-[#6C63FF] uppercase tracking-widest">Sandbox Experience Hub</span>
+                    <span class="px-2 py-0.5 rounded-full bg-[#6C63FF]/20 text-[9px] font-black text-[#6C63FF] uppercase">Quick Access</span>
+                </div>
+                
+                <div class="grid gap-3">
+                    <!-- Customer Demo -->
+                    <button type="button" onclick="fillUserDemo('user@demo.com', 'password123')" class="group flex items-center justify-between p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-[#6C63FF]/30 transition-all text-left">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-[#6C63FF]/10 flex items-center justify-center text-[#6C63FF] group-hover:bg-[#6C63FF] group-hover:text-white transition-all shadow-sm">
+                                <i class="bi bi-person-badge text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-white">Customer Portal</p>
+                                <p class="text-[9px] text-[#C5C6C7] opacity-60">user@demo.com / password123</p>
+                            </div>
+                        </div>
+                        <i class="bi bi-arrow-right-short text-xl text-[#C5C6C7] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                    </button>
+
+                    <!-- Agent Demo -->
+                    <a href="/agent/login" class="group flex items-center justify-between p-3 rounded-2xl bg-black/20 border border-white/5 hover:border-[#64ffda]/30 transition-all text-left">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-[#64ffda]/10 flex items-center justify-center text-[#64ffda] group-hover:bg-[#64ffda] group-hover:text-black transition-all shadow-sm">
+                                <i class="bi bi-truck text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-white">Agent Node</p>
+                                <p class="text-[9px] text-[#C5C6C7] opacity-60">agent_demo / password123</p>
+                            </div>
+                        </div>
+                        <i class="bi bi-box-arrow-in-right text-base text-[#64ffda] opacity-40 group-hover:opacity-100 transition-all"></i>
+                    </a>
+
+                    <!-- Admin Demo -->
+                    <a href="/admin/login" class="group flex items-center justify-between p-3 rounded-2xl bg-black/20 border border-white/5 hover:border-amber-500/30 transition-all text-left">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all shadow-sm">
+                                <i class="bi bi-shield-lock text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-white">Admin Central</p>
+                                <p class="text-[9px] text-[#C5C6C7] opacity-60">admin@demo.com / password123</p>
+                            </div>
+                        </div>
+                        <i class="bi bi-box-arrow-in-right text-base text-amber-500 opacity-40 group-hover:opacity-100 transition-all"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <a href="/user/register" class="btn-auth-outline" style="margin-top: 1.5rem;">Create Account</a>
         <a href="/user/track" class="auth-guest-link">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           Track without signing in
@@ -108,6 +163,25 @@
     </div>
   </div>
 
+  <script>
+    function fillUserDemo(email, pass) {
+        const emailInput = document.getElementById('loginEmail');
+        const passInput = document.getElementById('loginPassword');
+        const form = document.getElementById('loginForm');
+        
+        emailInput.value = email;
+        passInput.value = pass;
+        
+        // Visual feedback
+        emailInput.classList.add('border-[#6C63FF]');
+        passInput.classList.add('border-[#6C63FF]');
+        
+        setTimeout(() => {
+            const event = new Event('submit', { cancelable: true, bubbles: true });
+            form.dispatchEvent(event);
+        }, 400);
+    }
+  </script>
   <script src="{{ asset('js/main.js') }}"></script>
   <script src="{{ asset('js/auth.js') }}"></script>
 </body>

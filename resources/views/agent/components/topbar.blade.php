@@ -41,8 +41,8 @@
                     <span class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-500 border-2 border-[#1F2833] shadow-[0_0_10px_rgba(16,185,129,0.4)]"></span>
                 </div>
                 <div class="hidden md:flex flex-col items-start leading-none gap-1 text-left">
-                    <span class="text-xs font-bold text-white">{{ $current_agent->name ?? 'Agent' }}</span>
-                    <span class="text-[10px] text-[#45A29E] font-medium uppercase tracking-tighter">{{ $current_agent->agent_code ?? 'AGT-XXXX' }}</span>
+                    <span class="text-xs font-bold text-white">{{ $current_agent?->name ?? 'Agent' }}</span>
+                    <span class="text-[10px] text-[#45A29E] font-medium uppercase tracking-tighter">{{ $current_agent?->agent_code ?? 'AGT-XXXX' }}</span>
                 </div>
                 <i class="bi bi-chevron-down text-xs text-[#C5C6C7] opacity-50 transition-transform duration-200" id="agentProfileChevron"></i>
             </button>
@@ -59,8 +59,8 @@
                             @endif
                         </div>
                         <div>
-                            <p class="text-sm font-bold text-white">{{ $current_agent->name ?? 'Agent Name' }}</p>
-                            <p class="text-[11px] text-[#45A29E] font-medium">{{ $current_agent->email ?? 'agent@rapidroute.com' }}</p>
+                            <p class="text-sm font-bold text-white">{{ $current_agent?->name ?? 'Agent Name' }}</p>
+                            <p class="text-[11px] text-[#45A29E] font-medium">{{ $current_agent?->email ?? 'agent@rapidroute.com' }}</p>
                         </div>
                     </div>
                 </div>
