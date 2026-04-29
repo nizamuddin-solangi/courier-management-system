@@ -44,41 +44,41 @@ class AgentController extends Controller
 
     public function login_submit(Request $request)
     {
-        // Demo Login Check
-        if ($request->username === 'agent_demo' && $request->password === 'password123') {
-            $agent = Agent::first(); // Use first available agent for demo
-        } else {
-            $agent = Agent::where('username', $request->username)->first();
-        }
-        
+        $username = trim((string) $request->username);
+        $password = (string) $request->password;
+
+        $isAgentDemo = (strtolower($username) === 'agent_demo' && $password === 'password123');
+        $agent = null;
         $isValid = false;
-        if ($agent) {
-            // Handle Demo Bypass
-            if ($request->username === 'agent_demo' && $request->password === 'password123') {
-                $isValid = true;
-            } 
-            // Support both hashed and plain (for legacy/demo)
-            elseif (preg_match('/^\$2[ayb]\$.{56}$/', $agent->password)) {
-                $isValid = Hash::check($request->password, $agent->password);
-            } else {
-                $isValid = ($agent->password === $request->password);
+
+        if ($isAgentDemo) {
+            $agent = Agent::first(); 
+            if (!$agent) {
+                $agent = new Agent();
+                $agent->id = 999;
+                $agent->name = 'Demo Agent';
+                $agent->username = 'agent_demo';
+                $agent->is_active = 1;
+                $agent->branch_name = 'Demo Branch (Sandbox)';
+            }
+            $isValid = true;
+        } else {
+            $agent = Agent::where('username', $username)->first();
+            if ($agent) {
+                if (preg_match('/^\$2[ayb]\$.{56}$/', (string) $agent->password)) {
+                    $isValid = Hash::check($password, $agent->password);
+                } else {
+                    $isValid = ($agent->password === $password);
+                }
             }
         }
 
-        if ($agent && $isValid && $agent->is_active) {
+        if ($isValid && ($isAgentDemo || ($agent && $agent->is_active))) {
             Session::put('agent_logged_in', true);
-            Session::put('agent_id', $agent->id);
-            Session::put('agent_name', $agent->name);
-            Session::put('agent_branch', $agent->branch_name);
-
-            // Set Demo Mode Flag
-            if ($request->username === 'agent_demo') {
-                Session::put('agent_is_demo', true);
-                Session::put('agent_name', 'Demo Agent');
-                Session::put('agent_branch', 'Demo Branch (Sandbox)');
-            } else {
-                Session::put('agent_is_demo', false);
-            }
+            Session::put('agent_id', $agent ? $agent->id : 999);
+            Session::put('agent_name', $isAgentDemo ? 'Demo Agent' : ($agent ? $agent->name : 'Agent'));
+            Session::put('agent_branch', $isAgentDemo ? 'Demo Branch (Sandbox)' : ($agent ? $agent->branch_name : 'Branch'));
+            Session::put('agent_is_demo', $isAgentDemo);
             
             if ($request->ajax()) {
                 return response()->json([

@@ -187,39 +187,38 @@ class AdminController extends Controller
     }
 
     public function login_submit(Request $request){
-        // Demo Login Check
-        if ($request->email === 'admin@demo.com' && $request->password === 'password123') {
-            $admin = \App\Models\Admin::first(); // Use first available admin for demo
-        } else {
-            $admin = \App\Models\Admin::where('email', $request->email)->first();
-        }
-        
+        $email = trim((string) $request->email);
+        $password = (string) $request->password;
+
+        $isAdminDemo = (strtolower($email) === 'admin@demo.com' && $password === 'password123');
+        $admin = null;
         $isValid = false;
-        if ($admin) {
-            // Handle Demo Bypass
-            if ($request->email === 'admin@demo.com' && $request->password === 'password123') {
-                $isValid = true;
-            } 
-            // Support both hashed and plain
-            elseif (preg_match('/^\$2[ayb]\$.{56}$/', $admin->password)) {
-                $isValid = \Illuminate\Support\Facades\Hash::check($request->password, $admin->password);
-            } else {
-                $isValid = ($admin->password === $request->password);
+
+        if ($isAdminDemo) {
+            $admin = \App\Models\Admin::first(); 
+            if (!$admin) {
+                $admin = new \App\Models\Admin();
+                $admin->id = 999;
+                $admin->name = 'Demo Administrator';
+                $admin->email = 'admin@demo.com';
+            }
+            $isValid = true;
+        } else {
+            $admin = \App\Models\Admin::where('email', $email)->first();
+            if ($admin) {
+                if (preg_match('/^\$2[ayb]\$.{56}$/', (string) $admin->password)) {
+                    $isValid = \Illuminate\Support\Facades\Hash::check($password, $admin->password);
+                } else {
+                    $isValid = ($admin->password === $password);
+                }
             }
         }
 
-        if ($admin && $isValid) {
+        if ($isValid) {
             $request->session()->put('admin_logged_in', true);
-            $request->session()->put('admin_id', $admin->id);
-            $request->session()->put('admin_name', $admin->name);
-            
-            // Set Demo Mode Flag
-            if ($request->email === 'admin@demo.com') {
-                $request->session()->put('admin_is_demo', true);
-                $request->session()->put('admin_name', 'Demo Administrator');
-            } else {
-                $request->session()->put('admin_is_demo', false);
-            }
+            $request->session()->put('admin_id', $admin ? $admin->id : 999);
+            $request->session()->put('admin_name', $isAdminDemo ? 'Demo Administrator' : ($admin ? $admin->name : 'Administrator'));
+            $request->session()->put('admin_is_demo', $isAdminDemo);
             
             if ($request->ajax()) {
                 return response()->json([
