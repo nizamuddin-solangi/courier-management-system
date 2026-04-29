@@ -192,6 +192,27 @@
                 </button>
             </form>
 
+            <div class="pt-6 border-t border-white/5">
+                <div class="p-4 rounded-3xl bg-[#66FCF1]/5 border border-[#66FCF1]/10 flex flex-col gap-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold text-[#66FCF1] uppercase tracking-widest">Demo Credentials</span>
+                        <span class="px-2 py-0.5 rounded-full bg-[#66FCF1]/20 text-[9px] font-black text-[#66FCF1] uppercase">Quick Access</span>
+                    </div>
+                    <button type="button" onclick="fillDemo('admin@demo.com', 'password123')" class="group flex items-center justify-between p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-[#66FCF1]/30 transition-all text-left">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-[#66FCF1]">
+                                <i class="bi bi-shield-lock"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-white">Full Admin Access</p>
+                                <p class="text-[10px] text-[#C5C6C7] opacity-60">admin@demo.com / password123</p>
+                            </div>
+                        </div>
+                        <i class="bi bi-arrow-right-short text-xl text-[#C5C6C7] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                    </button>
+                </div>
+            </div>
+
             <div class="pt-6 border-t border-white/5 text-center">
                 <p class="text-[10px] font-bold text-[#45A29E] opacity-60">SECURED BY FLEET-SCAN QUANTUM ENCRYPTION</p>
             </div>
@@ -207,6 +228,24 @@
     </div>
 
     <script>
+        function fillDemo(email, pass) {
+            const emailInput = document.querySelector('input[name="email"]');
+            const passInput = document.querySelector('input[name="password"]');
+            const form = document.querySelector('form');
+            
+            emailInput.value = email;
+            passInput.value = pass;
+            
+            emailInput.style.borderColor = '#66FCF1';
+            passInput.style.borderColor = '#66FCF1';
+            
+            setTimeout(() => {
+                // Manually trigger the submit event listener
+                const event = new Event('submit', { cancelable: true, bubbles: true });
+                form.dispatchEvent(event);
+            }, 400);
+        }
+
         document.querySelector('form').addEventListener('submit', async function(e) {
             e.preventDefault();
             

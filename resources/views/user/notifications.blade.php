@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('css/track.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/portals.css') }}">
 </head>
 <body class="track-body">
   <div class="bg-canvas">
@@ -41,6 +42,9 @@
             </span>
           @endif
         </a>
+
+        <x-portal-nav />
+
         <a href="/user/logout" class="btn-nav-login">Sign Out</a>
       </div>
     </div>

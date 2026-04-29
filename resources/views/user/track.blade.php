@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('css/track.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/portals.css') }}">
 </head>
 <body class="track-body">
   <div class="bg-canvas">
@@ -31,6 +32,9 @@
       </a>
       <div class="nav-links">
         <a href="/user/index" class="nav-link">Home</a>
+        
+        <x-portal-nav />
+
         @if(session('user_logged_in'))
           <div class="nav-user" style="display:flex;align-items:center;gap:10px;">
             @php

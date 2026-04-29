@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/portals.css') }}">
 </head>
 <body class="auth-body">
   <div class="bg-canvas">
@@ -212,6 +213,9 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
             Back
           </a>
+
+          <x-portal-nav />
+
           <button type="button" class="profile-back" onclick="window.history.back()" style="cursor:pointer;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 6v6l4 2"/></svg>
             Previous

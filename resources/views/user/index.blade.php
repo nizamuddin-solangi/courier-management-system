@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/portals.css') }}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body class="landing-body">
@@ -44,6 +45,9 @@
         <a href="#features" class="nav-link">Features</a>
         <a href="#how-it-works" class="nav-link">How It Works</a>
         <a href="/user/track" class="nav-link">Track</a>
+        
+        <x-portal-nav />
+
         @if(session('user_logged_in'))
           @php
             $userImage = session('user_image');
@@ -78,6 +82,23 @@
       <a href="#features">Features</a>
       <a href="#how-it-works">How It Works</a>
       <a href="/user/track">Track</a>
+      
+      <div style="margin: 10px 0; padding: 15px; border: 1px solid var(--border-glass); border-radius: 16px; background: rgba(255,255,255,0.03);">
+        <div style="font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 12px;">System Portals</div>
+        <a href="/user/profile" style="display: flex !important; align-items: center; justify-content: space-between; padding: 8px 0 !important; border:none !important; background:none !important;">
+          <span style="font-size: 0.9rem;">Customer Portal</span>
+          <span class="status-dot {{ session('user_logged_in') ? 'online' : '' }}" style="position:static; border:none; width:10px; height:10px;"></span>
+        </a>
+        <a href="/agent/dashboard" style="display: flex !important; align-items: center; justify-content: space-between; padding: 8px 0 !important; border:none !important; background:none !important;">
+          <span style="font-size: 0.9rem;">Agent Node</span>
+          <span class="status-dot {{ session('agent_logged_in') ? 'online' : '' }}" style="position:static; border:none; width:10px; height:10px;"></span>
+        </a>
+        <a href="/admin/dashboard" style="display: flex !important; align-items: center; justify-content: space-between; padding: 8px 0 !important; border:none !important; background:none !important;">
+          <span style="font-size: 0.9rem;">Admin Intelligence</span>
+          <span class="status-dot {{ session('admin_logged_in') ? 'online' : '' }}" style="position:static; border:none; width:10px; height:10px;"></span>
+        </a>
+      </div>
+
       @if(session('user_logged_in'))
         <a href="/user/logout">Sign Out</a>
       @else

@@ -16,6 +16,18 @@
         </div>
     </div>
 
+    <x-portal-nav />
+
+    @if(session('admin_is_demo'))
+        <div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/20 animate-pulse">
+            <i class="bi bi-shield-exclamation text-amber-500 text-lg"></i>
+            <div class="flex flex-col">
+                <span class="text-[10px] font-black text-amber-500 uppercase tracking-tighter leading-none">Sandbox Mode</span>
+                <span class="text-[8px] text-amber-500/70 font-bold uppercase tracking-widest leading-none mt-1">Simulated Environment</span>
+            </div>
+        </div>
+    @endif
+
     <div class="flex items-center gap-4">
         <!-- Quick Actions -->
         <div class="flex items-center gap-2 p-1 bg-white/5 rounded-xl border border-white/5 h-11">

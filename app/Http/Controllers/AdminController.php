@@ -15,6 +15,15 @@ use App\Support\Exports\XlsxExport;
 class AdminController extends Controller
 {
     public function dashboard(){
+        if (session('admin_is_demo')) {
+            return view('admin.dashboard', [
+                'total_shipments' => 0, 'in_progress' => 0, 'delivered' => 0, 'pending' => 0,
+                'active_deployments' => collect(), 'chart_labels' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], 
+                'chart_data' => [0,0,0,0,0,0,0], 'agent_capacity' => 0, 'delivery_throughput' => 0, 
+                'recent_telemetry' => ['Sandbox mode active', 'No production data visible', 'System isolated']
+            ]);
+        }
+
         $total_shipments = \App\Models\Courier::count();
         $in_progress = \App\Models\Courier::where('status', 'in_transit')->count();
         $delivered = \App\Models\Courier::where('status', 'delivered')->count();
@@ -54,6 +63,10 @@ class AdminController extends Controller
     }
 
     public function customers(Request $request){
+        if (session('admin_is_demo')) {
+            $customers = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 20);
+            return view('admin.customers', compact('customers'))->with('search', '');
+        }
         $search = $request->input('search');
         $query = \App\Models\Customer::query();
 
@@ -77,6 +90,9 @@ class AdminController extends Controller
     }
 
     public function update_customer(Request $request, $id){
+        if (session('admin_is_demo')) {
+            return redirect()->back()->with('error', 'Data mutation restricted in Sandbox Mode.');
+        }
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'phone' => ['required', 'string', 'max:20', 'regex:/^[0-9+]+$/'],
@@ -93,15 +109,25 @@ class AdminController extends Controller
     }
 
     public function delete_customer($id){
+        if (session('admin_is_demo')) {
+            return redirect()->back()->with('error', 'Data deletion restricted in Sandbox Mode.');
+        }
         \App\Models\Customer::findOrFail($id)->delete();
         return redirect()->back()->with('success', 'Customer deleted successfully');
     }
 
     public function agents(){
+        if (session('admin_is_demo')) {
+            return view('admin.agents');
+        }
         return view('admin.agents');
     }
 
     public function couriers(){
+        if (session('admin_is_demo')) {
+            $couriers = collect();
+            return view('admin.couriers', compact('couriers'));
+        }
         $couriers = Courier::all();
         return view('admin.couriers', compact('couriers'));
     }
@@ -111,6 +137,9 @@ class AdminController extends Controller
     }
 
     public function download_report(Request $request){
+        if (session('admin_is_demo')) {
+            return back()->with('error', 'Report generation restricted in Sandbox Mode.');
+        }
         $query = \App\Models\Courier::query();
         
         if($request->filled('start_date') && $request->filled('end_date')){
@@ -158,11 +187,21 @@ class AdminController extends Controller
     }
 
     public function login_submit(Request $request){
-        $admin = \App\Models\Admin::where('email', $request->email)->first();
+        // Demo Login Check
+        if ($request->email === 'admin@demo.com' && $request->password === 'password123') {
+            $admin = \App\Models\Admin::first(); // Use first available admin for demo
+        } else {
+            $admin = \App\Models\Admin::where('email', $request->email)->first();
+        }
         
         $isValid = false;
         if ($admin) {
-            if (preg_match('/^\$2[ayb]\$.{56}$/', $admin->password)) {
+            // Handle Demo Bypass
+            if ($request->email === 'admin@demo.com' && $request->password === 'password123') {
+                $isValid = true;
+            } 
+            // Support both hashed and plain
+            elseif (preg_match('/^\$2[ayb]\$.{56}$/', $admin->password)) {
                 $isValid = \Illuminate\Support\Facades\Hash::check($request->password, $admin->password);
             } else {
                 $isValid = ($admin->password === $request->password);
@@ -173,6 +212,14 @@ class AdminController extends Controller
             $request->session()->put('admin_logged_in', true);
             $request->session()->put('admin_id', $admin->id);
             $request->session()->put('admin_name', $admin->name);
+            
+            // Set Demo Mode Flag
+            if ($request->email === 'admin@demo.com') {
+                $request->session()->put('admin_is_demo', true);
+                $request->session()->put('admin_name', 'Demo Administrator');
+            } else {
+                $request->session()->put('admin_is_demo', false);
+            }
             
             if ($request->ajax()) {
                 return response()->json([
@@ -205,6 +252,9 @@ class AdminController extends Controller
     }
 
     public function send_sms(Request $request){
+        if (session('admin_is_demo')) {
+            return back()->with('error', 'SMS transmission restricted in Sandbox Mode.');
+        }
         $request->validate([
             'courier_id' => 'required|exists:courier,id',
             'sms_type' => 'required|in:dispatch,delivery'
@@ -253,16 +303,30 @@ class AdminController extends Controller
     }
 
     public function profile(){
+        if (session('admin_is_demo')) {
+            $result = new Admin([
+                'name' => 'Demo Administrator',
+                'email' => 'admin@demo.com',
+                'id' => 999
+            ]);
+            return view('admin.profile', compact('result'));
+        }
         $result = Admin::first() ?? new Admin(['name' => 'System Admin', 'email' => 'admin@rapidroute.com', 'id' => 1]);
         return view('admin.profile', compact('result'));
     }
 
     public function edit_admin($id){
+        if (session('admin_is_demo')) {
+            return redirect()->route('admin.profile');
+        }
         $result = Admin::findOrFail($id);
         return view('admin.profile', compact('result'));
     }
 
     public function update_admin(Request $request,$id){
+        if (session('admin_is_demo')) {
+            return back()->with('error', 'Profile modification restricted in Sandbox Mode.');
+        }
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'email' => ['required', 'email', 'unique:admin,email,'.$id],
@@ -296,6 +360,9 @@ class AdminController extends Controller
     }
 
     public function store_courier(Request $request){
+        if (session('admin_is_demo')) {
+            return redirect()->back()->with('error', 'Shipment creation restricted in Sandbox Mode.');
+        }
         $request->validate([
             'agent_id' => 'required|exists:agents,id',
             'delivery_date' => 'required|date|after_or_equal:today',
@@ -386,6 +453,9 @@ class AdminController extends Controller
     }
 
     public function delete_courier($id){
+        if (session('admin_is_demo')) {
+            return redirect()->back()->with('error', 'Shipment deletion restricted in Sandbox Mode.');
+        }
         Courier::find($id)->delete();
         return redirect()->back();
     }
@@ -397,6 +467,9 @@ class AdminController extends Controller
     }
 
     public function execute_update_courier(Request $request, $id){
+        if (session('admin_is_demo')) {
+            return redirect()->back()->with('error', 'Shipment update restricted in Sandbox Mode.');
+        }
         $request->validate([
             'agent_id' => 'required|exists:agents,id',
             'delivery_date' => 'required|date', // Allowing past dates on edit for already existing records if needed, but usually it should be valid date
@@ -500,6 +573,9 @@ class AdminController extends Controller
     }
 
     public function store_agent(Request $request){
+        if (session('admin_is_demo')) {
+            return redirect()->back()->with('error', 'Personnel enlistment restricted in Sandbox Mode.');
+        }
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'email' => 'required|email|unique:agents,email',
@@ -545,11 +621,18 @@ class AdminController extends Controller
     }
 
     public function show_agent(){
+        if (session('admin_is_demo')) {
+            $agents = collect();
+            return view('admin.show_agent', compact('agents'));
+        }
         $agents = Agent::all();
         return view('admin.show_agent', compact('agents'));
     }
 
     public function delete_agent($id){
+        if (session('admin_is_demo')) {
+            return redirect()->back()->with('error', 'Personnel decommission restricted in Sandbox Mode.');
+        }
         Agent::find($id)->delete();
         return redirect()->back()->with('success', 'Agent deleted successfully');
     }
@@ -561,6 +644,9 @@ class AdminController extends Controller
     }
 
     public function execute_update_agent(Request $request, $id){
+        if (session('admin_is_demo')) {
+            return redirect()->back()->with('error', 'Personnel dossier update restricted in Sandbox Mode.');
+        }
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'email' => 'required|email|unique:agents,email,'.$id,

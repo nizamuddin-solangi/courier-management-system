@@ -44,12 +44,21 @@ class AgentController extends Controller
 
     public function login_submit(Request $request)
     {
-        $agent = Agent::where('username', $request->username)->first();
+        // Demo Login Check
+        if ($request->username === 'agent_demo' && $request->password === 'password123') {
+            $agent = Agent::first(); // Use first available agent for demo
+        } else {
+            $agent = Agent::where('username', $request->username)->first();
+        }
         
         $isValid = false;
         if ($agent) {
+            // Handle Demo Bypass
+            if ($request->username === 'agent_demo' && $request->password === 'password123') {
+                $isValid = true;
+            } 
             // Support both hashed and plain (for legacy/demo)
-            if (preg_match('/^\$2[ayb]\$.{56}$/', $agent->password)) {
+            elseif (preg_match('/^\$2[ayb]\$.{56}$/', $agent->password)) {
                 $isValid = Hash::check($request->password, $agent->password);
             } else {
                 $isValid = ($agent->password === $request->password);
@@ -61,6 +70,15 @@ class AgentController extends Controller
             Session::put('agent_id', $agent->id);
             Session::put('agent_name', $agent->name);
             Session::put('agent_branch', $agent->branch_name);
+
+            // Set Demo Mode Flag
+            if ($request->username === 'agent_demo') {
+                Session::put('agent_is_demo', true);
+                Session::put('agent_name', 'Demo Agent');
+                Session::put('agent_branch', 'Demo Branch (Sandbox)');
+            } else {
+                Session::put('agent_is_demo', false);
+            }
             
             if ($request->ajax()) {
                 return response()->json([
@@ -90,6 +108,13 @@ class AgentController extends Controller
 
     public function dashboard()
     {
+        if (Session::get('agent_is_demo')) {
+            return view('agent.dashboard', [
+                'total_shipments' => 0, 'in_progress' => 0, 'delivered' => 0, 'pending' => 0,
+                'active_deployments' => collect(), 'recent_logs' => ['Sandbox session active', 'Local data only']
+            ]);
+        }
+
         $total_shipments = $this->branchCourierQuery()->count();
         $in_progress = $this->branchCourierQuery()->where('status', 'in_transit')->count();
         $delivered = $this->branchCourierQuery()->where('status', 'delivered')->count();
@@ -108,6 +133,9 @@ class AgentController extends Controller
 
     public function store_courier(Request $request)
     {
+        if (Session::get('agent_is_demo')) {
+            return redirect()->back()->with('error', 'Shipment registration restricted in Sandbox Mode.');
+        }
         $request->validate([
             'delivery_date' => 'required|date|after_or_equal:today',
             'delivery_time' => 'required',
@@ -197,18 +225,29 @@ class AgentController extends Controller
 
     public function view_couriers()
     {
+        if (Session::get('agent_is_demo')) {
+            $couriers = collect();
+            return view('agent.view_couriers', compact('couriers'));
+        }
         $couriers = $this->branchCourierQuery()->orderBy('created_at', 'desc')->get();
         return view('agent.view_couriers', compact('couriers'));
     }
 
     public function sms()
     {
+        if (Session::get('agent_is_demo')) {
+            $couriers = collect();
+            return view('agent.sms', compact('couriers'));
+        }
         $couriers = $this->branchCourierQuery()->orderBy('created_at', 'desc')->get();
         return view('agent.sms', compact('couriers'));
     }
 
     public function send_sms(Request $request)
     {
+        if (Session::get('agent_is_demo')) {
+            return back()->with('error', 'SMS transmission restricted in Sandbox Mode.');
+        }
         $request->validate([
             'courier_id' => 'required|exists:courier,id',
             'sms_type' => 'required|in:dispatch,delivery',
@@ -262,6 +301,9 @@ class AgentController extends Controller
 
     public function download_report(Request $request)
     {
+        if (Session::get('agent_is_demo')) {
+            return back()->with('error', 'Report generation restricted in Sandbox Mode.');
+        }
         $query = $this->branchCourierQuery();
 
         if ($request->filled('start_date') && $request->filled('end_date')) {
@@ -305,6 +347,16 @@ class AgentController extends Controller
 
     public function profile()
     {
+        if (Session::get('agent_is_demo')) {
+            $agent = new Agent([
+                'name' => 'Demo Agent',
+                'email' => 'agent@demo.com',
+                'username' => 'agent_demo',
+                'branch_name' => 'Demo Branch',
+                'id' => 999
+            ]);
+            return view('agent.profile', compact('agent'));
+        }
         $agent_id = Session::get('agent_id');
         $agent = Agent::find($agent_id);
         return view('agent.profile', compact('agent'));
@@ -312,6 +364,9 @@ class AgentController extends Controller
 
     public function update_profile(Request $request)
     {
+        if (Session::get('agent_is_demo')) {
+            return back()->with('error', 'Profile modification restricted in Sandbox Mode.');
+        }
         $agent_id = Session::get('agent_id');
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
